@@ -1,5 +1,5 @@
 FROM golang:latest
-WORKDIR /go/src/MyPIPE
 ADD ./go /
+WORKDIR /go/src/MyPIPE
 EXPOSE 8080
 CMD ["go","run","/go/src/MyPIPE/main.go"]
