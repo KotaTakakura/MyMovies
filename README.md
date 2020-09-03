@@ -13,7 +13,7 @@ main.goにルーティングを作成していく。
 
 ### /go/src/MyPIPE/Entity
 データベースのデータと一対一になる構造体。例えば、名前・年齢を持つユーザーならば、
-type User struct {
-  Name string
-  Age int
-}
+type User struct {  
+  Name string  
+  Age int  
+}  
