@@ -14,7 +14,7 @@ func main(){
 	router.POST("/", video_file_controller.Store)
 	
 	router.GET("/test", func(c *gin.Context){
-		c.String(200,"OKdddfafaesfeas.")
+		c.String(200,"fesfes.")
 	})
 
 	router.GET("/checking",video_file_controller.Index)
