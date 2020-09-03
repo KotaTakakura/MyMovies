@@ -1,0 +1,4 @@
+FROM golang:latest
+WORKDIR /go/src/MyPIPE
+ADD ./go /
+EXPOSE 8080

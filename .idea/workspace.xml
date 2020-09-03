@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="35ebe92a-3f4b-482f-9dfb-741cb71ada3f" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="GOROOT" path="/usr/local/Cellar/go/1.15/libexec" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1gytM9GdGy5UXOUXatB3ieqmgge" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="configurable.Global.GOPATH.is.expanded" value="true" />
+    <property name="configurable.Module.GOPATH.is.expanded" value="false" />
+    <property name="configurable.Project.GOPATH.is.expanded" value="true" />
+    <property name="configurable.グローバル.GOPATH.is.expanded" value="true" />
+    <property name="configurable.プロジェクト.GOPATH.is.expanded" value="true" />
+    <property name="configurable.モジュール.GOPATH.is.expanded" value="true" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/go/src" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="settings.editor.selected.configurable" value="go.vgo" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/go/src" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/go/src/MyPIPE" />
+      <recent name="$PROJECT_DIR$/go/src" />
+      <recent name="$PROJECT_DIR$/go" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VgoProject">
+    <integration-enabled>true</integration-enabled>
+    <environment>
+      <map>
+        <entry key="GOMODCACHE" value="$PROJECT_DIR$/go/pkg/mod/cache" />
+      </map>
+    </environment>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="520" y="387" key="#GOROOT" timestamp="1599103532504">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="520" y="387" key="#GOROOT/0.0.1440.900@0.0.1440.900" timestamp="1599103532504" />
+    <state x="520" y="290" key="#Goモジュール" timestamp="1599104879056">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="520" y="290" key="#Goモジュール/0.0.1440.900@0.0.1440.900" timestamp="1599104879056" />
+    <state x="0" y="0" width="1440" height="900" key="EnvironmentVariablesDialog" timestamp="1599104914807">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="0" y="0" width="1440" height="900" key="EnvironmentVariablesDialog/0.0.1440.900@0.0.1440.900" timestamp="1599104914807" />
+    <state x="304" y="122" key="SettingsEditor" timestamp="1599105126664">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="304" y="122" key="SettingsEditor/0.0.1440.900@0.0.1440.900" timestamp="1599105126664" />
+    <state x="544" y="388" key="com.goide.codeInsight.imports.GoImportConfigurable$AddImportExclusionDialog" timestamp="1599102552635">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="544" y="388" key="com.goide.codeInsight.imports.GoImportConfigurable$AddImportExclusionDialog/0.0.1440.900@0.0.1440.900" timestamp="1599102552635" />
+  </component>
+</project>
