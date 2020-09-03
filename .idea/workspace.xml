@@ -11,8 +11,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="35ebe92a-3f4b-482f-9dfb-741cb71ada3f" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go/src/MyPIPE/.circleci/config copy.yml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/go/src/MyPIPE/.circleci/config.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/src/MyPIPE/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/src/MyPIPE/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/nginx/default.conf" beforeDir="false" afterPath="$PROJECT_DIR$/nginx/default.conf" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
