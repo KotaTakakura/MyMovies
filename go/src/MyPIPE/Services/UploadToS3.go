@@ -1,41 +1,43 @@
 package Services
 
-import(
-	"fmt"
+import (
 	"log"
 	"mime/multipart"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
-    "github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
-func UploadFileToS3(file multipart.File){
+type UploadToS3 struct {
 
-	// セッションの作成（認証はここで行う）
-    sess, err := session.NewSession(
-		&aws.Config{
-			Region:      aws.String("ap-northeast-1"),
-			Credentials: credentials.NewEnvCredentials(),
-		})
+}
 
-	if err != nil {
-        panic(err)
-	}
+func NewUploadToS3() *UploadToS3{
+	return &UploadToS3{}
+}
 
-	// Create an uploader with the session and default options
+func (u UploadToS3) Upload (file multipart.File){
+	creds := credentials.NewStaticCredentials("", "", "")
+	sess := session.Must(session.NewSession(&aws.Config{
+		Credentials: creds,
+		Region: aws.String("ap-northeast-1"),
+	}))
+	bucketName := "mypipe-111"
+	objectKey := "TTT.rtf"
 	uploader := s3manager.NewUploader(sess)
-	bucketName := "mypipe-112233"
-
-	// Upload the file to S3.
-	result, err := uploader.Upload(&s3manager.UploadInput{
+	var err error
+	test := &s3manager.UploadInput{
 		Bucket: aws.String(bucketName),
-		Key:    aws.String("sample11111.txt"),
+		Key:    aws.String(objectKey),
+		ContentType: aws.String("text/plain"),
 		Body:   file,
-	})
-	if err != nil {
-		log.Fatal(err)
 	}
-	fmt.Printf(result.Location)
+	_, err = uploader.Upload(test)
+
+	if err != nil {
+		log.Println(err)
+	}
+	log.Println("done")
 }
