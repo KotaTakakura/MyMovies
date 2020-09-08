@@ -1,4 +1,4 @@
-package Services
+package usecase
 
 import (
 	"log"
