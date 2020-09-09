@@ -7,13 +7,43 @@ import (
 	"time"
 )
 
+type UserID uint64
+
+func NewUserID(userId uint64) UserID {
+	return UserID(userId)
+}
+
+type UserName string
+
+func NewUserName(userName string) UserName {
+	return UserName(userName)
+}
+
+type UserPassword string
+
+func NewUserPassword(userPassword string) UserPassword {
+	return UserPassword(userPassword)
+}
+
+type UserEmail string
+
+func NewUserEmail(userEmail string) UserEmail {
+	return UserEmail(userEmail)
+}
+
+type UserToken string
+
+func NewUserToken(userToken string) UserToken {
+	return UserToken(userToken)
+}
+
 type User struct {
-	ID        uint64 `json:"id" gorm:"primaryKey"`
-	Name      string `json:"name"`
-	Password  string
-	Email     string    `json:"email"`
+	ID        UserID   `json:"id" gorm:"primaryKey"`
+	Name      UserName `json:"name"`
+	Password  UserPassword
+	Email     UserEmail `json:"email"`
 	Birthday  time.Time `json:"birthday"`
-	Token     string    `json:"token"`
+	Token     UserToken `json:"token"`
 	Movies    []Movie
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
@@ -47,7 +77,7 @@ func (u *User) CalcAge() (int, error) {
 
 func (u *User) SetHashedPassword(pass string) {
 	hash, _ := bcrypt.GenerateFromPassword([]byte(pass), 12)
-	u.Password = fmt.Sprintf("%s", hash)
+	u.Password = UserPassword(fmt.Sprintf("%s", hash))
 }
 
 func (u User) CheckPassword(pass string) bool {

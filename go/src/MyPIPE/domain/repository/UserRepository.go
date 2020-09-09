@@ -6,8 +6,8 @@ import (
 
 type UserRepository interface {
 	GetAll() []model.User
-	FindById(id uint64) *model.User
-	FindByToken(token string) *model.User
-	FindByEmail(email string) *model.User
+	FindById(id model.UserID) *model.User
+	FindByToken(token model.UserToken) *model.User
+	FindByEmail(email model.UserEmail) *model.User
 	SetUser(*model.User)
 }

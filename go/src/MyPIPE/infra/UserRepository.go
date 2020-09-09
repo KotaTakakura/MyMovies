@@ -21,25 +21,25 @@ func (u UserPersistence) GetAll() []model.User {
 	return allUsers
 }
 
-func (u UserPersistence) FindByToken(token string) *model.User {
+func (u UserPersistence) FindByToken(token model.UserToken) *model.User {
 	var user model.User
 	u.DatabaseAccessor.Where("token = ?", token).Take(&user)
 	return &user
 }
 
-func (u UserPersistence) FindByEmail(email string) *model.User {
+func (u UserPersistence) FindByEmail(email model.UserEmail) *model.User {
 	var user model.User
 	u.DatabaseAccessor.Where("email = ?", email).Take(&user)
 	return &user
 }
 
-func (u UserPersistence) FindById(id int) *model.User {
+func (u UserPersistence) FindById(id model.UserID) *model.User {
 	var user model.User
 	u.DatabaseAccessor.First(&user, id)
 	return &user
 }
 
-func (u UserPersistence) SetUser(newUser *model.User) *gorm.DB{
+func (u UserPersistence) SetUser(newUser *model.User) *gorm.DB {
 	err := u.DatabaseAccessor.Create(&newUser)
 	return err
 }
