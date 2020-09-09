@@ -1,6 +1,6 @@
 package infra
 
-import(
+import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"

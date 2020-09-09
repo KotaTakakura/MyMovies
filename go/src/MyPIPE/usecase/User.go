@@ -5,16 +5,16 @@ import (
 	"MyPIPE/domain/repository"
 )
 
-type User struct{
-	UserRepository	repository.UserRepository
+type User struct {
+	UserRepository repository.UserRepository
 }
 
-func NewUser(userRepository repository.UserRepository) *User{
+func NewUser(userRepository repository.UserRepository) *User {
 	return &User{
-		UserRepository:	userRepository,
+		UserRepository: userRepository,
 	}
 }
 
-func (u *User) RegisterUser(newUser *model.User){
+func (u *User) RegisterUser(newUser *model.User) {
 	u.UserRepository.SetUser(newUser)
 }

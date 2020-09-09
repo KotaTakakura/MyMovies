@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetRandomUser(c *gin.Context){
+func GetRandomUser(c *gin.Context) {
 	userPersistence := infra.NewUserPersistence()
 	randomUser := usecase.NewRandomUser(userPersistence)
 	user := randomUser.GetRandomIdUser()

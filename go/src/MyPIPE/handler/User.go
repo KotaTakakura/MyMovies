@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func RegisterUser(c *gin.Context){
+func RegisterUser(c *gin.Context) {
 	userPersistence := infra.NewUserPersistence()
 	New := usecase.NewUser(userPersistence)
 

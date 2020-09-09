@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func TemporaryRegisterUser(c *gin.Context){
+func TemporaryRegisterUser(c *gin.Context) {
 	userPersistence := infra.NewUserPersistence()
 	userRegistration := usecase.NewUserTemporaryRegistration(userPersistence)
 	var user model.User
