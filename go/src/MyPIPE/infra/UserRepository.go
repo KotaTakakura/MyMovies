@@ -6,40 +6,40 @@ import (
 )
 
 type UserPersistence struct {
-	databaseAccessor *gorm.DB
+	DatabaseAccessor *gorm.DB
 }
 
 func NewUserPersistence() *UserPersistence {
 	return &UserPersistence{
-		databaseAccessor: ConnectGorm(),
+		DatabaseAccessor: ConnectGorm(),
 	}
 }
 
 func (u UserPersistence) GetAll() []model.User {
 	var allUsers []model.User
-	u.databaseAccessor.Find(&allUsers)
+	u.DatabaseAccessor.Find(&allUsers)
 	return allUsers
 }
 
 func (u UserPersistence) FindByToken(token string) *model.User {
 	var user model.User
-	u.databaseAccessor.Where("token = ?", token).Take(&user)
+	u.DatabaseAccessor.Where("token = ?", token).Take(&user)
 	return &user
 }
 
 func (u UserPersistence) FindByEmail(email string) *model.User {
 	var user model.User
-	u.databaseAccessor.Where("email = ?", email).Take(&user)
+	u.DatabaseAccessor.Where("email = ?", email).Take(&user)
 	return &user
 }
 
 func (u UserPersistence) FindById(id int) *model.User {
 	var user model.User
-	u.databaseAccessor.First(&user, id)
+	u.DatabaseAccessor.First(&user, id)
 	return &user
 }
 
 func (u UserPersistence) SetUser(newUser *model.User) *gorm.DB{
-	err := u.databaseAccessor.Create(&newUser)
+	err := u.DatabaseAccessor.Create(&newUser)
 	return err
 }
