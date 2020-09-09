@@ -3,6 +3,7 @@ module MyPIPE
 go 1.15
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/aws/aws-sdk-go v1.34.18
 	github.com/gin-gonic/gin v1.6.3
 	github.com/google/uuid v1.1.2

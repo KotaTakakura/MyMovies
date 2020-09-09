@@ -11,21 +11,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="35ebe92a-3f4b-482f-9dfb-741cb71ada3f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/go/src/MyPIPE/Migrations/000004_add_store_name_and_display_name_column_to_movies_table.down.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/go/src/MyPIPE/Migrations/000004_add_store_name_and_display_name_column_to_movies_table.up.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/go/src/MyPIPE/Migrations/000005_drop_name_column_movies_table.down.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/go/src/MyPIPE/Migrations/000005_drop_name_column_movies_table.up.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/go/src/MyPIPE/Test/UserRepository_test.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/go/src/MyPIPE/domain/repository/MovieRepository.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/go/src/MyPIPE/infra/MovieRepository.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/go/src/MyPIPE/Test/MySQLMock.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile-mysql" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile-mysql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/src/MyPIPE/Migrations/000001_create_users_table.up.sql" beforeDir="false" afterPath="$PROJECT_DIR$/go/src/MyPIPE/Migrations/000001_create_users_table.up.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/src/MyPIPE/Migrations/000002_create_movies_table.up.sql" beforeDir="false" afterPath="$PROJECT_DIR$/go/src/MyPIPE/Migrations/000002_create_movies_table.up.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/src/MyPIPE/domain/model/Movie.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/src/MyPIPE/domain/model/Movie.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go/src/MyPIPE/domain/model/User.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/src/MyPIPE/domain/model/User.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/src/MyPIPE/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go/src/MyPIPE/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/src/MyPIPE/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go/src/MyPIPE/go.sum" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go/src/MyPIPE/infra/UserRepository.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/src/MyPIPE/infra/UserRepository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mysql/my.cnf" beforeDir="false" afterPath="$PROJECT_DIR$/mysql/my.cnf" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,10 +123,10 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="544" y="388" key="com.goide.codeInsight.imports.GoImportConfigurable$AddImportExclusionDialog/0.0.1440.900@0.0.1440.900" timestamp="1599102552635" />
-    <state x="396" y="82" width="686" height="735" key="find.popup" timestamp="1599382842219">
+    <state x="396" y="82" width="686" height="735" key="find.popup" timestamp="1599637436674">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="396" y="82" width="686" height="735" key="find.popup/0.0.1440.900@0.0.1440.900" timestamp="1599382842219" />
+    <state x="396" y="82" width="686" height="735" key="find.popup/0.0.1440.900@0.0.1440.900" timestamp="1599637436674" />
     <state x="450" y="329" key="vcs.readOnlyHandler.ReadOnlyStatusDialog" timestamp="1599471607656">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
