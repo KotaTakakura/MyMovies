@@ -8,18 +8,18 @@ import (
 )
 
 type UserTemporaryRegistration struct {
-	UserRepository	repository.UserRepository
+	UserRepository repository.UserRepository
 }
 
-func NewUserTemporaryRegistration(userRepository repository.UserRepository) *UserTemporaryRegistration{
+func NewUserTemporaryRegistration(userRepository repository.UserRepository) *UserTemporaryRegistration {
 	return &UserTemporaryRegistration{
 		UserRepository: userRepository,
 	}
 }
 
-func (u *UserTemporaryRegistration)TemporaryRegister(user *model.User){
+func (u *UserTemporaryRegistration) TemporaryRegister(user *model.User) {
 	registeredUser := u.UserRepository.FindByEmail(user.Email)
-	if registeredUser != nil{
+	if registeredUser != nil {
 		return
 	}
 	user.Token = uuid.New().String()

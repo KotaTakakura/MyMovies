@@ -12,6 +12,21 @@
   <component name="ChangeListManager">
     <list default="true" id="35ebe92a-3f4b-482f-9dfb-741cb71ada3f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/src/MyPIPE/domain/model/Movie.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/src/MyPIPE/domain/model/Movie.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/src/MyPIPE/domain/model/User.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/src/MyPIPE/domain/model/User.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/src/MyPIPE/domain/repository/UserRepository.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/src/MyPIPE/domain/repository/UserRepository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/src/MyPIPE/handler/Authorization.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/src/MyPIPE/handler/Authorization.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/src/MyPIPE/handler/RandomUser.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/src/MyPIPE/handler/RandomUser.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/src/MyPIPE/handler/User.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/src/MyPIPE/handler/User.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/src/MyPIPE/handler/VideoFile.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/src/MyPIPE/handler/VideoFile.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/src/MyPIPE/handler/wire.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/src/MyPIPE/handler/wire.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/src/MyPIPE/infra/MySQLConnector.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/src/MyPIPE/infra/MySQLConnector.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/src/MyPIPE/infra/UserRepository.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/src/MyPIPE/infra/UserRepository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/src/MyPIPE/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/src/MyPIPE/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/src/MyPIPE/usecase/RandomUser.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/src/MyPIPE/usecase/RandomUser.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/src/MyPIPE/usecase/UploadToS3.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/src/MyPIPE/usecase/UploadToS3.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/src/MyPIPE/usecase/User.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/src/MyPIPE/usecase/User.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go/src/MyPIPE/usecase/UserTemporaryRegistration.go" beforeDir="false" afterPath="$PROJECT_DIR$/go/src/MyPIPE/usecase/UserTemporaryRegistration.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +61,7 @@
     <property name="configurable.モジュール.GOPATH.is.expanded" value="true" />
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/go/src/MyPIPE/handler" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/go/src/MyPIPE/Migrations" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -56,19 +71,19 @@
     <property name="settings.editor.selected.configurable" value="go.vgo" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/go/src/MyPIPE/handler" />
-      <recent name="$PROJECT_DIR$/go/src/MyPIPE/usecase" />
-      <recent name="$PROJECT_DIR$/go/src/MyPIPE/infra" />
-      <recent name="$PROJECT_DIR$/nginx" />
-      <recent name="$PROJECT_DIR$/go/src" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/go/src/MyPIPE/domain/repository" />
       <recent name="$PROJECT_DIR$/go/src/MyPIPE/domain/model" />
       <recent name="$PROJECT_DIR$/go/src/MyPIPE/domain" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/go/src/MyPIPE" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/go/src/MyPIPE/Migrations" />
+      <recent name="$PROJECT_DIR$/go/src/MyPIPE/handler" />
+      <recent name="$PROJECT_DIR$/go/src/MyPIPE/usecase" />
+      <recent name="$PROJECT_DIR$/go/src/MyPIPE/infra" />
+      <recent name="$PROJECT_DIR$/nginx" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />

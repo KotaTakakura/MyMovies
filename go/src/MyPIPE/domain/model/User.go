@@ -8,12 +8,12 @@ import (
 )
 
 type User struct {
-	ID        uint      `json:"id" gorm:"primaryKey"`
-	Name      string    `json:"name"`
+	ID        uint64 `json:"id" gorm:"primaryKey"`
+	Name      string `json:"name"`
 	Password  string
 	Email     string    `json:"email"`
 	Birthday  time.Time `json:"birthday"`
-	Token		string	`json:"token"`
+	Token     string    `json:"token"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -22,7 +22,7 @@ func NewUser() *User {
 	return &User{}
 }
 
-func (u *User)CalcAge() (int, error){
+func (u *User) CalcAge() (int, error) {
 	// 現在日時を数値のみでフォーマット (YYYYMMDD)
 	dateFormatOnlyNumber := "20060102" // YYYYMMDD
 
@@ -44,20 +44,20 @@ func (u *User)CalcAge() (int, error){
 	return age, nil
 }
 
-func (u *User)SetHashedPassword(pass string){
+func (u *User) SetHashedPassword(pass string) {
 	fmt.Println("|||||||||||||||||||||||||")
 	fmt.Println("|||||||||||||||||||||||||")
 	fmt.Println("|||||||||||||||||||||||||")
 	fmt.Println("|||||||||||||||||||||||||")
-	hash,_:=bcrypt.GenerateFromPassword([]byte(pass),12)
+	hash, _ := bcrypt.GenerateFromPassword([]byte(pass), 12)
 	u.Password = fmt.Sprintf("%s", hash)
 }
 
-func (u User)CheckPassword(pass string) bool{
+func (u User) CheckPassword(pass string) bool {
 	err := bcrypt.CompareHashAndPassword(
 		[]byte(u.Password),
 		[]byte(pass))
-	if err != nil{
+	if err != nil {
 		return false
 	}
 	return true

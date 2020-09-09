@@ -1,16 +1,16 @@
 package handler
 
-import(
+import (
 	"MyPIPE/Controllers"
-	"MyPIPE/Services"
 	Iservice "MyPIPE/Interfaces/Services"
+	"MyPIPE/Services"
 	"MyPIPE/domain/repository"
 	"MyPIPE/infra"
 	"MyPIPE/usecase"
 	"github.com/google/wire"
 )
 
-func initVideoFileController() *Controllers.VideoFileController{
+func initVideoFileController() *Controllers.VideoFileController {
 	wire.Build(
 		Controllers.NewVideoFileController,
 		Services.NewUploadToS3,
@@ -19,7 +19,7 @@ func initVideoFileController() *Controllers.VideoFileController{
 	return &Controllers.VideoFileController{}
 }
 
-func InitRandomUser() *usecase.RandomUser{
+func InitRandomUser() *usecase.RandomUser {
 	wire.Build(
 		usecase.NewRandomUser,
 		infra.NewUserPersistence,
