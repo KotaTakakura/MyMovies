@@ -33,7 +33,6 @@ func (u *UserRepositoryMock)GetAll() []model.User{
 	user2.Email = "taro@example.jp"
 	user2.Birthday = time.Date(2010, 1, 1, 0, 0, 0, 0, time.Local)
 	user2.Token = ""
-	user2.Movies = {}
 	user2.CreatedAt = timeNow
 	user2.UpdatedAt = timeNow
 	movie4 := GetMovie(4,user2)
@@ -47,7 +46,6 @@ func (u *UserRepositoryMock)GetAll() []model.User{
 	user3.Email = "taro@example.jp"
 	user3.Birthday = time.Date(2020, 1, 1, 0, 0, 0, 0, time.Local)
 	user3.Token = ""
-	user3.Movies = {}
 	user3.CreatedAt = timeNow
 	user3.UpdatedAt = timeNow
 	movie7 := GetMovie(7,user3)
@@ -73,6 +71,8 @@ func (u *UserRepositoryMock)FindById(id uint64) *model.User{
 	movie2 := GetMovie(2,user)
 	movie3 := GetMovie(3,user)
 	user.Movies = []model.Movie{*movie1, *movie2, *movie3}
+
+	return user
 }
 
 func (u *UserRepositoryMock)FindByToken(token string) *model.User{
@@ -90,6 +90,8 @@ func (u *UserRepositoryMock)FindByToken(token string) *model.User{
 	movie2 := GetMovie(2,user)
 	movie3 := GetMovie(3,user)
 	user.Movies = []model.Movie{*movie1, *movie2, *movie3}
+
+	return user
 }
 
 func (u *UserRepositoryMock)FindByEmail(email string) *model.User{
@@ -107,6 +109,8 @@ func (u *UserRepositoryMock)FindByEmail(email string) *model.User{
 	movie2 := GetMovie(2,user)
 	movie3 := GetMovie(3,user)
 	user.Movies = []model.Movie{*movie1, *movie2, *movie3}
+
+	return user
 }
 
 func (u *UserRepositoryMock)SetUser(user *model.User){
