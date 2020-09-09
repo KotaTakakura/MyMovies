@@ -6,11 +6,17 @@ import (
 )
 
 type Movie struct {
-	ID        uint64 `json:"id" gorm:"primaryKey"`
-	Name      string
-	UserID    uint
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID          uint64 `json:"id" gorm:"primaryKey"`
+	StoreName   string
+	DisplayName string
+	UserID      uint64
+	User        User
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+func NewMovie() *Movie {
+	return &Movie{}
 }
 
 func (m *Movie) ReturnURL() string {

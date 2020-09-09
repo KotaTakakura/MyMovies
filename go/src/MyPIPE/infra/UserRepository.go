@@ -39,6 +39,7 @@ func (u UserPersistence) FindById(id int) *model.User {
 	return &user
 }
 
-func (u UserPersistence) SetUser(newUser *model.User) {
-	u.databaseAccessor.Create(&newUser)
+func (u UserPersistence) SetUser(newUser *model.User) *gorm.DB{
+	err := u.databaseAccessor.Create(&newUser)
+	return err
 }

@@ -14,6 +14,7 @@ type User struct {
 	Email     string    `json:"email"`
 	Birthday  time.Time `json:"birthday"`
 	Token     string    `json:"token"`
+	Movies    []Movie
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -45,10 +46,6 @@ func (u *User) CalcAge() (int, error) {
 }
 
 func (u *User) SetHashedPassword(pass string) {
-	fmt.Println("|||||||||||||||||||||||||")
-	fmt.Println("|||||||||||||||||||||||||")
-	fmt.Println("|||||||||||||||||||||||||")
-	fmt.Println("|||||||||||||||||||||||||")
 	hash, _ := bcrypt.GenerateFromPassword([]byte(pass), 12)
 	u.Password = fmt.Sprintf("%s", hash)
 }
