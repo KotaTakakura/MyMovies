@@ -1,0 +1,1 @@
+ALTER TABLE movies DROP FOREIGN KEY users_id_movies_user_id_fk
