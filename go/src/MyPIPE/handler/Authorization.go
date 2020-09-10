@@ -5,6 +5,7 @@ import (
 	"MyPIPE/infra"
 	"MyPIPE/usecase"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func TemporaryRegisterUser(c *gin.Context) {
@@ -12,5 +13,17 @@ func TemporaryRegisterUser(c *gin.Context) {
 	userRegistration := usecase.NewUserTemporaryRegistration(userPersistence)
 	var user model.User
 	c.Bind(&user)
-	userRegistration.TemporaryRegister(&user)
+	err := userRegistration.TemporaryRegister(&user)
+	if err != nil{
+		c.JSON(500, gin.H{"message": c.Error(err)})
+		c.Abort()
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Temporary Registered!",
+	})
+}
+
+func RegisterUser(c *gin.Context) {
+
 }
