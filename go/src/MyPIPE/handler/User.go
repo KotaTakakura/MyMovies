@@ -13,10 +13,10 @@ func RegisterUser(c *gin.Context) {
 	New := usecase.NewUser(userPersistence)
 
 	var newUser model.User
-	newUser.Name = "tatata"
-	newUser.Email = "tatata@tatata.jp"
+	newUser.Name = model.NewUserName("tatata")
+	newUser.Email = model.NewUserEmail("tatata@tatata.jp")
 	newUser.Birthday = time.Now()
-	newUser.SetHashedPassword("takakura")
+	newUser.Password = model.NewUserPassword("takakura")
 
 	New.RegisterUser(&newUser)
 }
