@@ -22,7 +22,7 @@ func TestUserTemporaryRegistrationUsecase(t *testing.T) {
 
 		testUserRepositoryReturnNil := mock_repository.NewMockUserRepository(ctrl)
 		testUserRepositoryReturnNil.EXPECT().FindByEmail(c.Email).Return(nil,nil)
-		testUserRepositoryReturnNil.EXPECT().SetUser(&c).Return(nil)
+		testUserRepositoryReturnNil.EXPECT().SetUser(gomock.Any()).Return(nil)
 		userTemporaryRegistration := usecase.NewUserTemporaryRegistration(testUserRepositoryReturnNil)
 		err1 := userTemporaryRegistration.TemporaryRegister(&c)
 		if err1 != nil{
@@ -39,7 +39,7 @@ func TestUserTemporaryRegistrationUsecase(t *testing.T) {
 
 		testUserRepositorySetUserError := mock_repository.NewMockUserRepository(ctrl)
 		testUserRepositorySetUserError.EXPECT().FindByEmail(c.Email).Return(nil,nil)
-		testUserRepositorySetUserError.EXPECT().SetUser(&c).Return(errors.New("ERROR!!!"))
+		testUserRepositorySetUserError.EXPECT().SetUser(gomock.Any()).Return(errors.New("ERROR!!!"))
 		userTemporaryRegistration = usecase.NewUserTemporaryRegistration(testUserRepositorySetUserError)
 		err3 := userTemporaryRegistration.TemporaryRegister(&c)
 		if err3 == nil{
