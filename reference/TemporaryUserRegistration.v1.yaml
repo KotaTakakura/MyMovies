@@ -1,0 +1,44 @@
+openapi: 3.0.0
+info:
+  title: TemporaryUserRegistration
+  version: '1.0'
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /new:
+    post:
+      summary: TemporaryUserRegistration
+      tags: []
+      responses:
+        '200':
+          description: 仮登録成功・失敗どちらも同じレスポンス
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                response:
+                  value:
+                    message: Temporary Registered!
+      operationId: post-new
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+            examples:
+              example-1:
+                value:
+                  email: hanako@example.jp
+              example-2:
+                value:
+                  email: hanako@example.jp
+        description: ''
+components:
+  schemas: {}
