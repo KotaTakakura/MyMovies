@@ -22,7 +22,8 @@ func NewUserName(userName string) UserName {
 type UserPassword string
 
 func NewUserPassword(userPassword string) UserPassword {
-	return UserPassword(userPassword)
+	hash, _ := bcrypt.GenerateFromPassword([]byte(userPassword), 12)
+	return UserPassword(fmt.Sprintf("%s", hash))
 }
 
 type UserEmail string
@@ -73,11 +74,6 @@ func (u *User) CalcAge() (int, error) {
 	// (今日の日付 - 誕生日) / 10000 = 年齢
 	age := (nowInt - birthdayInt) / 10000
 	return age, nil
-}
-
-func (u *User) SetHashedPassword(pass string) {
-	hash, _ := bcrypt.GenerateFromPassword([]byte(pass), 12)
-	u.Password = UserPassword(fmt.Sprintf("%s", hash))
 }
 
 func (u User) CheckPassword(pass string) bool {
