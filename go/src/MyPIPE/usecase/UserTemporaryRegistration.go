@@ -29,9 +29,11 @@ func (u *UserTemporaryRegistration) TemporaryRegister(user *model.User) error {
 		return errors.New("Already Registered.")
 	}
 
-	user.Token = model.UserToken(uuid.New().String())
-	user.Birthday = time.Date(1000, 1, 1, 0, 0, 0, 0, time.Local)
-	err2 := u.UserRepository.SetUser(user)
+	newUser := model.NewUser()
+	newUser.Email = user.Email
+	newUser.Token = model.UserToken(uuid.New().String())
+	newUser.Birthday = time.Date(1000, 1, 1, 0, 0, 0, 0, time.Local)
+	err2 := u.UserRepository.SetUser(newUser)
 	if err2 != nil{
 		return err2
 	}
