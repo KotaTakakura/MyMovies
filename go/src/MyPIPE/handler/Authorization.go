@@ -15,7 +15,9 @@ func TemporaryRegisterUser(c *gin.Context) {
 	c.Bind(&user)
 	err := userRegistration.TemporaryRegister(&user)
 	if err != nil{
-		c.JSON(500, gin.H{"message": c.Error(err)})
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Temporary Registered!",
+		})
 		c.Abort()
 		return
 	}
