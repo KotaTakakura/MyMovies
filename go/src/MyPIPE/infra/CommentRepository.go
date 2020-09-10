@@ -5,30 +5,48 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-type CommentPersistence struct{
+type CommentPersistence struct {
 	DatabaseAccessor *gorm.DB
 }
 
-func (c *CommentPersistence) GetAll() []model.Comment {
-	var comments []model.Comment
-	c.DatabaseAccessor.Find(comments)
-	return comments
+func NewCommentPersistence() *CommentPersistence {
+	return &CommentPersistence{
+		DatabaseAccessor: ConnectGorm(),
+	}
 }
 
-func (c *CommentPersistence) FindById(commentID model.CommentID) *model.Comment {
+func (c *CommentPersistence) GetAll() ([]model.Comment, error) {
+	var comments []model.Comment
+	result := c.DatabaseAccessor.Find(comments)
+	if result != nil {
+		return nil, result.Error
+	}
+	return comments, nil
+}
+
+func (c *CommentPersistence) FindById(commentID model.CommentID) (*model.Comment, error) {
 	var comment *model.Comment
-	c.DatabaseAccessor.Find(comment, commentID)
-	return comment
+	result := c.DatabaseAccessor.Find(comment, commentID)
+	if result != nil {
+		return nil, result.Error
+	}
+	return comment, nil
 }
 
-func (c *CommentPersistence) FindByUserId(userId model.UserID) []model.Comment {
+func (c *CommentPersistence) FindByUserId(userId model.UserID) ([]model.Comment, error) {
 	var comments []model.Comment
-	c.DatabaseAccessor.Where("user_id = ?", userId).Find(comments)
-	return comments
+	result := c.DatabaseAccessor.Where("user_id = ?", userId).Find(comments)
+	if result != nil {
+		return nil, result.Error
+	}
+	return comments, nil
 }
 
-func (c *CommentPersistence) FindByMovieId(movieId model.MovieID) []model.Comment {
+func (c *CommentPersistence) FindByMovieId(movieId model.MovieID) ([]model.Comment, error) {
 	var comments []model.Comment
-	c.DatabaseAccessor.Where("movie_id = ?", movieId).Find(comments)
-	return comments
+	result := c.DatabaseAccessor.Where("movie_id = ?", movieId).Find(comments)
+	if result != nil {
+		return nil, result.Error
+	}
+	return comments, nil
 }

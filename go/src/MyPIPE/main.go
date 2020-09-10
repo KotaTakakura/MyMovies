@@ -18,17 +18,11 @@ func init() {
 
 func main() {
 	router := gin.Default()
-
-	video_file_controller := initVideoFileController()
 	router.POST("/new", handler.TemporaryRegisterUser)
-
-	router.POST("/", video_file_controller.Store)
 
 	router.GET("/test", func(c *gin.Context) {
 		c.String(200, "fesfes.")
 	})
-
-	router.GET("/checking", video_file_controller.Index)
 
 	router.Run()
 }

@@ -3,6 +3,7 @@ package usecase
 import (
 	"MyPIPE/domain/model"
 	"MyPIPE/domain/repository"
+	"errors"
 	"github.com/google/uuid"
 	"time"
 )
@@ -17,12 +18,19 @@ func NewUserTemporaryRegistration(userRepository repository.UserRepository) *Use
 	}
 }
 
-func (u *UserTemporaryRegistration) TemporaryRegister(user *model.User) {
-	registeredUser := u.UserRepository.FindByEmail(user.Email)
-	if registeredUser != nil {
-		return
+func (u *UserTemporaryRegistration) TemporaryRegister(user *model.User) error {
+	registeredUser, err := u.UserRepository.FindByEmail(user.Email)
+
+	if err != nil {
+		return err
 	}
-	user.Token = uuid.New().String()
+
+	if registeredUser != nil {
+		return errors.New("Already Registered.")
+	}
+
+	user.Token = model.UserToken(uuid.New().String())
 	user.Birthday = time.Date(1000, 1, 1, 0, 0, 0, 0, time.Local)
 	u.UserRepository.SetUser(user)
+	return nil
 }
