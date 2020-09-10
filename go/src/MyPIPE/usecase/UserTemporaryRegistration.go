@@ -8,6 +8,10 @@ import (
 	"time"
 )
 
+type IUserTemporaryRegistration interface{
+	TemporaryRegister(user *model.User) error
+}
+
 type UserTemporaryRegistration struct {
 	UserRepository repository.UserRepository
 }
@@ -19,18 +23,17 @@ func NewUserTemporaryRegistration(userRepository repository.UserRepository) *Use
 }
 
 func (u *UserTemporaryRegistration) TemporaryRegister(user *model.User) error {
-	registeredUser, err := u.UserRepository.FindByEmail(user.Email)
+	registeredUser, _ := u.UserRepository.FindByEmail(user.Email)
 
-	if err != nil {
-		return err
-	}
-
-	if registeredUser != nil {
+	if registeredUser != nil{
 		return errors.New("Already Registered.")
 	}
 
 	user.Token = model.UserToken(uuid.New().String())
 	user.Birthday = time.Date(1000, 1, 1, 0, 0, 0, 0, time.Local)
-	u.UserRepository.SetUser(user)
+	err2 := u.UserRepository.SetUser(user)
+	if err2 != nil{
+		return err2
+	}
 	return nil
 }
