@@ -20,7 +20,7 @@ func (u UserRegister)RegisterUser(newUser *model.User) error{
 	registeredUserWithToken, _ := u.UserRepository.FindByToken(newUser.Token)
 
 	if registeredUserWithToken == nil{
-		return errors.New("Not Temporary Registered.")
+		return errors.New("Invalid Token.")
 	}
 
 	registeredUserWithToken.EmptyToken()

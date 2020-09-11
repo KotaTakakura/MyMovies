@@ -4,7 +4,6 @@ import (
 	"MyPIPE/domain/model"
 	"MyPIPE/infra"
 	"MyPIPE/usecase"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -15,9 +14,22 @@ func TemporaryRegisterUser(c *gin.Context) {
 
 	var newUserInfo TemporaryRegisterUserJson
 	var newUser model.User
+	validationError := map[string]error{}
+	validationErrorMessages := map[string]string{}
 
 	c.Bind(&newUserInfo)
-	newUser.Email = model.NewUserEmail(newUserInfo.Email)	//TODO::バリデーション
+	newUser.Email, validationError["user_email"] = model.NewUserEmail(newUserInfo.Email)
+
+	if validationError["user_email"] != nil {
+		validationErrorMessages["user_email"] = validationError["user_email"].Error()
+		c.JSON(http.StatusOK, gin.H{
+			"result": "Validation Error",
+			"message": validationErrorMessages,
+		})
+		c.Abort()
+		return
+	}
+
 	err := userRegistration.TemporaryRegister(&newUser)
 	if err != nil{
 		c.JSON(http.StatusOK, gin.H{
@@ -40,9 +52,9 @@ func RegisterUser(c *gin.Context) {
 	var newUserInfo RegisterUserJson
 	c.Bind(&newUserInfo)
 
-	fmt.Println("|||||||||||")
-	fmt.Print(newUserInfo)
-	fmt.Println("|||||||||||")
+	validationErrors := map[string]error{}
+	errorMessages := map[string]string{}
+	validationErrorFlag := false
 
 	userPersistence := infra.NewUserPersistence()
 	userRegistration := usecase.NewUserRegister(userPersistence)
@@ -51,12 +63,40 @@ func RegisterUser(c *gin.Context) {
 	token := c.Query("token")
 
 	var newUser model.User
-	newUser.Name = model.NewUserName(newUserInfo.Name)	//TODO::バリデーション
-	newUser.Password = model.NewUserPassword(newUserInfo.Password)	//TODO::バリデーション
-	newUser.Token = model.NewUserToken(token)	//TODO::バリデーション（空文字のときを必ずエラーとして処理する）
-	newUser.SetBirthday(newUserInfo.Birthday)	//TODO::バリデーション
+	newUser.Name,validationErrors["user_name"] = model.NewUserName(newUserInfo.Name)
 
-	userRegistration.RegisterUser(&newUser)	//TODO::エラー処理
+	newUser.Password,validationErrors["user_password"] = model.NewUserPassword(newUserInfo.Password)
+
+	newUser.Token,validationErrors["user_token"] = model.NewUserToken(token)
+
+	validationErrors["user_birthday"] = newUser.SetBirthday(newUserInfo.Birthday)
+
+	for errorKey, errorContent := range validationErrors {
+		if errorContent != nil{
+			validationErrorFlag = true
+			errorMessages[errorKey] = errorContent.Error()
+		}
+	}
+
+	if validationErrorFlag {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"result": "Validation Error",
+			"messages": errorMessages,
+		})
+		c.Abort()
+		return
+	}
+
+	registerUserError := userRegistration.RegisterUser(&newUser)
+
+	if registerUserError != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"result": "Registration Error",
+			"messages": registerUserError.Error(),
+		})
+		c.Abort()
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Registered!",
