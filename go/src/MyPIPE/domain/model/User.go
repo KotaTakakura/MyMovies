@@ -133,3 +133,8 @@ func (u User) CheckPassword(pass string) bool {
 func (u *User) EmptyToken() {
 	u.Token = ""
 }
+
+func (u User) TemporaryRegisteredWithinOneHour() bool{
+	duration := time.Now().Sub(u.UpdatedAt)
+	return int(duration.Minutes()) < 60
+}

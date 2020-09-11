@@ -23,6 +23,10 @@ func (u UserRegister)RegisterUser(newUser *model.User) error{
 		return errors.New("Invalid Token.")
 	}
 
+	if !registeredUserWithToken.TemporaryRegisteredWithinOneHour() {
+		return errors.New("Invalid Token.")
+	}
+
 	registeredUserWithToken.EmptyToken()
 	registeredUserWithToken.Password = newUser.Password
 	registeredUserWithToken.Name = newUser.Name
