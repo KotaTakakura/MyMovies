@@ -25,10 +25,13 @@ func NewUserTemporaryRegistration(userRepository repository.UserRepository) *Use
 func (u *UserTemporaryRegistration) TemporaryRegister(user *model.User) error {
 	registeredUser, _ := u.UserRepository.FindByEmail(user.Email)
 
-	if registeredUser != nil{
+	if registeredUser != nil && registeredUser.Token == ""{
 		return errors.New("Already Registered.")
 	}
 
+	if registeredUser != nil && registeredUser.Token != ""{
+		registeredUser.Token = model.UserToken(uuid.New().String())
+	}
 	newUser := model.NewUser()
 	newUser.Email = user.Email
 	newUser.Token = model.UserToken(uuid.New().String())

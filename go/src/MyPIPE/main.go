@@ -19,6 +19,7 @@ func init() {
 func main() {
 	router := gin.Default()
 	router.POST("/new", handler.TemporaryRegisterUser)
+	router.POST("/register", handler.RegisterUser)
 
 	router.GET("/test", func(c *gin.Context) {
 		c.String(200, "fesfes.")
