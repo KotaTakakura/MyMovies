@@ -34,7 +34,7 @@ func NewUserEmail(userEmail string) UserEmail {
 
 type UserToken string
 
-func NewUserToken(userToken string) UserToken {
+func NewUserToken(userToken string) UserToken {	//TODO::バリデーション（空文字のときを必ずエラーとして処理する）
 	return UserToken(userToken)
 }
 
@@ -52,6 +52,11 @@ type User struct {
 
 func NewUser() *User {
 	return &User{}
+}
+
+func (u *User) SetBirthday(stringBirthday string){
+	birthday, _ := time.Parse("2006-01-02", stringBirthday)
+	u.Birthday = birthday
 }
 
 func (u *User) CalcAge() (int, error) {
@@ -84,4 +89,8 @@ func (u User) CheckPassword(pass string) bool {
 		return false
 	}
 	return true
+}
+
+func (u *User) EmptyToken(){
+	u.Token = ""
 }
