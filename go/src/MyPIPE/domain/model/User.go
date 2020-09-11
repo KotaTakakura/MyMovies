@@ -87,6 +87,7 @@ func NewUser() *User {
 
 func (u *User) SetBirthday(stringBirthday string) error{
 	err := validation.Validate(stringBirthday,
+		validation.Required,
 		validation.Date("2006-01-02"),
 	)
 	if err != nil {

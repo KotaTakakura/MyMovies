@@ -19,8 +19,10 @@ paths:
                 properties:
                   message:
                     type: string
+                  result:
+                    type: string
               examples:
-                response:
+                success:
                   value:
                     message: Temporary Registered!
       operationId: post-new
