@@ -13,6 +13,35 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  messages:
+                    type: object
+                    properties:
+                      user_birthday:
+                        type: string
+                      user_name:
+                        type: string
+                      user_password:
+                        type: string
+                  result:
+                    type: string
+                  message:
+                    type: string
+              examples:
+                success:
+                  value:
+                    message: Temporary Registered!
+                invalid message:
+                  value:
+                    messages:
+                      user_birthday: cannot be blank
+                      user_name: cannot be blank
+                      user_password: cannot be blank
+                    result: Validation Error
       operationId: post-register
       description: 仮登録済みユーザーの本登録
       requestBody:
