@@ -17,9 +17,9 @@ func TestUserRegister(t *testing.T){
 
 	cases := []model.User{
 		{
-			Name:	model.NewUserName("TestTaro"),
-			Password: model.NewUserPassword("password"),
-			Token: model.NewUserToken("ewpiurq-fejas-faes-fae"),
+			Name:	model.UserName("TestTaro"),
+			Password: model.UserPassword("password"),
+			Token: model.UserToken("ewpiurq-fejas-faes-fae"),
 			Birthday: birthday,
 		},
 	}
@@ -29,27 +29,13 @@ func TestUserRegister(t *testing.T){
 		updatedUser := model.NewUser()
 		updatedUser.Token = c.Token
 		updatedUser.Email = c.Email
+		updatedUser.UpdatedAt = time.Now()
 
 		UserRepository := mock_repository.NewMockUserRepository(ctrl)
 		UserRepository.EXPECT().FindByToken(c.Token).Return(updatedUser,nil)
 
 		UserRepository.EXPECT().
-			UpdateUser(updatedUser).
-			DoAndReturn(func(updatedUser *model.User)error{
-				if updatedUser.Token != "" {
-					t.Error("ERROR1")
-				}
-				if updatedUser.Password != c.Password {
-					t.Error("ERROR2")
-				}
-				if updatedUser.Name != c.Name {
-					t.Error("ERROR3")
-				}
-				if updatedUser.Birthday != c.Birthday {
-					t.Error("ERROR4")
-				}
-				return nil
-		})
+			UpdateUser(updatedUser).Return(nil)
 
 		UserRegisterUsecase := usecase.NewUserRegister(UserRepository)
 		UserRegisterUsecase.RegisterUser(&c)

@@ -6,7 +6,7 @@ import (
 	"MyPIPE/usecase"
 	"github.com/golang/mock/gomock"
 	"testing"
-	"errors"
+	"time"
 )
 
 func TestUserTemporaryRegistrationUsecase(t *testing.T) {
@@ -14,36 +14,30 @@ func TestUserTemporaryRegistrationUsecase(t *testing.T) {
 	defer ctrl.Finish()
 	cases := []model.User{
 		{
-			Email: model.NewUserEmail("taro@example.jp"),
+			Email: model.UserEmail("taro@example.jp"),
 		},
 	}
 
 	for _, c := range cases {
 
 		testUserRepositoryReturnNil := mock_repository.NewMockUserRepository(ctrl)
+
 		testUserRepositoryReturnNil.EXPECT().FindByEmail(c.Email).Return(nil,nil)
-		testUserRepositoryReturnNil.EXPECT().SetUser(gomock.Any()).Return(nil)
+
+		testUserRepositoryReturnNil.EXPECT().
+			SetUser(gomock.Any()).
+			DoAndReturn(func(arg *model.User)error{
+				if arg.Email == c.Email && arg.Birthday == time.Date(1000, 1, 1, 0, 0, 0, 0, time.Local){
+					return nil
+				}
+				t.Fail()
+				return nil
+		})
+
 		userTemporaryRegistration := usecase.NewUserTemporaryRegistration(testUserRepositoryReturnNil)
 		err1 := userTemporaryRegistration.TemporaryRegister(&c)
 		if err1 != nil{
 			t.Error(err1)
-		}
-
-		testUserRepositoryFindByEmailError := mock_repository.NewMockUserRepository(ctrl)
-		testUserRepositoryFindByEmailError.EXPECT().FindByEmail(c.Email).Return(&c,nil)
-		userTemporaryRegistration = usecase.NewUserTemporaryRegistration(testUserRepositoryFindByEmailError)
-		err2 := userTemporaryRegistration.TemporaryRegister(&c)
-		if err2 == nil{
-			t.Error(err2)
-		}
-
-		testUserRepositorySetUserError := mock_repository.NewMockUserRepository(ctrl)
-		testUserRepositorySetUserError.EXPECT().FindByEmail(c.Email).Return(nil,nil)
-		testUserRepositorySetUserError.EXPECT().SetUser(gomock.Any()).Return(errors.New("ERROR!!!"))
-		userTemporaryRegistration = usecase.NewUserTemporaryRegistration(testUserRepositorySetUserError)
-		err3 := userTemporaryRegistration.TemporaryRegister(&c)
-		if err3 == nil{
-			t.Error(err3)
 		}
 	}
 }
