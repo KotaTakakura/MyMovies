@@ -2,7 +2,10 @@ package model
 
 import (
 	"fmt"
+	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/go-ozzo/ozzo-validation/is"
 	"golang.org/x/crypto/bcrypt"
+	"regexp"
 	"strconv"
 	"time"
 )
@@ -15,27 +18,55 @@ func NewUserID(userId uint64) UserID {
 
 type UserName string
 
-func NewUserName(userName string) UserName {
-	return UserName(userName)
+func NewUserName(userName string) (UserName, error) {
+	err := validation.Validate(userName,
+		validation.Required,
+		validation.RuneLength(1, 200),
+	)
+	if err != nil {
+		return UserName(""), err
+	}
+	return UserName(userName), nil
 }
 
 type UserPassword string
 
-func NewUserPassword(userPassword string) UserPassword {
+func NewUserPassword(userPassword string) (UserPassword, error) {
+	err := validation.Validate(userPassword,
+		validation.Required,
+		validation.Match(regexp.MustCompile("^[0-9a-zA-Z]*$")),
+		validation.RuneLength(8, 20),
+	)
+	if err != nil {
+		return UserPassword(""), err
+	}
 	hash, _ := bcrypt.GenerateFromPassword([]byte(userPassword), 12)
-	return UserPassword(fmt.Sprintf("%s", hash))
+	return UserPassword(fmt.Sprintf("%s", hash)), nil
 }
 
 type UserEmail string
 
-func NewUserEmail(userEmail string) UserEmail {
-	return UserEmail(userEmail)
+func NewUserEmail(userEmail string) (UserEmail, error) {
+	err := validation.Validate(userEmail,
+		validation.Required,
+		is.Email,
+	)
+	if err != nil {
+		return UserEmail(""), err
+	}
+	return UserEmail(userEmail), nil
 }
 
 type UserToken string
 
-func NewUserToken(userToken string) UserToken {	//TODO::バリデーション（空文字のときを必ずエラーとして処理する）
-	return UserToken(userToken)
+func NewUserToken(userToken string) (UserToken, error) {
+	err := validation.Validate(userToken,
+		validation.Required,
+	)
+	if err != nil {
+		return UserToken(""), err
+	}
+	return UserToken(userToken), nil
 }
 
 type User struct {
@@ -54,9 +85,16 @@ func NewUser() *User {
 	return &User{}
 }
 
-func (u *User) SetBirthday(stringBirthday string){
+func (u *User) SetBirthday(stringBirthday string) error{
+	err := validation.Validate(stringBirthday,
+		validation.Date("2006-01-02"),
+	)
+	if err != nil {
+		return err
+	}
 	birthday, _ := time.Parse("2006-01-02", stringBirthday)
 	u.Birthday = birthday
+	return nil
 }
 
 func (u *User) CalcAge() (int, error) {
@@ -91,6 +129,6 @@ func (u User) CheckPassword(pass string) bool {
 	return true
 }
 
-func (u *User) EmptyToken(){
+func (u *User) EmptyToken() {
 	u.Token = ""
 }
