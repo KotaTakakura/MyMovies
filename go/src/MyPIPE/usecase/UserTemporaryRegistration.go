@@ -25,12 +25,19 @@ func NewUserTemporaryRegistration(userRepository repository.UserRepository) *Use
 func (u *UserTemporaryRegistration) TemporaryRegister(user *model.User) error {
 	registeredUser, _ := u.UserRepository.FindByEmail(user.Email)
 
+	//本登録済み
 	if registeredUser != nil && registeredUser.Token == ""{
 		return errors.New("Already Registered.")
 	}
 
+	//仮登録済み・本登録前
 	if registeredUser != nil && registeredUser.Token != ""{
 		registeredUser.Token = model.UserToken(uuid.New().String())
+		updateError := u.UserRepository.UpdateUser(registeredUser)
+		if updateError != nil{
+			return errors.New("Update Error.")
+		}
+		return nil
 	}
 	newUser := model.NewUser()
 	newUser.Email = user.Email
