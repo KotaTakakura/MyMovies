@@ -2,21 +2,15 @@
 ## 設計方針(ディレクトリ構造)
 goのソースコードは、 /go/src/MyPIPEに作成していく
 main.goにルーティングを作成していく。
-### /go/src/MyPIPE/Controllers
-リクエストデータを最初に受け取る部分
+### /go/src/MyPIPE/domain
+ビジネスルール・仕様の関心事を取り扱う。
+User structやComment structをドメインオブジェクトとして実装。
 
-### /go/src/MyPIPE/Services
-リクエストデータを使い、具体的な処理を行う部分
+### /go/src/MyPIPE/handler
+リクエストデータを受け取り、加工したものをusecase層にデータを渡す。
 
-### /go/src/MyPIPE/Repository
-データベースからデータを取得・追加・変更・削除を行なう（ユーザーを追加・検索など）
+### /go/src/MyPIPE/infra
+永続化のための具体的な技術を実装する。
 
-### /go/src/MyPIPE/Interfaces
-ServicesおよびRepositoryが実装するインターフェース
-
-### /go/src/MyPIPE/Entity
-データベースのデータと一対一になる構造体。例えば、名前・年齢を持つユーザーならば、  
-type User struct {  
-  Name string  
-  Age int  
-}  
+### /go/src/MyPIPE/usecase
+ソフトウェアの行なう仕事の流れを表現する。
