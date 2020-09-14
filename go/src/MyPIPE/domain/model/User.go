@@ -86,6 +86,10 @@ type User struct {
 	Comments  []Comment
 	CommentsToAppend	[]Comment	`gorm:"-"`
 	CommentsToDelete	[]Comment	`gorm:"-"`
+	GoodMovies []Movie	`gorm:"many2many:good_movies;"`
+	BadMovies	[]Movie	`gorm:"many2many:bad_movies;"`
+	GoodMovieToAppend	[]Movie
+	BadMovieToAppend	[]Movie
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
