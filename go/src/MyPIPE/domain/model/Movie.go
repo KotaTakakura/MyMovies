@@ -36,6 +36,8 @@ type Movie struct {
 	DisplayName MovieDisplayName
 	UserID      UserID
 	User        User
+	GoodUsers	[]User	`gorm:"many2many:good_movies;"`
+	BadUsers	[]User	`gorm:"many2many:bad_movies;"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
