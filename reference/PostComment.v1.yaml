@@ -1,0 +1,78 @@
+openapi: 3.0.0
+info:
+  title: PostComment
+  version: '1.0'
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /comments:
+    post:
+      summary: post comment
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                success:
+                  value:
+                    message: Posted!
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                  messages:
+                    type: string
+              examples:
+                validation error:
+                  value:
+                    result: Validation Error.
+                    messages: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                  messages:
+                    type: string
+              examples:
+                bind error:
+                  value:
+                    result: Server Error.
+                    messages: string
+      operationId: post-comments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment_body:
+                  type: string
+                movie_id:
+                  type: integer
+                user_id:
+                  type: integer
+            examples:
+              success:
+                value:
+                  comment_body: こんにちは！
+                  movie_id: 1
+        description: ''
+components:
+  schemas: {}
