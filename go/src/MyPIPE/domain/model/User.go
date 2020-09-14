@@ -91,6 +91,7 @@ type User struct {
 	GoodMovieToAppend []Movie
 	BadMovieToAppend  []Movie
 	PlayLists         []PlayList
+	Follows        []User	`gorm:"many2many:user_follows;"`
 	CreatedAt         time.Time `json:"created_at"`
 	UpdatedAt         time.Time `json:"updated_at"`
 }
