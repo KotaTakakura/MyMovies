@@ -12,7 +12,7 @@ import (
 
 type UserID uint64
 
-func NewUserID(userId uint64) (UserID,error) {
+func NewUserID(userId uint64) (UserID, error) {
 	err := validation.Validate(userId,
 		validation.Required,
 	)
@@ -76,29 +76,30 @@ func NewUserToken(userToken string) (UserToken, error) {
 }
 
 type User struct {
-	ID        UserID   `json:"id" gorm:"primaryKey"`
-	Name      UserName `json:"name"`
-	Password  UserPassword
-	Email     UserEmail `json:"email"`
-	Birthday  time.Time `json:"birthday"`
-	Token     UserToken `json:"token"`
-	Movies    []Movie
-	Comments  []Comment
-	CommentsToAppend	[]Comment	`gorm:"-"`
-	CommentsToDelete	[]Comment	`gorm:"-"`
-	GoodMovies []Movie	`gorm:"many2many:good_movies;"`
-	BadMovies	[]Movie	`gorm:"many2many:bad_movies;"`
-	GoodMovieToAppend	[]Movie
-	BadMovieToAppend	[]Movie
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID                UserID   `json:"id" gorm:"primaryKey"`
+	Name              UserName `json:"name"`
+	Password          UserPassword
+	Email             UserEmail `json:"email"`
+	Birthday          time.Time `json:"birthday"`
+	Token             UserToken `json:"token"`
+	Movies            []Movie
+	Comments          []Comment
+	CommentsToAppend  []Comment `gorm:"-"`
+	CommentsToDelete  []Comment `gorm:"-"`
+	GoodMovies        []Movie   `gorm:"many2many:good_movies;"`
+	BadMovies         []Movie   `gorm:"many2many:bad_movies;"`
+	GoodMovieToAppend []Movie
+	BadMovieToAppend  []Movie
+	PlayLists         []PlayList
+	CreatedAt         time.Time `json:"created_at"`
+	UpdatedAt         time.Time `json:"updated_at"`
 }
 
 func NewUser() *User {
 	return &User{}
 }
 
-func (u *User) SetBirthday(stringBirthday string) error{
+func (u *User) SetBirthday(stringBirthday string) error {
 	err := validation.Validate(stringBirthday,
 		validation.Required,
 		validation.Date("2006-01-02"),
@@ -147,17 +148,17 @@ func (u *User) EmptyToken() {
 	u.Token = ""
 }
 
-func (u User) TemporaryRegisteredWithinOneHour() bool{
+func (u User) TemporaryRegisteredWithinOneHour() bool {
 	duration := time.Now().Sub(u.UpdatedAt)
 	return int(duration.Minutes()) < 60
 }
 
-func (u *User) PostComment(comment Comment)error{
+func (u *User) PostComment(comment Comment) error {
 	u.CommentsToAppend = append(u.CommentsToAppend, comment)
 	return nil
 }
 
-func (u *User) DeleteComment(comment Comment)error{
+func (u *User) DeleteComment(comment Comment) error {
 	u.CommentsToDelete = append(u.CommentsToDelete, comment)
 	return nil
 }
