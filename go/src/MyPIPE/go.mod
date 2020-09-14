@@ -15,4 +15,5 @@ require (
 	github.com/jinzhu/gorm v1.9.16
 	github.com/jinzhu/now v1.1.1 // indirect
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
+	golang.org/x/tools v0.0.0-20190425150028-36563e24a262
 )

@@ -44,7 +44,7 @@ func (u UserPersistence) FindByEmail(email model.UserEmail) (*model.User, error)
 
 func (u UserPersistence) FindById(id model.UserID) (*model.User, error) {
 	var user model.User
-	e := u.DatabaseAccessor.First(&user, id)
+	e := u.DatabaseAccessor.First(&user, uint64(id))
 	if e.Error != nil {
 		return nil, e.Error
 	}
@@ -60,6 +60,15 @@ func (u UserPersistence) SetUser(newUser *model.User) error {
 }
 
 func (u UserPersistence) UpdateUser(updateUser *model.User) error{
+
+	for _, commentToAppend := range updateUser.CommentsToAppend {
+		u.DatabaseAccessor.Create(&commentToAppend)
+	}
+
+	for _, commentToDelete := range updateUser.CommentsToDelete {
+		u.DatabaseAccessor.Delete(&commentToDelete)
+	}
+
 	e := u.DatabaseAccessor.Save(updateUser)
 	if e.Error != nil {
 		return e.Error
