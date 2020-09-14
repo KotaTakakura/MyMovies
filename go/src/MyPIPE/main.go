@@ -30,20 +30,11 @@ type login struct {
 var identityKey = "id"
 
 func helloHandler(c *gin.Context) {
-	//claims := jwt.ExtractClaims(c)
-	//user, _ := c.Get(identityKey)
+	claims := jwt.ExtractClaims(c)
 	c.JSON(200, gin.H{
-		//"userID":   claims[identityKey],
-		//"userName": user.(*User).UserName,
+		"userID":   claims[identityKey],
 		"text":     "Hello World.",
 	})
-}
-
-// User
-type User struct {
-	UserName  string
-	FirstName string
-	LastName  string
 }
 
 func main() {
@@ -66,9 +57,10 @@ func main() {
 	router.POST("/new", handler.TemporaryRegisterUser)
 	router.POST("/register", handler.RegisterUser)
 
-	auth := router.Group("/auth")
+	auth := router.Group("/auth/api/v1")
 	auth.Use(authMiddleware.MiddlewareFunc())
 	{
+		auth.POST("/comments", handler.PostComment)
 		auth.GET("/hello", helloHandler)
 	}
 

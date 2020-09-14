@@ -1,14 +1,21 @@
 package model
 
 import (
+	validation "github.com/go-ozzo/ozzo-validation"
 	"strconv"
 	"time"
 )
 
 type MovieID uint64
 
-func NewMovieID(movieId uint64) MovieID {
-	return MovieID(movieId)
+func NewMovieID(movieId uint64) (MovieID,error) {
+	err := validation.Validate(movieId,
+		validation.Required,
+	)
+	if err != nil {
+		return MovieID(0), err
+	}
+	return MovieID(movieId), nil
 }
 
 type MovieStoreName string

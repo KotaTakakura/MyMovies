@@ -12,8 +12,14 @@ import (
 
 type UserID uint64
 
-func NewUserID(userId uint64) UserID {
-	return UserID(userId)
+func NewUserID(userId uint64) (UserID,error) {
+	err := validation.Validate(userId,
+		validation.Required,
+	)
+	if err != nil {
+		return UserID(0), err
+	}
+	return UserID(userId), nil
 }
 
 type UserName string
@@ -77,6 +83,9 @@ type User struct {
 	Birthday  time.Time `json:"birthday"`
 	Token     UserToken `json:"token"`
 	Movies    []Movie
+	Comments  []Comment
+	CommentsToAppend	[]Comment	`gorm:"-"`
+	CommentsToDelete	[]Comment	`gorm:"-"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -137,4 +146,14 @@ func (u *User) EmptyToken() {
 func (u User) TemporaryRegisteredWithinOneHour() bool{
 	duration := time.Now().Sub(u.UpdatedAt)
 	return int(duration.Minutes()) < 60
+}
+
+func (u *User) PostComment(comment Comment)error{
+	u.CommentsToAppend = append(u.CommentsToAppend, comment)
+	return nil
+}
+
+func (u *User) DeleteComment(comment Comment)error{
+	u.CommentsToDelete = append(u.CommentsToDelete, comment)
+	return nil
 }
