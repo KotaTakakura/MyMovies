@@ -1,0 +1,1 @@
+ALTER TABLE movies ADD COLUMN outline LONGTEXT NULL  AFTER user_id;
