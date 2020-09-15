@@ -51,6 +51,15 @@ func (u UserPersistence) FindById(id model.UserID) (*model.User, error) {
 	return &user, nil
 }
 
+func (u UserPersistence) FindByName(name model.UserName) (*model.User, error) {
+	var user model.User
+	e := u.DatabaseAccessor.Where("name = ?", name).Take(&user)
+	if e.Error != nil {
+		return nil, e.Error
+	}
+	return &user, nil
+}
+
 func (u UserPersistence) SetUser(newUser *model.User) error {
 	e := u.DatabaseAccessor.Create(&newUser)
 	if e.Error != nil {
