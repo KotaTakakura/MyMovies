@@ -17,7 +17,13 @@ func NewUserPersistence() *UserPersistence {
 
 func (u UserPersistence) GetAll() ([]model.User, error) {
 	var allUsers []model.User
-	e := u.DatabaseAccessor.Find(&allUsers)
+	e := u.DatabaseAccessor.
+		Preload("Movies").
+		Preload("Comments").
+		Preload("GoodMovies").
+		Preload("BadMovies").
+		Preload("PlayLists").
+		Preload("Follows").Find(&allUsers)
 	if e != nil {
 		return nil, e.Error
 	}
@@ -26,7 +32,15 @@ func (u UserPersistence) GetAll() ([]model.User, error) {
 
 func (u UserPersistence) FindByToken(token model.UserToken) (*model.User, error) {
 	var user model.User
-	e := u.DatabaseAccessor.Where("token = ?", token).Take(&user)
+	e := u.DatabaseAccessor.
+		Where("token = ?", token).
+		Preload("Movies").
+		Preload("Comments").
+		Preload("GoodMovies").
+		Preload("BadMovies").
+		Preload("PlayLists").
+		Preload("Follows").
+		Take(&user)
 	if e.Error != nil {
 		return nil, e.Error
 	}
@@ -35,7 +49,14 @@ func (u UserPersistence) FindByToken(token model.UserToken) (*model.User, error)
 
 func (u UserPersistence) FindByEmail(email model.UserEmail) (*model.User, error) {
 	var user model.User
-	e := u.DatabaseAccessor.Where("email = ?", email).Take(&user)
+	e := u.DatabaseAccessor.Where("email = ?", email).
+		Preload("Movies").
+		Preload("Comments").
+		Preload("GoodMovies").
+		Preload("BadMovies").
+		Preload("PlayLists").
+		Preload("Follows").
+		Take(&user)
 	if e.Error != nil {
 		return nil, e.Error
 	}
@@ -44,7 +65,14 @@ func (u UserPersistence) FindByEmail(email model.UserEmail) (*model.User, error)
 
 func (u UserPersistence) FindById(id model.UserID) (*model.User, error) {
 	var user model.User
-	e := u.DatabaseAccessor.First(&user, uint64(id))
+	e := u.DatabaseAccessor.
+		Preload("Movies").
+		Preload("Comments").
+		Preload("GoodMovies").
+		Preload("BadMovies").
+		Preload("PlayLists").
+		Preload("Follows").
+		First(&user, uint64(id))
 	if e.Error != nil {
 		return nil, e.Error
 	}
@@ -53,7 +81,14 @@ func (u UserPersistence) FindById(id model.UserID) (*model.User, error) {
 
 func (u UserPersistence) FindByName(name model.UserName) (*model.User, error) {
 	var user model.User
-	e := u.DatabaseAccessor.Where("name = ?", name).Take(&user)
+	e := u.DatabaseAccessor.Where("name = ?", name).
+		Preload("Movies").
+		Preload("Comments").
+		Preload("GoodMovies").
+		Preload("BadMovies").
+		Preload("PlayLists").
+		Preload("Follows").
+		Take(&user)
 	if e.Error != nil {
 		return nil, e.Error
 	}

@@ -4,6 +4,7 @@ import (
 	"MyPIPE/domain/model"
 	"MyPIPE/infra"
 	"testing"
+	"fmt"
 )
 
 func TestRelationBetweenUserAndGoodMovies(t *testing.T) {
@@ -17,9 +18,8 @@ func TestRelationBetweenUserAndPlayLists(t *testing.T) {
 	//fmt.Println(q.PlayLists)
 }
 
-//func TestRelationFollowUsers(t *testing.T){
-//	q := &model.User{ID: model.UserID(1012)}
-//	infra.ConnectGorm().Preload("Follows").Find(q).QueryExpr()
-//	fmt.Println(q.ID)
-//	fmt.Println(q.Follows)
-//}
+func TestGetById(t *testing.T){
+	userRepository := infra.NewUserPersistence()
+	users,_ :=userRepository.FindById(model.UserID(1012))
+	fmt.Println(users.Movies)
+}
