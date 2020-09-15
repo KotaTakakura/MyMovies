@@ -3,6 +3,8 @@ package usecase
 import (
 	"MyPIPE/domain/model"
 	"MyPIPE/domain/repository"
+	domain_service "MyPIPE/domain/service/User"
+	"MyPIPE/infra"
 	"errors"
 )
 
@@ -24,7 +26,12 @@ func (u UserRegister)RegisterUser(newUser *model.User) error{
 	}
 
 	if !registeredUserWithToken.TemporaryRegisteredWithinOneHour() {
-		return errors.New("Invalid Token.")
+		return errors.New("Invalid Tokene.")
+	}
+
+	checkNameService := domain_service.NewCheckNameExists(infra.NewUserPersistence())
+	if checkNameService.CheckNameExists(newUser.Name) {
+		return errors.New("User Name Already Exists.")
 	}
 
 	registeredUserWithToken.EmptyToken()
