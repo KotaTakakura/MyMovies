@@ -50,12 +50,12 @@ func (u UserPersistence) FindByToken(token model.UserToken) (*model.User, error)
 func (u UserPersistence) FindByEmail(email model.UserEmail) (*model.User, error) {
 	var user model.User
 	e := u.DatabaseAccessor.Where("email = ?", email).
-		Preload("Movies").
-		Preload("Comments").
-		Preload("GoodMovies").
-		Preload("BadMovies").
-		Preload("PlayLists").
-		Preload("Follows").
+		//Preload("Movies").
+		//Preload("Comments").
+		//Preload("GoodMovies").
+		//Preload("BadMovies").
+		//Preload("PlayLists").
+		//Preload("Follows").
 		Take(&user)
 	if e.Error != nil {
 		return nil, e.Error
