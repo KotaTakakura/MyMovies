@@ -2,12 +2,13 @@ package model
 
 import (
 	validation "github.com/go-ozzo/ozzo-validation"
+	"strconv"
 	"time"
 )
 
-type MovieID string
+type MovieID uint64
 
-func NewMovieID(movieId string) (MovieID, error) {
+func NewMovieID(movieId uint64) (MovieID, error) {
 	err := validation.Validate(movieId,
 		validation.Required,
 	)
@@ -38,9 +39,8 @@ type Movie struct {
 	UpdatedAt   time.Time
 }
 
-func NewMovie(ID MovieID,uploaderID UserID,storeName MovieStoreName,displayName MovieDisplayName) *Movie {
+func NewMovie(uploaderID UserID,storeName MovieStoreName,displayName MovieDisplayName) *Movie {
 	return &Movie{
-		ID: ID,
 		StoreName:	storeName,
 		DisplayName: displayName,
 		UserID: uploaderID,
@@ -48,5 +48,5 @@ func NewMovie(ID MovieID,uploaderID UserID,storeName MovieStoreName,displayName 
 }
 
 func (m *Movie) GetURL() string {
-	return "http://example.com/v1/movies/" + string(m.ID)
+	return "http://example.com/v1/movies/" + strconv.FormatUint(uint64(m.ID), 10) + "/" + strconv.FormatUint(uint64(m.ID), 10) + string(m.StoreName)
 }

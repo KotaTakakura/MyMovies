@@ -42,10 +42,10 @@ func (m *MoviePersistence) FindByUserId(userId model.MovieID) (*model.Movie, err
 	return movies, nil
 }
 
-func (m *MoviePersistence)Save(movie model.Movie)error{
-	result := m.databaseAccessor.Save(&movie)
+func (m *MoviePersistence)Save(movie model.Movie)(*model.Movie,error){
+	result := m.databaseAccessor.Create(&movie)
 	if result.Error != nil{
-		return result.Error
+		return nil,result.Error
 	}
-	return nil
+	return &movie,nil
 }
