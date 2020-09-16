@@ -76,5 +76,5 @@ func PostComment(c *gin.Context) {
 
 type PostCommentJson struct{
 	CommentBody	string	`json:"comment_body"`
-	MovieID string	`json:"movie_id"`
+	MovieID uint64	`json:"movie_id"`
 }

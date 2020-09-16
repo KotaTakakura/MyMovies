@@ -8,6 +8,7 @@ import (
 	"log"
 	"mime/multipart"
 	"path/filepath"
+	"strconv"
 )
 
 type UploadToAmazonS3 struct{}
@@ -20,7 +21,7 @@ func (u UploadToAmazonS3)Upload(movieFile multipart.File,movieFileHeader multipa
 	sess := session.Must(session.NewSession())
 	extension := filepath.Ext(movieFileHeader.Filename)
 	bucketName := "mypipe-before-encoded"
-	objectKey := string(movieID) + extension
+	objectKey := strconv.FormatUint(uint64(movieID), 10) + extension
 
 	// Uploaderを作成し、ローカルファイルをアップロード
 	uploader := s3manager.NewUploader(sess)
