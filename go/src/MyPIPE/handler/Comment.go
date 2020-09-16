@@ -50,12 +50,6 @@ func PostComment(c *gin.Context) {
 		errorMessages["movie_id"] = validationErrors["movie_id"].Error()
 	}
 
-	//newComment.Reply,validationErrors["reply"] = model.NewCommentID(comment.Reply)
-	//if validationErrors["reply"] != nil{
-	//	validationErrorFlag = true
-	//	errorMessages["reply"] = validationErrors["reply"].Error()
-	//}
-
 	if validationErrorFlag {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"result": "Validation Error.",
@@ -82,5 +76,5 @@ func PostComment(c *gin.Context) {
 
 type PostCommentJson struct{
 	CommentBody	string	`json:"comment_body"`
-	MovieID uint64	`json:"movie_id"`
+	MovieID string	`json:"movie_id"`
 }

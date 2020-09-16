@@ -62,6 +62,7 @@ func main() {
 	{
 		auth.POST("/comments", handler.PostComment)
 		auth.GET("/hello", helloHandler)
+		auth.POST("/movie", handler.UploadMovieFile)
 	}
 
 	router.GET("/test", func(c *gin.Context) {
