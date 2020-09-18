@@ -21,5 +21,5 @@ func TestRelationBetweenUserAndPlayLists(t *testing.T) {
 func TestGetById(t *testing.T){
 	userRepository := infra.NewUserPersistence()
 	users,_ :=userRepository.FindById(model.UserID(1012))
-	fmt.Println(users.Movies)
+	fmt.Println(users.Comments)
 }

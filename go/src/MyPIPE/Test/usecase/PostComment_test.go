@@ -5,7 +5,6 @@ import (
 	"MyPIPE/domain/model"
 	"MyPIPE/usecase"
 	"github.com/golang/mock/gomock"
-	"reflect"
 	"testing"
 )
 
@@ -27,22 +26,13 @@ func TestPostComment(t *testing.T){
 	}
 
 	for _, c := range cases {
-		UserRepository := mock_repository.NewMockUserRepository(ctrl)
-		UserRepository.EXPECT().FindById(c.UserID).Return(&model.User{ID: c.UserID},nil)
-		UserRepository.EXPECT().UpdateUser(gomock.Any()).
-			DoAndReturn(func(user *model.User) error{
-				if user.ID != c.UserID{
-					t.Error("ID Doesn't Match.")
-				}
+		CommentRepository := mock_repository.NewMockCommentRepository(ctrl)
+		CommentRepository.EXPECT().Save(&c).Return(nil)
 
-				if !reflect.DeepEqual(user.CommentsToAppend[0],c){
-					t.Error("Comment Struct Invalid.")
-				}
+		MovieRepository := mock_repository.NewMockMovieRepository(ctrl)
+		MovieRepository.EXPECT().FindById(c.MovieID).Return(nil,nil)
 
-				return nil
-		})
-
-		postCommentUsecase := usecase.NewPostComment(UserRepository)
+		postCommentUsecase := usecase.NewPostComment(CommentRepository,MovieRepository)
 		err := postCommentUsecase.PostComment(c)
 		if err != nil{
 			t.Error("Comment Post Failed.")
