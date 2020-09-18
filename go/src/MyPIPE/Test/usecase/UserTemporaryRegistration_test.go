@@ -20,11 +20,11 @@ func TestUserTemporaryRegistrationUsecase(t *testing.T) {
 
 	for _, c := range cases {
 
-		testUserRepositoryReturnNil := mock_repository.NewMockUserRepository(ctrl)
+		testUserRepository := mock_repository.NewMockUserRepository(ctrl)
 
-		testUserRepositoryReturnNil.EXPECT().FindByEmail(c.Email).Return(nil,nil)
+		testUserRepository.EXPECT().FindByEmail(c.Email).Return(nil,nil)
 
-		testUserRepositoryReturnNil.EXPECT().
+		testUserRepository.EXPECT().
 			SetUser(gomock.Any()).
 			DoAndReturn(func(arg *model.User)error{
 				if arg.Email == c.Email && arg.Birthday == time.Date(1000, 1, 1, 0, 0, 0, 0, time.Local){
@@ -34,7 +34,7 @@ func TestUserTemporaryRegistrationUsecase(t *testing.T) {
 				return nil
 		})
 
-		userTemporaryRegistration := usecase.NewUserTemporaryRegistration(testUserRepositoryReturnNil)
+		userTemporaryRegistration := usecase.NewUserTemporaryRegistration(testUserRepository)
 		err1 := userTemporaryRegistration.TemporaryRegister(&c)
 		if err1 != nil{
 			t.Error(err1)
