@@ -38,6 +38,9 @@ func TestUserRegister(t *testing.T){
 			UpdateUser(updatedUser).Return(nil)
 
 		UserRegisterUsecase := usecase.NewUserRegister(UserRepository)
-		UserRegisterUsecase.RegisterUser(&c)
+		err := UserRegisterUsecase.RegisterUser(&c)
+		if err != nil{
+			t.Error(err)
+		}
 	}
 }
