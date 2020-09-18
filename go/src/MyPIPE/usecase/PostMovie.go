@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"MyPIPE/domain/factory"
 	"MyPIPE/domain/model"
+	"MyPIPE/domain/factory"
 	"MyPIPE/domain/repository"
 	"mime/multipart"
 )
@@ -10,10 +10,10 @@ import (
 type PostMovie struct{
 	FileUploadRepository	repository.FileUpload
 	MovieRepository	repository.MovieRepository
-	MovieModelFactory	factory.MovieModelFactory
+	MovieModelFactory	factory.IMovieModelFactory
 }
 
-func NewPostMovie(fr repository.FileUpload,mr repository.MovieRepository,mf factory.MovieModelFactory)*PostMovie{
+func NewPostMovie(fr repository.FileUpload,mr repository.MovieRepository,mf factory.IMovieModelFactory)*PostMovie{
 	return &PostMovie{
 		FileUploadRepository: fr,
 		MovieRepository: mr,
@@ -21,7 +21,7 @@ func NewPostMovie(fr repository.FileUpload,mr repository.MovieRepository,mf fact
 	}
 }
 
-func (p *PostMovie)PostMovie(movieFile multipart.File,postMovieDTO PostMovieDTO)error{
+func (p *PostMovie)PostMovie(postMovieDTO PostMovieDTO)error{
 	uploaderID,_ := model.NewUserID(postMovieDTO.UserID)
 	displayName,_ := model.NewMovieDisplayName(postMovieDTO.DisplayName)
 	newMovie,createError := p.MovieModelFactory.CreateMovieModel(uploaderID,displayName,postMovieDTO.FileHeader)
