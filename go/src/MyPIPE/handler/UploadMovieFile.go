@@ -15,7 +15,15 @@ func UploadMovieFile(c *gin.Context){
 	uploadUsecase := usecase.NewPostMovie(support.NewUploadToAmazonS3(),infra.NewMoviePersistence(),*newMovie)
 
 	iuserId := uint64(jwt.ExtractClaims(c)["id"].(float64))
-	file,header, _ :=  c.Request.FormFile("uploadMovie")
+	file,header, fileErr :=  c.Request.FormFile("uploadMovie")
+	if fileErr != nil{
+		c.JSON(http.StatusBadRequest, gin.H{
+			"result": "Validation Error.",
+			"messages": fileErr.Error(),
+		})
+		c.Abort()
+		return
+	}
 
 	postMovieDTO := usecase.PostMovieDTO{
 		File: file,
@@ -33,7 +41,7 @@ func UploadMovieFile(c *gin.Context){
 		c.Abort()
 		return
 	}
-	c.JSON(http.StatusAccepted, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"result": "OK",
 		"messages": "OK",
 	})

@@ -27,6 +27,12 @@ func NewMovieStoreName(storeName string) (MovieStoreName,error) {
 type MovieDisplayName string
 
 func NewMovieDisplayName(displayName string) (MovieDisplayName,error) {
+	err := validation.Validate(displayName,
+		validation.Required,
+	)
+	if err != nil {
+		return MovieDisplayName(""), err
+	}
 	return MovieDisplayName(displayName),nil
 }
 
