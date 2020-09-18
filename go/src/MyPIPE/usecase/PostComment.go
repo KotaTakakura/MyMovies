@@ -6,26 +6,26 @@ import (
 )
 
 type PostComment struct {
-	UserRepository repository.UserRepository
+	CommentRepository	repository.CommentRepository
+	MovieRepository	repository.MovieRepository
 }
 
-func NewPostComment(u repository.UserRepository) *PostComment{
+func NewPostComment(c repository.CommentRepository,m repository.MovieRepository) *PostComment{
 	return &PostComment{
-		UserRepository: u,
+		CommentRepository: c,
+		MovieRepository: m,
 	}
 }
 
 func (p PostComment) PostComment(comment model.Comment)error{
-	poster,userFindErr := p.UserRepository.FindById(comment.UserID)
-	if userFindErr != nil {
-		return userFindErr
+
+	_,movieFindErr := p.MovieRepository.FindById(comment.MovieID)
+	if movieFindErr != nil{
+		return movieFindErr
 	}
-	errPostComment := poster.PostComment(comment)
-	if errPostComment != nil{
-		return errPostComment
-	}
-	err := p.UserRepository.UpdateUser(poster)
-	if err!= nil{
+
+	err := p.CommentRepository.Save(&comment)
+	if err != nil {
 		return err
 	}
 	return nil

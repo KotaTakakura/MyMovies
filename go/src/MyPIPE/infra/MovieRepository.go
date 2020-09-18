@@ -25,12 +25,12 @@ func (m *MoviePersistence) GetAll() ([]model.Movie, error) {
 }
 
 func (m *MoviePersistence) FindById(id model.MovieID) (*model.Movie, error) {
-	var movies *model.Movie
-	result := m.databaseAccessor.Find(movies, id)
+	var movies model.Movie
+	result := m.databaseAccessor.First(&movies, uint64(id))
 	if result != nil {
 		return nil, result.Error
 	}
-	return movies, nil
+	return &movies, nil
 }
 
 func (m *MoviePersistence) FindByUserId(userId model.MovieID) (*model.Movie, error) {

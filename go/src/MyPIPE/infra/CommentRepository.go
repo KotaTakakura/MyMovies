@@ -50,3 +50,18 @@ func (c *CommentPersistence) FindByMovieId(movieId model.MovieID) ([]model.Comme
 	}
 	return comments, nil
 }
+
+func (c *CommentPersistence)Save(comment *model.Comment)error{
+	if comment.ID == 0{
+		createResult := c.DatabaseAccessor.Create(&comment)
+		if createResult != nil{
+			return createResult.Error
+		}
+		return nil
+	}
+	updateResult := c.DatabaseAccessor.Update(&comment)
+	if updateResult.Error != nil{
+		return updateResult.Error
+	}
+	return nil
+}

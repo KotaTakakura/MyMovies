@@ -10,8 +10,9 @@ import (
 )
 
 func PostComment(c *gin.Context) {
-	userRepository := infra.NewUserPersistence()
-	postCommentUsecase := usecase.NewPostComment(userRepository)
+	commentRepository := infra.NewCommentPersistence()
+	movieRepository := infra.NewMoviePersistence()
+	postCommentUsecase := usecase.NewPostComment(commentRepository,movieRepository)
 	userId := jwt.ExtractClaims(c)["id"]
 	iuserId := uint64(userId.(float64))
 

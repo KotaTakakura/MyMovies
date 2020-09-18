@@ -153,13 +153,3 @@ func (u User) TemporaryRegisteredWithinOneHour() bool {
 	duration := time.Now().Sub(u.UpdatedAt)
 	return int(duration.Minutes()) < 60
 }
-
-func (u *User) PostComment(comment Comment) error {
-	u.CommentsToAppend = append(u.CommentsToAppend, comment)
-	return nil
-}
-
-func (u *User) DeleteComment(comment Comment) error {
-	u.CommentsToDelete = append(u.CommentsToDelete, comment)
-	return nil
-}
