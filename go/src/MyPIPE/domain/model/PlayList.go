@@ -10,7 +10,7 @@ type PlayList struct {
 	ID            PlayListID `json:"id" gorm:"primaryKey"`
 	UserID        UserID
 	Name          PlayListName
-	PlayListItems []PlayListItem `gorm:"foreignKey:PlayListID"`
+	PlayListItems []MovieID
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 }
