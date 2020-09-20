@@ -30,6 +30,36 @@ func (u UserPersistence) FindByToken(token model.UserToken) (*model.User, error)
 	if e.Error != nil {
 		return nil, e.Error
 	}
+
+	e = u.DatabaseAccessor.Table("good_movies").Where("user_id = ?",uint64(user.ID)).Pluck("movie_id",&user.GoodMovies)
+	if e.Error != nil {
+		return nil, e.Error
+	}
+
+	e = u.DatabaseAccessor.Table("bad_movies").Where("user_id = ?",uint64(user.ID)).Pluck("movie_id",&user.BadMovies)
+	if e.Error != nil {
+		return nil, e.Error
+	}
+
+	e = u.DatabaseAccessor.Table("movies").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.Movies)
+	if e.Error != nil {
+		return nil, e.Error
+	}
+
+	e = u.DatabaseAccessor.Table("comments").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.Comments)
+	if e.Error != nil {
+		return nil, e.Error
+	}
+
+	e = u.DatabaseAccessor.Table("play_lists").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.PlayLists)
+	if e.Error != nil {
+		return nil, e.Error
+	}
+
+	e = u.DatabaseAccessor.Table("follow_users").Where("user_id = ?",uint64(user.ID)).Pluck("follow_id",&user.Follows)
+	if e.Error != nil {
+		return nil, e.Error
+	}
 	return &user, nil
 }
 
@@ -39,6 +69,37 @@ func (u UserPersistence) FindByEmail(email model.UserEmail) (*model.User, error)
 	if e.Error != nil {
 		return nil, e.Error
 	}
+
+	e = u.DatabaseAccessor.Table("good_movies").Where("user_id = ?",uint64(user.ID)).Pluck("movie_id",&user.GoodMovies)
+	if e.Error != nil {
+		return nil, e.Error
+	}
+
+	e = u.DatabaseAccessor.Table("bad_movies").Where("user_id = ?",uint64(user.ID)).Pluck("movie_id",&user.BadMovies)
+	if e.Error != nil {
+		return nil, e.Error
+	}
+
+	e = u.DatabaseAccessor.Table("movies").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.Movies)
+	if e.Error != nil {
+		return nil, e.Error
+	}
+
+	e = u.DatabaseAccessor.Table("comments").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.Comments)
+	if e.Error != nil {
+		return nil, e.Error
+	}
+
+	e = u.DatabaseAccessor.Table("play_lists").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.PlayLists)
+	if e.Error != nil {
+		return nil, e.Error
+	}
+
+	e = u.DatabaseAccessor.Table("follow_users").Where("user_id = ?",uint64(user.ID)).Pluck("follow_id",&user.Follows)
+	if e.Error != nil {
+		return nil, e.Error
+	}
+
 	return &user, nil
 }
 
@@ -58,12 +119,62 @@ func (u UserPersistence) FindById(id model.UserID) (*model.User, error) {
 	if e.Error != nil {
 		return nil, e.Error
 	}
+
+	e = u.DatabaseAccessor.Table("movies").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.Movies)
+	if e.Error != nil {
+		return nil, e.Error
+	}
+
+	e = u.DatabaseAccessor.Table("comments").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.Comments)
+	if e.Error != nil {
+		return nil, e.Error
+	}
+
+	e = u.DatabaseAccessor.Table("play_lists").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.PlayLists)
+	if e.Error != nil {
+		return nil, e.Error
+	}
+
+	e = u.DatabaseAccessor.Table("follow_users").Where("user_id = ?",uint64(user.ID)).Pluck("follow_id",&user.Follows)
+	if e.Error != nil {
+		return nil, e.Error
+	}
 	return &user, nil
 }
 
 func (u UserPersistence) FindByName(name model.UserName) (*model.User, error) {
 	var user model.User
 	e := u.DatabaseAccessor.Where("name = ?", name).Take(&user)
+	if e.Error != nil {
+		return nil, e.Error
+	}
+
+	e = u.DatabaseAccessor.Table("good_movies").Where("user_id = ?",uint64(user.ID)).Pluck("movie_id",&user.GoodMovies)
+	if e.Error != nil {
+		return nil, e.Error
+	}
+
+	e = u.DatabaseAccessor.Table("bad_movies").Where("user_id = ?",uint64(user.ID)).Pluck("movie_id",&user.BadMovies)
+	if e.Error != nil {
+		return nil, e.Error
+	}
+
+	e = u.DatabaseAccessor.Table("movies").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.Movies)
+	if e.Error != nil {
+		return nil, e.Error
+	}
+
+	e = u.DatabaseAccessor.Table("comments").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.Comments)
+	if e.Error != nil {
+		return nil, e.Error
+	}
+
+	e = u.DatabaseAccessor.Table("play_lists").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.PlayLists)
+	if e.Error != nil {
+		return nil, e.Error
+	}
+
+	e = u.DatabaseAccessor.Table("follow_users").Where("user_id = ?",uint64(user.ID)).Pluck("follow_id",&user.Follows)
 	if e.Error != nil {
 		return nil, e.Error
 	}
