@@ -17,13 +17,7 @@ func NewUserPersistence() *UserPersistence {
 
 func (u UserPersistence) GetAll() ([]model.User, error) {
 	var allUsers []model.User
-	e := u.DatabaseAccessor.
-		Preload("Movies").
-		Preload("Comments").
-		Preload("GoodMovies").
-		Preload("BadMovies").
-		Preload("PlayLists").
-		Preload("Follows").Find(&allUsers)
+	e := u.DatabaseAccessor.Find(&allUsers)
 	if e != nil {
 		return nil, e.Error
 	}
@@ -32,15 +26,7 @@ func (u UserPersistence) GetAll() ([]model.User, error) {
 
 func (u UserPersistence) FindByToken(token model.UserToken) (*model.User, error) {
 	var user model.User
-	e := u.DatabaseAccessor.
-		Where("token = ?", token).
-		Preload("Movies").
-		Preload("Comments").
-		Preload("GoodMovies").
-		Preload("BadMovies").
-		Preload("PlayLists").
-		Preload("Follows").
-		Take(&user)
+	e := u.DatabaseAccessor.Where("token = ?", token).Take(&user)
 	if e.Error != nil {
 		return nil, e.Error
 	}
@@ -49,14 +35,7 @@ func (u UserPersistence) FindByToken(token model.UserToken) (*model.User, error)
 
 func (u UserPersistence) FindByEmail(email model.UserEmail) (*model.User, error) {
 	var user model.User
-	e := u.DatabaseAccessor.Where("email = ?", email).
-		Preload("Movies").
-		Preload("Comments").
-		Preload("GoodMovies").
-		Preload("BadMovies").
-		Preload("PlayLists").
-		Preload("Follows").
-		Take(&user)
+	e := u.DatabaseAccessor.Where("email = ?", email).Take(&user)
 	if e.Error != nil {
 		return nil, e.Error
 	}
@@ -65,14 +44,17 @@ func (u UserPersistence) FindByEmail(email model.UserEmail) (*model.User, error)
 
 func (u UserPersistence) FindById(id model.UserID) (*model.User, error) {
 	var user model.User
-	e := u.DatabaseAccessor.
-		Preload("Movies").
-		Preload("Comments").
-		Preload("GoodMovies").
-		Preload("BadMovies").
-		Preload("PlayLists").
-		Preload("Follows").
-		First(&user, uint64(id))
+	e := u.DatabaseAccessor.First(&user, uint64(id))
+	if e.Error != nil {
+		return nil, e.Error
+	}
+
+	e = u.DatabaseAccessor.Table("good_movies").Where("user_id = ?",uint64(id)).Pluck("movie_id",&user.GoodMovies)
+	if e.Error != nil {
+		return nil, e.Error
+	}
+
+	e = u.DatabaseAccessor.Table("bad_movies").Where("user_id = ?",uint64(id)).Pluck("movie_id",&user.BadMovies)
 	if e.Error != nil {
 		return nil, e.Error
 	}
@@ -81,14 +63,7 @@ func (u UserPersistence) FindById(id model.UserID) (*model.User, error) {
 
 func (u UserPersistence) FindByName(name model.UserName) (*model.User, error) {
 	var user model.User
-	e := u.DatabaseAccessor.Where("name = ?", name).
-		Preload("Movies").
-		Preload("Comments").
-		Preload("GoodMovies").
-		Preload("BadMovies").
-		Preload("PlayLists").
-		Preload("Follows").
-		Take(&user)
+	e := u.DatabaseAccessor.Where("name = ?", name).Take(&user)
 	if e.Error != nil {
 		return nil, e.Error
 	}
@@ -104,18 +79,30 @@ func (u UserPersistence) SetUser(newUser *model.User) error {
 }
 
 func (u UserPersistence) UpdateUser(updateUser *model.User) error{
-	
-	for _, commentToAppend := range updateUser.CommentsToAppend {
-		u.DatabaseAccessor.Create(&commentToAppend)
+
+	transactionErr := u.DatabaseAccessor.Transaction(func(tx *gorm.DB) error {
+		tx.Exec("Delete From good_movies Where user_id = ?",updateUser.ID)
+
+		for _,goodMovieId := range updateUser.GoodMovies{
+			tx.Exec("Insert Into good_movies (user_id,movie_id) Values (?,?)",updateUser.ID,goodMovieId)
+		}
+
+		tx.Exec("Delete From bad_movies Where user_id = ?",updateUser.ID)
+
+		for _,badMovieId := range updateUser.BadMovies{
+			tx.Exec("Insert Into bad_movies (user_id,movie_id) Values (?,?)",updateUser.ID,badMovieId)
+		}
+
+		e := tx.Save(updateUser)
+		if e.Error != nil {
+			return e.Error
+		}
+		return nil
+	})
+
+	if transactionErr != nil{
+		return transactionErr
 	}
 
-	for _, commentToDelete := range updateUser.CommentsToDelete {
-		u.DatabaseAccessor.Delete(&commentToDelete)
-	}
-
-	e := u.DatabaseAccessor.Save(updateUser)
-	if e.Error != nil {
-		return e.Error
-	}
 	return nil
 }
