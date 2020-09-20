@@ -50,34 +50,6 @@ func (e EvaluateMovie)EvaluateMovie(evaluateMovieDTO EvaluateMovieDTO)error{
 		return evaluateErr
 	}
 
-	//if evaluateMovieDTO.Evaluation == "good"{
-	//	setGoodErr := user.SetGoodMovie(movieID)
-	//	if setGoodErr != nil{
-	//		return setGoodErr
-	//	}
-	//}
-	//
-	//if evaluateMovieDTO.Evaluation == "unset_good"{
-	//	unsetGoodErr := user.UnsetGoodMovie(movieID)
-	//	if unsetGoodErr != nil{
-	//		return unsetGoodErr
-	//	}
-	//}
-	//
-	//if evaluateMovieDTO.Evaluation == "bad"{
-	//	setBadErr := user.SetBadMovie(movieID)
-	//	if setBadErr != nil{
-	//		return setBadErr
-	//	}
-	//}
-	//
-	//if evaluateMovieDTO.Evaluation == "unset_bad"{
-	//	unsetBadErr := user.UnsetBadMovie(movieID)
-	//	if unsetBadErr != nil{
-	//		return unsetBadErr
-	//	}
-	//}
-
 	updateUserErr := e.UserRepository.UpdateUser(user)
 	if updateUserErr != nil{
 		return updateUserErr
