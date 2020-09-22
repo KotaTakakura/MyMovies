@@ -1,8 +1,22 @@
 package model
 
-import "time"
+import (
+	validation "github.com/go-ozzo/ozzo-validation"
+	"time"
+	"errors"
+)
 
 type PlayListID uint64
+
+func NewPlayListID(playListID uint64)(PlayListID,error){
+	err := validation.Validate(playListID,
+		validation.Required,
+	)
+	if err != nil {
+		return PlayListID(0), err
+	}
+	return PlayListID(playListID), nil
+}
 
 type PlayListName string
 
@@ -25,4 +39,14 @@ func NewPlayList()*PlayList{
 
 func (PlayList) TableName() string {
 	return "play_lists"
+}
+
+func (p *PlayList)AddItem(movieId MovieID)error{
+	for _,playListItem := range p.PlayListItems{
+		if playListItem == movieId{
+			return errors.New("Duplicate PlayList Item.")
+		}
+	}
+	p.PlayListItems = append(p.PlayListItems,movieId)
+	return nil
 }
