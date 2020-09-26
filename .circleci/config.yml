@@ -1,26 +1,50 @@
 version: 2.1
-orbs:
-  aws-ecr: circleci/aws-ecr@6.12.2
-  aws-ecs: circleci/aws-ecs@1.2.0
-workflows:
-  build-and-deploy:
-    jobs:
-      - aws-ecr/build-and-push-image:
-          account-url: AWS_ECR_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          create-repo: true
-          dockerfile: Dockerfile-go
-          path: .
-          region: AWS_REGION
-          repo: mp-go
-          tag: "$CIRCLE_SHA1"
-          filters:
-            branches:
-              only: master
+#orbs:
+#  aws-ecr: circleci/aws-ecr@6.12.2
+#  aws-ecs: circleci/aws-ecs@1.2.0
+#workflows:
+#  build-and-deploy:
+#    jobs:
+#      - aws-ecr/build-and-push-image:
+#          account-url: AWS_ECR_ACCOUNT_URL
+#          aws-access-key-id: AWS_ACCESS_KEY_ID
+#          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+#          create-repo: true
+#          dockerfile: Dockerfile-go
+#          path: .
+#          region: AWS_REGION
+#          repo: mp-go
+#          tag: "$CIRCLE_SHA1"
+#          filters:
+#            branches:
+#              only: master
       # - aws-ecs/deploy-service-update:
       #     requires:
       #       - aws-ecr/build-and-push-image
       #     family: 'Go'
       #     cluster-name: 'mypipe'
       #     service-name: 'sss'
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:latest
+    steps:
+      - checkout
+
+#      - restore_cache:
+#          key: mod-{{ checksum "go.sum" }}
+
+      - run: cd ./go/src/MyPIPE
+      - run: go get
+      - run: go test -v ./Test/usecase/...
+#      - run: go build -o main main.go
+      - run: go build
+
+#      - store_artifacts:
+#          path: main
+#          destination: main
+#
+#      - save_cache:
+#          key: mod-{{ checksum "go.sum" }}
+#          paths:
+#            - $GOPATH/pkg/mod
