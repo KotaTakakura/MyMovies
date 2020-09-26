@@ -35,10 +35,11 @@ jobs:
 #          key: mod-{{ checksum "go.sum" }}
 
       - run: cd ./go/src/MyPIPE
+      - run: pwd
 #      - run: go get
-      - run: go test -v ./Test/usecase/...
+#      - run: go test -v ./Test/usecase/...
 #      - run: go build -o main main.go
-      - run: go build
+#      - run: go build
 
 #      - store_artifacts:
 #          path: main
