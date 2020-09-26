@@ -3,6 +3,7 @@ package usecase
 import (
 	"MyPIPE/domain/model"
 	"MyPIPE/domain/repository"
+	"errors"
 )
 
 type PostComment struct {
@@ -19,9 +20,12 @@ func NewPostComment(c repository.CommentRepository,m repository.MovieRepository)
 
 func (p PostComment) PostComment(comment model.Comment)error{
 
-	_,movieFindErr := p.MovieRepository.FindById(comment.MovieID)
+	movie,movieFindErr := p.MovieRepository.FindById(comment.MovieID)
 	if movieFindErr != nil{
 		return movieFindErr
+	}
+	if movie == nil{
+		return errors.New("No Such Movie.")
 	}
 
 	err := p.CommentRepository.Save(&comment)

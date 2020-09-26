@@ -6,6 +6,7 @@ import (
 	"MyPIPE/usecase"
 	"github.com/golang/mock/gomock"
 	"testing"
+	"time"
 )
 
 func TestPostComment(t *testing.T){
@@ -19,9 +20,9 @@ func TestPostComment(t *testing.T){
 			UserID: model.UserID(1010),
 		},
 		model.Comment{
-			Body:	model.CommentBody("おはよう！！！"),
+			Body:	model.CommentBody("Good Morning！！！"),
 			MovieID: model.MovieID(11),
-			UserID: model.UserID(1011110),
+			UserID: model.UserID(1200),
 		},
 	}
 
@@ -30,12 +31,19 @@ func TestPostComment(t *testing.T){
 		CommentRepository.EXPECT().Save(&c).Return(nil)
 
 		MovieRepository := mock_repository.NewMockMovieRepository(ctrl)
-		MovieRepository.EXPECT().FindById(c.MovieID).Return(nil,nil)
+		MovieRepository.EXPECT().FindById(c.MovieID).Return(&model.Movie{
+			ID:          c.MovieID,
+			StoreName:   "StoreNameTest",
+			DisplayName: "DisplayNameTest",
+			UserID:      c.UserID,
+			CreatedAt:   time.Now(),
+			UpdatedAt:   time.Now(),
+		},nil)
 
 		postCommentUsecase := usecase.NewPostComment(CommentRepository,MovieRepository)
 		err := postCommentUsecase.PostComment(c)
 		if err != nil{
-			t.Error("Comment Post Failed.")
+			t.Error("PostComment Usecase Test Failed.")
 		}
 	}
 }
