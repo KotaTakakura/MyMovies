@@ -5,17 +5,17 @@ import (
 	"MyPIPE/domain/repository"
 )
 
-type CheckNameExists struct{
+type UserService struct{
 	UserRepository	repository.UserRepository
 }
 
-func NewCheckNameExists(u repository.UserRepository)*CheckNameExists{
-	return &CheckNameExists{
+func NewUserService(u repository.UserRepository)*UserService{
+	return &UserService{
 		UserRepository: u,
 	}
 }
 
-func (c CheckNameExists)CheckNameExists(userName model.UserName)bool{
+func (c UserService)CheckNameExists(userName model.UserName)bool{
 	user,err := c.UserRepository.FindByName(userName)
 	if user == nil && err != nil{
 		return false

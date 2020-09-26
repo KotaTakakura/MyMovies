@@ -180,12 +180,12 @@ type User struct {
 	Email             UserEmail `json:"email"`
 	Birthday          time.Time `json:"birthday"`
 	Token             UserToken `json:"token"`
-	Movies            []MovieID
-	Comments          []CommentID
-	GoodMovies        []MovieID
-	BadMovies         []MovieID
-	PlayLists         []PlayListID
-	Follows           []UserID
+	Movies            []MovieID `gorm:"-"`
+	Comments          []CommentID `gorm:"-"`
+	GoodMovies        []MovieID `gorm:"-"`
+	BadMovies         []MovieID `gorm:"-"`
+	PlayLists         []PlayListID `gorm:"-"`
+	Follows           []UserID `gorm:"-"`
 	CreatedAt         time.Time `json:"created_at"`
 	UpdatedAt         time.Time `json:"updated_at"`
 }
