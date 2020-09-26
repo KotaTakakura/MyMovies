@@ -4,17 +4,18 @@ import (
 	"MyPIPE/domain/model"
 	"MyPIPE/domain/repository"
 	domain_service "MyPIPE/domain/service/User"
-	"MyPIPE/infra"
 	"errors"
 )
 
 type UserRegister struct{
 	UserRepository	repository.UserRepository
+	UserService		domain_service.IUserService
 }
 
-func NewUserRegister(u repository.UserRepository) *UserRegister{
+func NewUserRegister(u repository.UserRepository,us domain_service.IUserService) *UserRegister{
 	return &UserRegister{
 		UserRepository: u,
+		UserService: us,
 	}
 }
 
@@ -26,11 +27,10 @@ func (u UserRegister)RegisterUser(newUser *model.User) error{
 	}
 
 	if !registeredUserWithToken.TemporaryRegisteredWithinOneHour() {
-		return errors.New("Invalid Tokene.")
+		return errors.New("Invalid Token.")
 	}
 
-	checkNameService := domain_service.NewCheckNameExists(infra.NewUserPersistence())
-	if checkNameService.CheckNameExists(newUser.Name) {
+	if u.UserService.CheckNameExists(newUser.Name) {
 		return errors.New("User Name Already Exists.")
 	}
 

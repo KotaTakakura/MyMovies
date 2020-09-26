@@ -2,6 +2,7 @@ package handler
 
 import (
 	"MyPIPE/domain/model"
+	domain_service "MyPIPE/domain/service/User"
 	"MyPIPE/infra"
 	"MyPIPE/usecase"
 	"github.com/gin-gonic/gin"
@@ -57,7 +58,8 @@ func RegisterUser(c *gin.Context) {
 	validationErrorFlag := false
 
 	userPersistence := infra.NewUserPersistence()
-	userRegistration := usecase.NewUserRegister(userPersistence)
+	userService := domain_service.NewUserService(userPersistence)
+	userRegistration := usecase.NewUserRegister(userPersistence,userService)
 
 
 	token := c.Query("token")
