@@ -34,7 +34,9 @@ jobs:
 #      - restore_cache:
 #          key: mod-{{ checksum "go.sum" }}
 
-      - run: cd ./go/src/MyPIPE && pwd && go get && go test -v ./Test/usecase/...
+      - run:
+          name: test
+          command: cd ./go/src/MyPIPE && pwd && go get && go test -v ./Test/usecase/...
 
 #      - run: go build -o main main.go
 #      - run: go build
