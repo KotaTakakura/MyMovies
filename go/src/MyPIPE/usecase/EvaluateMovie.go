@@ -7,31 +7,19 @@ import (
 )
 
 type EvaluateMovie struct{
-	UserRepository repository.UserRepository
 	MovieRepository repository.MovieRepository
+	MovieEvaluationRepository repository.MovieEvaluationRepository
 }
 
-func NewEvaluateUsecase(u repository.UserRepository,m repository.MovieRepository)*EvaluateMovie{
+func NewEvaluateUsecase(m repository.MovieRepository,me repository.MovieEvaluationRepository)*EvaluateMovie{
 	return &EvaluateMovie{
-		UserRepository: u,
 		MovieRepository: m,
+		MovieEvaluationRepository: me,
 	}
 }
 
 func (e EvaluateMovie)EvaluateMovie(evaluateMovieDTO EvaluateMovieDTO)error{
-	userID,userIDErr := model.NewUserID(evaluateMovieDTO.UserID)
-	if userIDErr != nil{
-		return userIDErr
-	}
-	user,userErr := e.UserRepository.FindById(userID)
-	if userErr != nil{
-		return userErr
-	}
-	movieID,movieIDErr := model.NewMovieID(evaluateMovieDTO.MovieID)
-	if movieIDErr != nil{
-		return movieIDErr
-	}
-	movie,movieErr := e.MovieRepository.FindById(movieID)
+	movie,movieErr := e.MovieRepository.FindById(evaluateMovieDTO.MovieID)
 	if movieErr != nil{
 		return movieErr
 	}
@@ -40,26 +28,26 @@ func (e EvaluateMovie)EvaluateMovie(evaluateMovieDTO EvaluateMovieDTO)error{
 		return errors.New("No Such Movie.")
 	}
 
-	evaluater,evaluaterErr :=model.NewEvaluate(evaluateMovieDTO.Evaluation)
-	if evaluaterErr != nil{
-		return evaluaterErr
+	movieEvaluation := e.MovieEvaluationRepository.FindByUserIdAndMovieId(evaluateMovieDTO.UserID,evaluateMovieDTO.MovieID)
+	evaluationErr := movieEvaluation.EvaluateMovie(evaluateMovieDTO.Evaluation)
+	if evaluationErr != nil {
+		return evaluationErr
 	}
 
-	evaluateErr := user.Evaluate(evaluater,movieID)
-	if evaluateErr != nil{
-		return evaluateErr
-	}
+	movieEvaluation.MovieID = evaluateMovieDTO.MovieID
+	movieEvaluation.UserID = evaluateMovieDTO.UserID
+	movieEvaluation.Evaluation = evaluateMovieDTO.Evaluation
 
-	updateUserErr := e.UserRepository.UpdateUser(user)
-	if updateUserErr != nil{
-		return updateUserErr
+	evaluationSaveErr := e.MovieEvaluationRepository.Save(movieEvaluation)
+	if evaluationSaveErr != nil{
+		return evaluationSaveErr
 	}
 
 	return nil
 }
 
 type EvaluateMovieDTO struct{
-	UserID uint64 `json:"user_id"`
-	MovieID uint64 `json:"movie_id"`
-	Evaluation string `json:"evaluation"`
+	UserID model.UserID
+	MovieID model.MovieID
+	Evaluation model.Evaluation
 }

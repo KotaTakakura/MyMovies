@@ -19,9 +19,9 @@ func NewEvaluation(evaluation string)(Evaluation,error){
 }
 
 type MovieEvaluation struct{
-	UserID UserID
-	MovieID MovieID
-	Evaluation Evaluation
+	UserID UserID	`gorm:"column:user_id"`
+	MovieID MovieID	`gorm:"column:movie_id"`
+	Evaluation Evaluation	`gorm:"column:evaluation"`
 }
 
 func NewMovieEvaluation(userId UserID,movieId MovieID,evaluation Evaluation)*MovieEvaluation{
