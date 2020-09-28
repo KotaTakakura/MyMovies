@@ -20,19 +20,11 @@ func NewCreatePlayList(u repository.UserRepository,p repository.PlayListReposito
 	}
 }
 
-func (c CreatePlayList)CreatePlayList(createPlayList CreatePlayListJson)error{
+func (c CreatePlayList)CreatePlayList(createPlayList CreatePlayListDTO)error{
 	playList := model.NewPlayList()
-	var playListUserIDErr error
-	playList.UserID,playListUserIDErr = model.NewUserID(createPlayList.UserID)
-	if playListUserIDErr != nil{
-		return playListUserIDErr
-	}
+	playList.UserID = createPlayList.UserID
 
-	var playListNameErr error
-	playList.Name,playListNameErr = model.NewPlayListName(createPlayList.PlayListName)
-	if playListNameErr != nil{
-		return playListNameErr
-	}
+	playList.Name = createPlayList.PlayListName
 
 	playListRepository := infra.NewPlayListPersistence()
 	checkSameUserIDAndNameExistsService := domain_service.NewCheckSameUserIDAndNameExists(playListRepository)
@@ -51,7 +43,7 @@ func (c CreatePlayList)CreatePlayList(createPlayList CreatePlayListJson)error{
 	return nil
 }
 
-type CreatePlayListJson struct{
-	UserID uint64
-	PlayListName string `json:"playlist_name"`
+type CreatePlayListDTO struct{
+	UserID model.UserID
+	PlayListName model.PlayListName
 }

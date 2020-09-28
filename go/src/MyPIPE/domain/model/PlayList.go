@@ -21,6 +21,12 @@ func NewPlayListID(playListID uint64)(PlayListID,error){
 type PlayListName string
 
 func NewPlayListName(playListName string)(PlayListName,error){
+	err := validation.Validate(playListName,
+		validation.Required,
+	)
+	if err != nil {
+		return PlayListName(""), err
+	}
 	return PlayListName(playListName),nil
 }
 
