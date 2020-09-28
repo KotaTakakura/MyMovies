@@ -3,52 +3,39 @@ package usecase
 import (
 	"MyPIPE/domain/model"
 	"MyPIPE/domain/repository"
+	domain_service "MyPIPE/domain/service/PlayList"
 	"errors"
-	"fmt"
 )
 
 type AddPlayListItem struct{
 	PlayListRepository	repository.PlayListRepository
-	MovieRepository repository.MovieRepository
+	PlayListService domain_service.IPlayListService
 }
 
-func NewAddPlayListItem(p repository.PlayListRepository,m repository.MovieRepository)*AddPlayListItem{
+func NewAddPlayListItem(p repository.PlayListRepository,ps domain_service.IPlayListService)*AddPlayListItem{
 	return &AddPlayListItem{
 		PlayListRepository: p,
-		MovieRepository: m,
+		PlayListService: ps,
 	}
 }
 
-func (a AddPlayListItem)AddPlayListItem(playListItemAddJson PlayListItemAddJson)error{
-	playListID,playListIDErr := model.NewPlayListID(playListItemAddJson.PlayListID)
-	if playListIDErr != nil{
-		fmt.Println("111")
-		return playListIDErr
-	}
+func (a AddPlayListItem)AddPlayListItem(playListItemAddJson AddPlayListItemAddJson)error{
 
-	movieId,movieIdErr := model.NewMovieID(playListItemAddJson.MovieID)
-	if movieIdErr != nil{
-		fmt.Println("222")
-		return movieIdErr
-	}
-
-	playList,playListFindErr := a.PlayListRepository.FindByID(playListID)
-	if playList == nil || uint64(playList.UserID) != playListItemAddJson.UserID{
+	playList,playListFindErr := a.PlayListRepository.FindByID(playListItemAddJson.PlayListID)
+	if playList == nil || playList.UserID != playListItemAddJson.UserID{
 		return errors.New("No Such PlayList.")
 	}
 	if playListFindErr != nil{
 		return playListFindErr
 	}
 
-	movie,movieFindErr := a.MovieRepository.FindById(movieId)
-	if movie == nil{
-		return errors.New("No Such Movie.")
-	}
-	if movieFindErr != nil{
-		return movieFindErr
-	}
+	var addPlayListItemErr error
 
-	addPlayListItemErr := playList.AddItem(movieId)
+	if a.PlayListService.CanAddItem(playListItemAddJson.MovieID) {
+		addPlayListItemErr = playList.AddItem(playListItemAddJson.MovieID)
+	}else{
+		return errors.New("Can't Add This Movie.")
+	}
 	if addPlayListItemErr != nil{
 		return addPlayListItemErr
 	}
@@ -61,8 +48,8 @@ func (a AddPlayListItem)AddPlayListItem(playListItemAddJson PlayListItemAddJson)
 	return nil
 }
 
-type PlayListItemAddJson struct{
-	PlayListID uint64 `json:"play_list_id"`
-	UserID uint64 `json:"user_id"`
-	MovieID uint64 `json:"movie_id"`
+type AddPlayListItemAddJson struct{
+	PlayListID model.PlayListID
+	UserID model.UserID
+	MovieID model.MovieID
 }
