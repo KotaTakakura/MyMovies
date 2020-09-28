@@ -11,7 +11,6 @@ import (
 )
 
 func CreatePlayList(c *gin.Context){
-	//var playListDTO usecase.CreatePlayListJson
 	var playListJson CreatePlayListJson
 	bindErr := c.Bind(&playListJson)
 	if bindErr != nil{
