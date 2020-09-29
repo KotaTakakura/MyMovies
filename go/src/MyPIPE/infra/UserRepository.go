@@ -109,6 +109,9 @@ func (u UserPersistence) FindById(id model.UserID) (*model.User, error) {
 	if e.Error != nil {
 		return nil, e.Error
 	}
+	if e.RowsAffected == 0{
+		return nil,nil
+	}
 
 	e = u.DatabaseAccessor.Table("good_movies").Where("user_id = ?",uint64(id)).Pluck("movie_id",&user.GoodMovies)
 	if e.Error != nil {
