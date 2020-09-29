@@ -27,7 +27,7 @@ func (e EvaluateMovie)EvaluateMovie(evaluateMovieDTO EvaluateMovieDTO)error{
 	if movie == nil{
 		return errors.New("No Such Movie.")
 	}
-
+	
 	movieEvaluation := e.MovieEvaluationRepository.FindByUserIdAndMovieId(evaluateMovieDTO.UserID,evaluateMovieDTO.MovieID)
 	evaluationErr := movieEvaluation.EvaluateMovie(evaluateMovieDTO.Evaluation)
 	if evaluationErr != nil {
@@ -42,7 +42,6 @@ func (e EvaluateMovie)EvaluateMovie(evaluateMovieDTO EvaluateMovieDTO)error{
 	if evaluationSaveErr != nil{
 		return evaluationSaveErr
 	}
-
 	return nil
 }
 
