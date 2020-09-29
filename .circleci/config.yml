@@ -33,11 +33,11 @@ jobs:
 
       - run:
           name: usecaseTest
-          command: go test -v ./go/src/MyPIPE/Test/usecase/...
+          command: cd ./go/src/MyPIPE && go test -v ./go/src/MyPIPE/Test/usecase/...
 
       - run:
           name: valueObjectTest
-          command: go test -v ./go/src/MyPIPE/Test/model/value_object/...
+          command: cd ./go/src/MyPIPE && go test -v ./go/src/MyPIPE/Test/model/value_object/...
 
 #      - restore_cache:
 #          key: mod-{{ checksum "go.sum" }}
