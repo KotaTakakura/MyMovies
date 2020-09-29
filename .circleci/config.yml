@@ -31,12 +31,16 @@ jobs:
     steps:
       - checkout
 
-#      - restore_cache:
-#          key: mod-{{ checksum "go.sum" }}
+      - run:
+          name: usecaseTest
+          command: cd ./go/src/MyPIPE && go test -v ./Test/usecase/...
 
       - run:
-          name: test
-          command: cd ./go/src/MyPIPE && pwd && go get && go test -v ./Test/usecase/...
+          name: valueObjectTest
+          command: cd ./go/src/MyPIPE && go test -v ./Test/model/value_object/...
+
+#      - restore_cache:
+#          key: mod-{{ checksum "go.sum" }}
 
 #      - run: go build -o main main.go
 #      - run: go build
