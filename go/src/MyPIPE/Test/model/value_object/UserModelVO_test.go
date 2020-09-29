@@ -6,6 +6,36 @@ import (
 	"testing"
 )
 
+func TestUserID(t *testing.T){
+	trueCases := []struct{
+		ID uint64
+	}{
+		{ID: 100},
+		{ID: 1},
+	}
+
+	falseCases := []struct{
+		ID uint64
+	}{
+		{ID: 0},
+	}
+
+	for _,trueCase := range trueCases{
+		_,userErr := model.NewUserID(trueCase.ID)
+		if userErr != nil{
+			t.Error("UserID TrueCase Error.")
+		}
+	}
+
+	for _,falseCase := range falseCases{
+		_,userErr := model.NewUserID(falseCase.ID)
+		if userErr == nil{
+			t.Error("UserID FalseCase Error.")
+		}
+	}
+
+}
+
 func TestUserName(t *testing.T){
 	trueCases := []struct{
 		Name	string
