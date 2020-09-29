@@ -37,7 +37,7 @@ jobs:
 
       - run:
           name: valueObjectTest
-          command: cd ./go/src/MyPIPE && go test -v Test/model/value_object/...
+          command: cd ./go/src/MyPIPE && go test -v ./Test/model/value_object/...
 
 #      - restore_cache:
 #          key: mod-{{ checksum "go.sum" }}
