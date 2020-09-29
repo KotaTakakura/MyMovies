@@ -31,35 +31,35 @@ func (u UserPersistence) FindByToken(token model.UserToken) (*model.User, error)
 		return nil, e.Error
 	}
 
-	e = u.DatabaseAccessor.Table("good_movies").Where("user_id = ?",uint64(user.ID)).Pluck("movie_id",&user.GoodMovies)
-	if e.Error != nil {
-		return nil, e.Error
-	}
-
-	e = u.DatabaseAccessor.Table("bad_movies").Where("user_id = ?",uint64(user.ID)).Pluck("movie_id",&user.BadMovies)
-	if e.Error != nil {
-		return nil, e.Error
-	}
-
-	e = u.DatabaseAccessor.Table("movies").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.Movies)
-	if e.Error != nil {
-		return nil, e.Error
-	}
-
-	e = u.DatabaseAccessor.Table("comments").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.Comments)
-	if e.Error != nil {
-		return nil, e.Error
-	}
-
-	e = u.DatabaseAccessor.Table("play_lists").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.PlayLists)
-	if e.Error != nil {
-		return nil, e.Error
-	}
-
-	e = u.DatabaseAccessor.Table("follow_users").Where("user_id = ?",uint64(user.ID)).Pluck("follow_id",&user.Follows)
-	if e.Error != nil {
-		return nil, e.Error
-	}
+	//e = u.DatabaseAccessor.Table("good_movies").Where("user_id = ?",uint64(user.ID)).Pluck("movie_id",&user.GoodMovies)
+	//if e.Error != nil {
+	//	return nil, e.Error
+	//}
+	//
+	//e = u.DatabaseAccessor.Table("bad_movies").Where("user_id = ?",uint64(user.ID)).Pluck("movie_id",&user.BadMovies)
+	//if e.Error != nil {
+	//	return nil, e.Error
+	//}
+	//
+	//e = u.DatabaseAccessor.Table("movies").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.Movies)
+	//if e.Error != nil {
+	//	return nil, e.Error
+	//}
+	//
+	//e = u.DatabaseAccessor.Table("comments").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.Comments)
+	//if e.Error != nil {
+	//	return nil, e.Error
+	//}
+	//
+	//e = u.DatabaseAccessor.Table("play_lists").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.PlayLists)
+	//if e.Error != nil {
+	//	return nil, e.Error
+	//}
+	//
+	//e = u.DatabaseAccessor.Table("follow_users").Where("user_id = ?",uint64(user.ID)).Pluck("follow_id",&user.Follows)
+	//if e.Error != nil {
+	//	return nil, e.Error
+	//}
 	return &user, nil
 }
 
@@ -70,35 +70,35 @@ func (u UserPersistence) FindByEmail(email model.UserEmail) (*model.User, error)
 		return nil, e.Error
 	}
 
-	e = u.DatabaseAccessor.Table("good_movies").Where("user_id = ?",uint64(user.ID)).Pluck("movie_id",&user.GoodMovies)
-	if e.Error != nil {
-		return nil, e.Error
-	}
-
-	e = u.DatabaseAccessor.Table("bad_movies").Where("user_id = ?",uint64(user.ID)).Pluck("movie_id",&user.BadMovies)
-	if e.Error != nil {
-		return nil, e.Error
-	}
-
-	e = u.DatabaseAccessor.Table("movies").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.Movies)
-	if e.Error != nil {
-		return nil, e.Error
-	}
-
-	e = u.DatabaseAccessor.Table("comments").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.Comments)
-	if e.Error != nil {
-		return nil, e.Error
-	}
-
-	e = u.DatabaseAccessor.Table("play_lists").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.PlayLists)
-	if e.Error != nil {
-		return nil, e.Error
-	}
-
-	e = u.DatabaseAccessor.Table("follow_users").Where("user_id = ?",uint64(user.ID)).Pluck("follow_id",&user.Follows)
-	if e.Error != nil {
-		return nil, e.Error
-	}
+	//e = u.DatabaseAccessor.Table("good_movies").Where("user_id = ?",uint64(user.ID)).Pluck("movie_id",&user.GoodMovies)
+	//if e.Error != nil {
+	//	return nil, e.Error
+	//}
+	//
+	//e = u.DatabaseAccessor.Table("bad_movies").Where("user_id = ?",uint64(user.ID)).Pluck("movie_id",&user.BadMovies)
+	//if e.Error != nil {
+	//	return nil, e.Error
+	//}
+	//
+	//e = u.DatabaseAccessor.Table("movies").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.Movies)
+	//if e.Error != nil {
+	//	return nil, e.Error
+	//}
+	//
+	//e = u.DatabaseAccessor.Table("comments").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.Comments)
+	//if e.Error != nil {
+	//	return nil, e.Error
+	//}
+	//
+	//e = u.DatabaseAccessor.Table("play_lists").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.PlayLists)
+	//if e.Error != nil {
+	//	return nil, e.Error
+	//}
+	//
+	//e = u.DatabaseAccessor.Table("follow_users").Where("user_id = ?",uint64(user.ID)).Pluck("follow_id",&user.Follows)
+	//if e.Error != nil {
+	//	return nil, e.Error
+	//}
 
 	return &user, nil
 }
@@ -113,35 +113,35 @@ func (u UserPersistence) FindById(id model.UserID) (*model.User, error) {
 		return nil,nil
 	}
 
-	e = u.DatabaseAccessor.Table("good_movies").Where("user_id = ?",uint64(id)).Pluck("movie_id",&user.GoodMovies)
-	if e.Error != nil {
-		return nil, e.Error
-	}
-
-	e = u.DatabaseAccessor.Table("bad_movies").Where("user_id = ?",uint64(id)).Pluck("movie_id",&user.BadMovies)
-	if e.Error != nil {
-		return nil, e.Error
-	}
-
-	e = u.DatabaseAccessor.Table("movies").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.Movies)
-	if e.Error != nil {
-		return nil, e.Error
-	}
-
-	e = u.DatabaseAccessor.Table("comments").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.Comments)
-	if e.Error != nil {
-		return nil, e.Error
-	}
-
-	e = u.DatabaseAccessor.Table("play_lists").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.PlayLists)
-	if e.Error != nil {
-		return nil, e.Error
-	}
-
-	e = u.DatabaseAccessor.Table("follow_users").Where("user_id = ?",uint64(user.ID)).Pluck("follow_id",&user.Follows)
-	if e.Error != nil {
-		return nil, e.Error
-	}
+	//e = u.DatabaseAccessor.Table("good_movies").Where("user_id = ?",uint64(id)).Pluck("movie_id",&user.GoodMovies)
+	//if e.Error != nil {
+	//	return nil, e.Error
+	//}
+	//
+	//e = u.DatabaseAccessor.Table("bad_movies").Where("user_id = ?",uint64(id)).Pluck("movie_id",&user.BadMovies)
+	//if e.Error != nil {
+	//	return nil, e.Error
+	//}
+	//
+	//e = u.DatabaseAccessor.Table("movies").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.Movies)
+	//if e.Error != nil {
+	//	return nil, e.Error
+	//}
+	//
+	//e = u.DatabaseAccessor.Table("comments").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.Comments)
+	//if e.Error != nil {
+	//	return nil, e.Error
+	//}
+	//
+	//e = u.DatabaseAccessor.Table("play_lists").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.PlayLists)
+	//if e.Error != nil {
+	//	return nil, e.Error
+	//}
+	//
+	//e = u.DatabaseAccessor.Table("follow_users").Where("user_id = ?",uint64(user.ID)).Pluck("follow_id",&user.Follows)
+	//if e.Error != nil {
+	//	return nil, e.Error
+	//}
 	return &user, nil
 }
 
@@ -152,35 +152,35 @@ func (u UserPersistence) FindByName(name model.UserName) (*model.User, error) {
 		return nil, e.Error
 	}
 
-	e = u.DatabaseAccessor.Table("good_movies").Where("user_id = ?",uint64(user.ID)).Pluck("movie_id",&user.GoodMovies)
-	if e.Error != nil {
-		return nil, e.Error
-	}
-
-	e = u.DatabaseAccessor.Table("bad_movies").Where("user_id = ?",uint64(user.ID)).Pluck("movie_id",&user.BadMovies)
-	if e.Error != nil {
-		return nil, e.Error
-	}
-
-	e = u.DatabaseAccessor.Table("movies").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.Movies)
-	if e.Error != nil {
-		return nil, e.Error
-	}
-
-	e = u.DatabaseAccessor.Table("comments").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.Comments)
-	if e.Error != nil {
-		return nil, e.Error
-	}
-
-	e = u.DatabaseAccessor.Table("play_lists").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.PlayLists)
-	if e.Error != nil {
-		return nil, e.Error
-	}
-
-	e = u.DatabaseAccessor.Table("follow_users").Where("user_id = ?",uint64(user.ID)).Pluck("follow_id",&user.Follows)
-	if e.Error != nil {
-		return nil, e.Error
-	}
+	//e = u.DatabaseAccessor.Table("good_movies").Where("user_id = ?",uint64(user.ID)).Pluck("movie_id",&user.GoodMovies)
+	//if e.Error != nil {
+	//	return nil, e.Error
+	//}
+	//
+	//e = u.DatabaseAccessor.Table("bad_movies").Where("user_id = ?",uint64(user.ID)).Pluck("movie_id",&user.BadMovies)
+	//if e.Error != nil {
+	//	return nil, e.Error
+	//}
+	//
+	//e = u.DatabaseAccessor.Table("movies").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.Movies)
+	//if e.Error != nil {
+	//	return nil, e.Error
+	//}
+	//
+	//e = u.DatabaseAccessor.Table("comments").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.Comments)
+	//if e.Error != nil {
+	//	return nil, e.Error
+	//}
+	//
+	//e = u.DatabaseAccessor.Table("play_lists").Where("user_id = ?",uint64(user.ID)).Pluck("id",&user.PlayLists)
+	//if e.Error != nil {
+	//	return nil, e.Error
+	//}
+	//
+	//e = u.DatabaseAccessor.Table("follow_users").Where("user_id = ?",uint64(user.ID)).Pluck("follow_id",&user.Follows)
+	//if e.Error != nil {
+	//	return nil, e.Error
+	//}
 	return &user, nil
 }
 
@@ -195,17 +195,17 @@ func (u UserPersistence) SetUser(newUser *model.User) error {
 func (u UserPersistence) UpdateUser(updateUser *model.User) error{
 
 	transactionErr := u.DatabaseAccessor.Transaction(func(tx *gorm.DB) error {
-		tx.Exec("Delete From good_movies Where user_id = ?",updateUser.ID)
+		//tx.Exec("Delete From good_movies Where user_id = ?",updateUser.ID)
 
-		for _,goodMovieId := range updateUser.GoodMovies{
-			tx.Exec("Insert Into good_movies (user_id,movie_id) Values (?,?)",updateUser.ID,goodMovieId)
-		}
-
-		tx.Exec("Delete From bad_movies Where user_id = ?",updateUser.ID)
-
-		for _,badMovieId := range updateUser.BadMovies{
-			tx.Exec("Insert Into bad_movies (user_id,movie_id) Values (?,?)",updateUser.ID,badMovieId)
-		}
+		//for _,goodMovieId := range updateUser.GoodMovies{
+		//	tx.Exec("Insert Into good_movies (user_id,movie_id) Values (?,?)",updateUser.ID,goodMovieId)
+		//}
+		//
+		//tx.Exec("Delete From bad_movies Where user_id = ?",updateUser.ID)
+		//
+		//for _,badMovieId := range updateUser.BadMovies{
+		//	tx.Exec("Insert Into bad_movies (user_id,movie_id) Values (?,?)",updateUser.ID,badMovieId)
+		//}
 
 		e := tx.Save(updateUser)
 		if e.Error != nil {
