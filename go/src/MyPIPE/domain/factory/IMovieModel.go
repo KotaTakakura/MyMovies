@@ -8,4 +8,3 @@ import (
 type IMovieModelFactory interface {
 	CreateMovieModel(uploaderID model.UserID,displayName model.MovieDisplayName,fileHeader multipart.FileHeader)(*model.Movie,error)
 }
-//
