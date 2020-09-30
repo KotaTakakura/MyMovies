@@ -22,15 +22,7 @@ func NewPostMovie(fr repository.FileUpload,mr repository.MovieRepository,mf fact
 }
 
 func (p *PostMovie)PostMovie(postMovieDTO PostMovieDTO)error{
-	uploaderID,userIdErr := model.NewUserID(postMovieDTO.UserID)
-	if userIdErr != nil{
-		return userIdErr
-	}
-	displayName,displayNameErr := model.NewMovieDisplayName(postMovieDTO.DisplayName)
-	if displayNameErr != nil{
-		return displayNameErr
-	}
-	newMovie,createError := p.MovieModelFactory.CreateMovieModel(uploaderID,displayName,postMovieDTO.FileHeader)
+	newMovie,createError := p.MovieModelFactory.CreateMovieModel(postMovieDTO.UserID,postMovieDTO.DisplayName,postMovieDTO.FileHeader)
 	if createError != nil{
 		return createError
 	}
@@ -51,6 +43,6 @@ func (p *PostMovie)PostMovie(postMovieDTO PostMovieDTO)error{
 type PostMovieDTO struct{
 	File	multipart.File
 	FileHeader	multipart.FileHeader
-	UserID uint64
-	DisplayName	string
+	UserID model.UserID
+	DisplayName	model.MovieDisplayName
 }
