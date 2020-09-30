@@ -33,9 +33,6 @@ jobs:
           MYSQL_DATABASE: 'mypipe'
           MYSQL_USER: 'root'
           MYSQL_ROOT_PASSWORD: 'root'
-
-    working_directory: /go/src/MyPIPE
-
     steps:
       - checkout
 
@@ -45,15 +42,15 @@ jobs:
 
       - run:
           name: go_build
-          command: go build
+          command: cd ./go/src/MyPIPE && go build
 
       - run:
           name: usecaseTest
-          command: go test -v ./Test/usecase/...
+          command: cd ./go/src/MyPIPE && go test -v ./Test/usecase/...
 
       - run:
           name: valueObjectTest
-          command: go test -v ./Test/model/value_object/...
+          command: cd ./go/src/MyPIPE && go test -v ./Test/model/value_object/...
 
       - run:
           name: install dockerize
@@ -67,7 +64,7 @@ jobs:
 
       - run:
           name: migrationTest
-          command: migrate -database "mysql://root:root@tcp(127.0.0.1:3306)/mypipe" -path ./Migrations up
+          command: cd ./go/src/MyPIPE && migrate -database "mysql://root:root@tcp(127.0.0.1:3306)/mypipe" -path ./Migrations up
 
 #      - restore_cache:
 #          key: mod-{{ checksum "go.sum" }}
