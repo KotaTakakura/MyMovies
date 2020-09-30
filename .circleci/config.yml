@@ -37,6 +37,10 @@ jobs:
       - checkout
 
       - run:
+          name: go_build
+          command: cd ./go/src/MyPIPE && go build
+
+      - run:
           name: usecaseTest
           command: cd ./go/src/MyPIPE && go test -v ./Test/usecase/...
 
