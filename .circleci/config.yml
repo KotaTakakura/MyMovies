@@ -28,8 +28,21 @@ jobs:
   build:
     docker:
       - image: circleci/golang:latest
+      - image: circleci/mysql:5.7
+        environment:
+          MYSQL_DATABASE: 'mypipe'
+          MYSQL_USER: 'root'
+          MYSQL_ROOT_PASSWORD: 'root'
     steps:
       - checkout
+
+      - run:
+          name: install_migrate
+          command: sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y curl gnupg2 vim && sudo curl -L https://github.com/golang-migrate/migrate/releases/download/v4.11.0/migrate.linux-amd64.tar.gz | tar xvz && sudo mv ./migrate.linux-amd64 /usr/bin/migrate
+
+      - run:
+          name: go_build
+          command: cd ./go/src/MyPIPE && go build
 
       - run:
           name: usecaseTest
@@ -38,6 +51,20 @@ jobs:
       - run:
           name: valueObjectTest
           command: cd ./go/src/MyPIPE && go test -v ./Test/model/value_object/...
+
+      - run:
+          name: install dockerize
+          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+          environment:
+            DOCKERIZE_VERSION: v0.3.0
+
+      - run:
+          name: wait for db
+          command: dockerize -wait tcp://localhost:3306 -timeout 1m
+
+      - run:
+          name: migrationTest
+          command: cd ./go/src/MyPIPE && migrate -database "mysql://root:root@tcp(127.0.0.1:3306)/mypipe" -path ./Migrations up
 
 #      - restore_cache:
 #          key: mod-{{ checksum "go.sum" }}
