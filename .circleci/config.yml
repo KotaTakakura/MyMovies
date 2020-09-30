@@ -29,10 +29,10 @@ jobs:
     docker:
       - image: circleci/golang:latest
       - image: circleci/mysql:5.7
-          environment:
-            MYSQL_DATABASE: 'mypipe'
-            MYSQL_USER: 'root'
-            MYSQL_ROOT_PASSWORD: 'root'
+        environment:
+          MYSQL_DATABASE: 'mypipe'
+          MYSQL_USER: 'root'
+          MYSQL_ROOT_PASSWORD: 'root'
     steps:
       - checkout
 
