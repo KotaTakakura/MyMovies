@@ -28,6 +28,11 @@ jobs:
   build:
     docker:
       - image: circleci/golang:latest
+      - image: circleci/mysql:5.7
+          environment:
+            MYSQL_DATABASE: 'mypipe'
+            MYSQL_USER: 'root'
+            MYSQL_ROOT_PASSWORD: 'root'
     steps:
       - checkout
 
@@ -38,6 +43,10 @@ jobs:
       - run:
           name: valueObjectTest
           command: cd ./go/src/MyPIPE && go test -v ./Test/model/value_object/...
+
+      - run:
+          name: migrationTest
+          command: cd ./go/src/MyPIPE && migrate -database "mysql://root:root@127.0.0.1/mypipe" -path ./Migrations up
 
 #      - restore_cache:
 #          key: mod-{{ checksum "go.sum" }}
