@@ -77,6 +77,8 @@ func main() {
 		auth.POST("/play-lists",handler.CreatePlayList)
 		auth.POST("/play-list-items",handler.AddPlayList)
 		auth.POST("/follows",handler.FollowUser)
+
+		auth.GET("/movies",handler.GetUploadedMovies)
 	}
 
 	router.GET("/test", func(c *gin.Context) {
