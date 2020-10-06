@@ -56,10 +56,23 @@ func NewMovieStatus(status uint) (MovieStatus,error){
 	return MovieStatus(status),nil
 }
 
+type MovieDescription string
+
+func NewMovieDescription(description string) (MovieDescription,error){
+	err := validation.Validate(description,
+		validation.Required,
+	)
+	if err != nil{
+		return MovieDescription(""),err
+	}
+	return MovieDescription(description),nil
+}
+
 type Movie struct {
 	ID          MovieID `json:"id" gorm:"primaryKey"`
 	StoreName   MovieStoreName
 	DisplayName MovieDisplayName
+	Description MovieDescription
 	UserID      UserID
 	Public  	MoviePublic
 	Status		MovieStatus
@@ -72,6 +85,7 @@ func NewMovie(uploaderID UserID,storeName MovieStoreName,displayName MovieDispla
 		StoreName:	storeName,
 		DisplayName: displayName,
 		UserID: uploaderID,
+		Description: MovieDescription(""),
 		Public:	MoviePublic(0),
 		Status: MovieStatus(0),
 	}
