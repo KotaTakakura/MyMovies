@@ -35,16 +35,16 @@ func (m *MockIMovieModelFactory) EXPECT() *MockIMovieModelFactoryMockRecorder {
 }
 
 // CreateMovieModel mocks base method
-func (m *MockIMovieModelFactory) CreateMovieModel(uploaderID model.UserID, displayName model.MovieDisplayName, fileHeader multipart.FileHeader) (*model.Movie, error) {
+func (m *MockIMovieModelFactory) CreateMovieModel(uploaderID model.UserID, fileHeader multipart.FileHeader) (*model.Movie, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateMovieModel", uploaderID, displayName, fileHeader)
+	ret := m.ctrl.Call(m, "CreateMovieModel", uploaderID, fileHeader)
 	ret0, _ := ret[0].(*model.Movie)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // CreateMovieModel indicates an expected call of CreateMovieModel
-func (mr *MockIMovieModelFactoryMockRecorder) CreateMovieModel(uploaderID, displayName, fileHeader interface{}) *gomock.Call {
+func (mr *MockIMovieModelFactoryMockRecorder) CreateMovieModel(uploaderID, fileHeader interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateMovieModel", reflect.TypeOf((*MockIMovieModelFactory)(nil).CreateMovieModel), uploaderID, displayName, fileHeader)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateMovieModel", reflect.TypeOf((*MockIMovieModelFactory)(nil).CreateMovieModel), uploaderID, fileHeader)
 }
