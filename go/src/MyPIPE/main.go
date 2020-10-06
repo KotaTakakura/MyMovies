@@ -7,6 +7,7 @@ import (
 	"MyPIPE/usecase"
 	"github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/cors"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"log"
 	"os"
@@ -52,6 +53,15 @@ func main() {
 	}
 
 	router := gin.Default()
+
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowMethods:     []string{"POST","PUT", "PATCH"},
+		AllowHeaders:     []string{"Origin","Access-Control-Allow-Origin","Content-type"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}))
+
 	router.POST("/login", authMiddleware.LoginHandler)
 	router.GET("/refresh_token", authMiddleware.RefreshHandler)
 	router.POST("/new", handler.TemporaryRegisterUser)
