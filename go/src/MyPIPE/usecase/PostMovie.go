@@ -9,20 +9,22 @@ import (
 
 type PostMovie struct{
 	FileUploadRepository	repository.FileUpload
+	ThumbnailUploadRepository	repository.ThumbnailUploadRepository
 	MovieRepository	repository.MovieRepository
 	MovieModelFactory	factory.IMovieModelFactory
 }
 
-func NewPostMovie(fr repository.FileUpload,mr repository.MovieRepository,mf factory.IMovieModelFactory)*PostMovie{
+func NewPostMovie(fr repository.FileUpload,tu repository.ThumbnailUploadRepository,mr repository.MovieRepository,mf factory.IMovieModelFactory)*PostMovie{
 	return &PostMovie{
 		FileUploadRepository: fr,
+		ThumbnailUploadRepository: tu,
 		MovieRepository: mr,
 		MovieModelFactory: mf,
 	}
 }
 
-func (p *PostMovie)PostMovie(postMovieDTO PostMovieDTO)error{
-	newMovie,createError := p.MovieModelFactory.CreateMovieModel(postMovieDTO.UserID,postMovieDTO.DisplayName,postMovieDTO.FileHeader)
+func (p *PostMovie)PostMovie(postMovieDTO *PostMovieDTO)error{
+	newMovie,createError := p.MovieModelFactory.CreateMovieModel(postMovieDTO.UserID,postMovieDTO.FileHeader)
 	if createError != nil{
 		return createError
 	}
@@ -37,12 +39,28 @@ func (p *PostMovie)PostMovie(postMovieDTO PostMovieDTO)error{
 		return err
 	}
 
+	thumbnailUploadErr := p.ThumbnailUploadRepository.Upload(postMovieDTO.Thumbnail,postMovieDTO.ThumbnailHeader,savedNewMovie.ID)
+	if thumbnailUploadErr != nil{
+		return thumbnailUploadErr
+	}
+
 	return nil
 }
 
 type PostMovieDTO struct{
 	File	multipart.File
 	FileHeader	multipart.FileHeader
+	Thumbnail	multipart.File
+	ThumbnailHeader	multipart.FileHeader
 	UserID model.UserID
-	DisplayName	model.MovieDisplayName
+}
+
+func NewPostMovieDTO(file multipart.File,file_header multipart.FileHeader,thumbnail multipart.File,thumbnailHeader multipart.FileHeader,userId model.UserID)*PostMovieDTO{
+	return &PostMovieDTO{
+		File:	file,
+		FileHeader: file_header,
+		Thumbnail: thumbnail,
+		ThumbnailHeader: thumbnailHeader,
+		UserID:	userId,
+	}
 }
