@@ -1,0 +1,1 @@
+ALTER TABLE movies ADD COLUMN description LONGTEXT NULL AFTER display_name;
