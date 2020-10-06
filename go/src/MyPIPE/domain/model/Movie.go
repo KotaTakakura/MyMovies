@@ -30,11 +30,39 @@ func NewMovieDisplayName(displayName string) (MovieDisplayName,error) {
 	return MovieDisplayName(displayName),nil
 }
 
+type MoviePublic uint
+
+func NewMoviePublic(public uint) (MoviePublic,error){
+	err := validation.Validate(public,
+		validation.Required,
+		validation.In(0,1),
+	)
+	if err != nil{
+		return	MoviePublic(0),err
+	}
+	return MoviePublic(public),nil
+}
+
+type MovieStatus uint
+
+func NewMovieStatus(status uint) (MovieStatus,error){
+	err := validation.Validate(status,
+		validation.Required,
+		validation.In(0,1,2,3),
+	)
+	if err != nil{
+		return MovieStatus(0),err
+	}
+	return MovieStatus(status),nil
+}
+
 type Movie struct {
 	ID          MovieID `json:"id" gorm:"primaryKey"`
 	StoreName   MovieStoreName
 	DisplayName MovieDisplayName
 	UserID      UserID
+	Public  	MoviePublic
+	Status		MovieStatus
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
@@ -44,6 +72,8 @@ func NewMovie(uploaderID UserID,storeName MovieStoreName,displayName MovieDispla
 		StoreName:	storeName,
 		DisplayName: displayName,
 		UserID: uploaderID,
+		Public:	MoviePublic(0),
+		Status: MovieStatus(0),
 	}
 }
 
