@@ -73,6 +73,7 @@ func main() {
 		auth.POST("/comments", handler.PostComment)
 		auth.GET("/hello", helloHandler)
 		auth.POST("/movie", handler.UploadMovieFile)
+		auth.PUT("/movie",handler.UpdateMovie)
 		auth.POST("/evaluates", handler.EvaluateMovie)
 		auth.POST("/play-lists",handler.CreatePlayList)
 		auth.POST("/play-list-items",handler.AddPlayList)
@@ -80,10 +81,6 @@ func main() {
 
 		auth.GET("/movies",handler.GetUploadedMovies)
 	}
-
-	router.GET("/test", func(c *gin.Context) {
-		c.String(200, "fesfes.")
-	})
 
 	router.Run()
 }

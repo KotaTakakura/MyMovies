@@ -78,6 +78,21 @@ func (mr *MockMovieRepositoryMockRecorder) FindByUserId(userId interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByUserId", reflect.TypeOf((*MockMovieRepository)(nil).FindByUserId), userId)
 }
 
+// FindByUserIdAndMovieId mocks base method
+func (m *MockMovieRepository) FindByUserIdAndMovieId(userId model.UserID, movieId model.MovieID) (*model.Movie, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByUserIdAndMovieId", userId, movieId)
+	ret0, _ := ret[0].(*model.Movie)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByUserIdAndMovieId indicates an expected call of FindByUserIdAndMovieId
+func (mr *MockMovieRepositoryMockRecorder) FindByUserIdAndMovieId(userId, movieId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByUserIdAndMovieId", reflect.TypeOf((*MockMovieRepository)(nil).FindByUserIdAndMovieId), userId, movieId)
+}
+
 // Save mocks base method
 func (m *MockMovieRepository) Save(arg0 model.Movie) (*model.Movie, error) {
 	m.ctrl.T.Helper()
@@ -91,4 +106,19 @@ func (m *MockMovieRepository) Save(arg0 model.Movie) (*model.Movie, error) {
 func (mr *MockMovieRepositoryMockRecorder) Save(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockMovieRepository)(nil).Save), arg0)
+}
+
+// Update mocks base method
+func (m *MockMovieRepository) Update(movie model.Movie) (*model.Movie, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", movie)
+	ret0, _ := ret[0].(*model.Movie)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Update indicates an expected call of Update
+func (mr *MockMovieRepositoryMockRecorder) Update(movie interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockMovieRepository)(nil).Update), movie)
 }
