@@ -33,49 +33,29 @@ func NewMovieDisplayName(displayName string) (MovieDisplayName,error) {
 type MoviePublic uint
 
 func NewMoviePublic(public uint) (MoviePublic,error){
-	err := validation.Validate(public,
-		validation.Required,
-		validation.In(0,1),
-	)
-	if err != nil{
-		return	MoviePublic(0),err
-	}
 	return MoviePublic(public),nil
 }
 
 type MovieStatus uint
 
 func NewMovieStatus(status uint) (MovieStatus,error){
-	err := validation.Validate(status,
-		validation.Required,
-		validation.In(0,1,2,3),
-	)
-	if err != nil{
-		return MovieStatus(0),err
-	}
 	return MovieStatus(status),nil
 }
 
 type MovieDescription string
 
 func NewMovieDescription(description string) (MovieDescription,error){
-	err := validation.Validate(description,
-		validation.Required,
-	)
-	if err != nil{
-		return MovieDescription(""),err
-	}
 	return MovieDescription(description),nil
 }
 
 type Movie struct {
 	ID          MovieID `json:"id" gorm:"primaryKey"`
-	StoreName   MovieStoreName
-	DisplayName MovieDisplayName
-	Description MovieDescription
-	UserID      UserID
-	Public  	MoviePublic
-	Status		MovieStatus
+	StoreName   MovieStoreName	`gorm:"column:store_name"`
+	DisplayName MovieDisplayName	`gorm:"column:display_name"`
+	Description MovieDescription	`gorm:"column:description"`
+	UserID      UserID	`gorm:"column:user_id"`
+	Public  	MoviePublic	`gorm:"column:public"`
+	Status		MovieStatus	`gorm:"column:status"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
@@ -93,4 +73,24 @@ func NewMovie(uploaderID UserID,storeName MovieStoreName,displayName MovieDispla
 
 func (m *Movie) GetURL() string {
 	return "http://example.com/v1/movies/" + strconv.FormatUint(uint64(m.ID), 10) + "/" + strconv.FormatUint(uint64(m.ID), 10) + string(m.StoreName)
+}
+
+func (m *Movie) ChangeDisplayName(displayName MovieDisplayName)error{
+	m.DisplayName = displayName
+	return nil
+}
+
+func (m *Movie) ChangeDescription(description MovieDescription)error{
+	m.Description = description
+	return nil
+}
+
+func (m *Movie) ChangePublic(publicStatus MoviePublic)error{
+	m.Public = publicStatus
+	return nil
+}
+
+func (m *Movie) ChangeStatus(status MovieStatus)error{
+	m.Status = status
+	return nil
 }
