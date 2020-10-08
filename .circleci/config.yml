@@ -36,6 +36,9 @@ jobs:
     steps:
       - checkout
 
+      - restore_cache:
+          key: mod-{{ checksum "./go/src/MyPIPE/go.sum" }}
+
       - run:
           name: install_migrate
           command: sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y curl gnupg2 vim && sudo curl -L https://github.com/golang-migrate/migrate/releases/download/v4.11.0/migrate.linux-amd64.tar.gz | tar xvz && sudo mv ./migrate.linux-amd64 /usr/bin/migrate
@@ -66,17 +69,7 @@ jobs:
           name: migrationTest
           command: cd ./go/src/MyPIPE && migrate -database "mysql://root:root@tcp(127.0.0.1:3306)/mypipe" -path ./Migrations up
 
-#      - restore_cache:
-#          key: mod-{{ checksum "go.sum" }}
-
-#      - run: go build -o main main.go
-#      - run: go build
-
-#      - store_artifacts:
-#          path: main
-#          destination: main
-#
-#      - save_cache:
-#          key: mod-{{ checksum "go.sum" }}
-#          paths:
-#            - $GOPATH/pkg/mod
+      - save_cache:
+          key: mod-{{ checksum "./go/src/MyPIPE/go.sum" }}
+          paths:
+            - $GOPATH/pkg/mod
