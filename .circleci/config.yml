@@ -72,4 +72,4 @@ jobs:
       - save_cache:
           key: mod-{{ checksum "./go/src/MyPIPE/go.sum" }}
           paths:
-            - $GOPATH/pkg/mod
+            - /go/pkg/mod
