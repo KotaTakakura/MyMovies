@@ -37,7 +37,7 @@ jobs:
       - checkout
 
       - restore_cache:
-          key: mod-{{ checksum "./go/src/MyPIPE/go.sum" }}
+          key: mod-aaa-{{ checksum "./go/src/MyPIPE/go.sum" }}
 
       - run:
           name: install_migrate
@@ -70,6 +70,6 @@ jobs:
           command: cd ./go/src/MyPIPE && migrate -database "mysql://root:root@tcp(127.0.0.1:3306)/mypipe" -path ./Migrations up
 
       - save_cache:
-          key: mod-{{ checksum "./go/src/MyPIPE/go.sum" }}
+          key: mod-aaa-{{ checksum "./go/src/MyPIPE/go.sum" }}
           paths:
             - /go/pkg/mod
