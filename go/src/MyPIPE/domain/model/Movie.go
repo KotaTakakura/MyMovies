@@ -4,6 +4,7 @@ import (
 	validation "github.com/go-ozzo/ozzo-validation"
 	"strconv"
 	"time"
+	"errors"
 )
 
 type MovieID uint64
@@ -86,7 +87,14 @@ func (m *Movie) ChangeDescription(description MovieDescription)error{
 }
 
 func (m *Movie) ChangePublic(publicStatus MoviePublic)error{
-	m.Public = publicStatus
+	if publicStatus == 1 && m.DisplayName == "" {
+		return errors.New("Title Not Set.")
+	}
+
+	if publicStatus == 1 && m.Status == 0{
+		return errors.New("Status Not Complete.")
+	}
+		m.Public = publicStatus
 	return nil
 }
 
