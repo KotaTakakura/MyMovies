@@ -24,7 +24,7 @@ func NewPostMovie(fr repository.FileUpload,tu repository.ThumbnailUploadReposito
 }
 
 func (p *PostMovie)PostMovie(postMovieDTO *PostMovieDTO)error{
-	newMovie,createError := p.MovieModelFactory.CreateMovieModel(postMovieDTO.UserID,postMovieDTO.FileHeader)
+	newMovie,createError := p.MovieModelFactory.CreateMovieModel(postMovieDTO.UserID,postMovieDTO.FileHeader,postMovieDTO.ThumbnailHeader)
 	if createError != nil{
 		return createError
 	}

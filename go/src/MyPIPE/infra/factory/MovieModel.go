@@ -12,7 +12,7 @@ func NewMovieModelFactory()*MovieModelFactory{
 	return &MovieModelFactory{}
 }
 
-func (m MovieModelFactory)CreateMovieModel(uploaderID model.UserID,fileHeader multipart.FileHeader)(*model.Movie,error){
+func (m MovieModelFactory)CreateMovieModel(uploaderID model.UserID,fileHeader multipart.FileHeader,thumbnailHeader multipart.FileHeader)(*model.Movie,error){
 	storeName,storeNameErr := model.NewMovieStoreName(filepath.Ext(fileHeader.Filename))
 	if storeNameErr != nil{
 		return nil,storeNameErr
@@ -23,5 +23,10 @@ func (m MovieModelFactory)CreateMovieModel(uploaderID model.UserID,fileHeader mu
 		return nil,displayNameErr
 	}
 
-	return model.NewMovie(uploaderID,storeName,displayName),nil
+	thumbnailName,thumbnailNameErr := model.NewMovieThumbnailName(filepath.Ext(thumbnailHeader.Filename))
+	if thumbnailNameErr != nil{
+		return nil,thumbnailNameErr
+	}
+
+	return model.NewMovie(uploaderID,storeName,displayName,thumbnailName),nil
 }

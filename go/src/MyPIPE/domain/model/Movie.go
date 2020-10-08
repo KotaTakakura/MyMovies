@@ -31,6 +31,12 @@ func NewMovieDisplayName(displayName string) (MovieDisplayName,error) {
 	return MovieDisplayName(displayName),nil
 }
 
+type MovieThumbnailName string
+
+func NewMovieThumbnailName(thumbnailName string) (MovieThumbnailName,error){
+	return MovieThumbnailName(thumbnailName),nil
+}
+
 type MoviePublic uint
 
 func NewMoviePublic(public uint) (MoviePublic,error){
@@ -54,6 +60,7 @@ type Movie struct {
 	StoreName   MovieStoreName	`gorm:"column:store_name"`
 	DisplayName MovieDisplayName	`gorm:"column:display_name"`
 	Description MovieDescription	`gorm:"column:description"`
+	ThumbnailName	MovieThumbnailName	`gorm:"column:thumbnail_name"`
 	UserID      UserID	`gorm:"column:user_id"`
 	Public  	MoviePublic	`gorm:"column:public"`
 	Status		MovieStatus	`gorm:"column:status"`
@@ -61,12 +68,13 @@ type Movie struct {
 	UpdatedAt   time.Time
 }
 
-func NewMovie(uploaderID UserID,storeName MovieStoreName,displayName MovieDisplayName) *Movie {
+func NewMovie(uploaderID UserID,storeName MovieStoreName,displayName MovieDisplayName,thumbnailName MovieThumbnailName) *Movie {
 	return &Movie{
 		StoreName:	storeName,
 		DisplayName: displayName,
 		UserID: uploaderID,
 		Description: MovieDescription(""),
+		ThumbnailName: thumbnailName,
 		Public:	MoviePublic(0),
 		Status: MovieStatus(0),
 	}
