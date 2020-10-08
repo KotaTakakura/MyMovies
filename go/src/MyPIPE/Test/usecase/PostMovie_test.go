@@ -30,7 +30,7 @@ func TestPostMovie(t *testing.T){
 	//mockgen -source domain/factory/IMovieModel.go -destination Test/mock/factory/mock_movieFactory.go
 
 	MovieFactory.EXPECT().
-		CreateMovieModel(postMovieDTO.UserID,postMovieDTO.FileHeader).
+		CreateMovieModel(postMovieDTO.UserID,postMovieDTO.FileHeader,postMovieDTO.ThumbnailHeader).
 		Return(&model.Movie{
 			UserID: postMovieDTO.UserID,
 	},nil)
