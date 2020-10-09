@@ -23,28 +23,28 @@ func NewPostMovie(fr repository.FileUpload,tu repository.ThumbnailUploadReposito
 	}
 }
 
-func (p *PostMovie)PostMovie(postMovieDTO *PostMovieDTO)error{
+func (p *PostMovie)PostMovie(postMovieDTO *PostMovieDTO)(*model.Movie,error){
 	newMovie,createError := p.MovieModelFactory.CreateMovieModel(postMovieDTO.UserID,postMovieDTO.FileHeader,postMovieDTO.ThumbnailHeader)
 	if createError != nil{
-		return createError
+		return nil,createError
 	}
 
 	savedNewMovie,saveError := p.MovieRepository.Save(*newMovie)
 	if saveError != nil{
-		return saveError
+		return nil,saveError
 	}
 
 	err := p.FileUploadRepository.Upload(postMovieDTO.File,postMovieDTO.FileHeader,savedNewMovie.ID)
 	if err != nil{
-		return err
+		return nil,err
 	}
 
-	thumbnailUploadErr := p.ThumbnailUploadRepository.Upload(postMovieDTO.Thumbnail,postMovieDTO.ThumbnailHeader,savedNewMovie.ID)
+	thumbnailUploadErr := p.ThumbnailUploadRepository.Upload(postMovieDTO.Thumbnail,*savedNewMovie)
 	if thumbnailUploadErr != nil{
-		return thumbnailUploadErr
+		return nil,thumbnailUploadErr
 	}
 
-	return nil
+	return savedNewMovie,nil
 }
 
 type PostMovieDTO struct{

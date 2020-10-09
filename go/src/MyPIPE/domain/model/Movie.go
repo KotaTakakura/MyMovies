@@ -2,6 +2,8 @@ package model
 
 import (
 	validation "github.com/go-ozzo/ozzo-validation"
+	"mime/multipart"
+	"path/filepath"
 	"strconv"
 	"time"
 	"errors"
@@ -33,8 +35,10 @@ func NewMovieDisplayName(displayName string) (MovieDisplayName,error) {
 
 type MovieThumbnailName string
 
-func NewMovieThumbnailName(thumbnailName string) (MovieThumbnailName,error){
-	return MovieThumbnailName(thumbnailName),nil
+func NewMovieThumbnailName(thumbnailHeader multipart.FileHeader) (MovieThumbnailName,error){
+	extension := filepath.Ext(thumbnailHeader.Filename)
+	timestamp := strconv.FormatInt(time.Now().Unix(),10)
+	return MovieThumbnailName("_" + timestamp + extension),nil
 }
 
 type MoviePublic uint
@@ -108,5 +112,10 @@ func (m *Movie) ChangePublic(publicStatus MoviePublic)error{
 
 func (m *Movie) ChangeStatus(status MovieStatus)error{
 	m.Status = status
+	return nil
+}
+
+func (m *Movie) ChangeThumbnailName(thumbnailName MovieThumbnailName)error{
+	m.ThumbnailName = thumbnailName
 	return nil
 }

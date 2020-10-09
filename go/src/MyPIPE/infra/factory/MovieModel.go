@@ -23,7 +23,7 @@ func (m MovieModelFactory)CreateMovieModel(uploaderID model.UserID,fileHeader mu
 		return nil,displayNameErr
 	}
 
-	thumbnailName,thumbnailNameErr := model.NewMovieThumbnailName(filepath.Ext(thumbnailHeader.Filename))
+	thumbnailName,thumbnailNameErr := model.NewMovieThumbnailName(thumbnailHeader)
 	if thumbnailNameErr != nil{
 		return nil,thumbnailNameErr
 	}

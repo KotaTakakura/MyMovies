@@ -7,8 +7,10 @@ import (
 	"MyPIPE/usecase"
 	"encoding/json"
 	jwt "github.com/appleboy/gin-jwt/v2"
+	support "MyPIPE/infra/UploadThumbnail"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 func GetUploadedMovies(c *gin.Context){
@@ -118,4 +120,64 @@ type UpdateMovieDTO struct{
 	Description string	`json:"description"`
 	Public uint	`json:"public"`
 	Status uint	`json:"status"`
+}
+
+func ChangeThumbnail(c *gin.Context){
+
+	//バリデーションエラー格納
+	validationErrors := make(map[string]string)
+	//ユーザーID取得
+	iuserId := uint64(jwt.ExtractClaims(c)["id"].(float64))
+	userId,userIdErr := model.NewUserID(iuserId)
+	//ユーザーID valid
+	if userIdErr != nil{
+		validationErrors["user_id"] = userIdErr.Error()
+	}
+
+	requestMovieId := c.PostForm("movie_id")
+	imovieId,_ := strconv.ParseUint(requestMovieId, 10, 64)
+	movieId,movieIdErr := model.NewMovieID(imovieId)
+	if movieIdErr != nil{
+		validationErrors["movie_id"] = movieIdErr.Error()
+	}
+
+	if  len(validationErrors) != 0{
+		validationErrors,_ := json.Marshal(validationErrors)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"result": "Validation Error.",
+			"messages": string(validationErrors),
+		})
+		c.Abort()
+		return
+	}
+
+	thumbnail,thumbnailHeader, thumbnailErr :=  c.Request.FormFile("uploadThumbnail")
+	if thumbnailErr != nil{
+		c.JSON(http.StatusBadRequest, gin.H{
+			"result": "Thumbnail Change Error.",
+			"messages": thumbnailErr.Error(),
+		})
+		c.Abort()
+		return
+	}
+
+	changeThumbnailDTO := usecase.NewChangeThumbnailDTO(userId,movieId,thumbnail,*thumbnailHeader)
+	movieRepository := infra.NewMoviePersistence()
+	thumbnailUploadRepository := support.NewUploadThumbnailToAmazonS3()
+	changeThumbnailUsecase := usecase.NewChangeThumbnail(movieRepository,thumbnailUploadRepository)
+	changeThumbnailUsecaseErr := changeThumbnailUsecase.ChangeThumbnail(*changeThumbnailDTO)
+	if changeThumbnailUsecaseErr != nil{
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"result": "Server Error.",
+			"messages": changeThumbnailUsecaseErr.Error(),
+		})
+		c.Abort()
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"result": "OK",
+		"messages": "OK",
+	})
+
 }

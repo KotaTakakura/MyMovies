@@ -64,7 +64,7 @@ func UploadMovieFile(c *gin.Context){
 
 	newMovie := factory.NewMovieModelFactory()
 	uploadUsecase := usecase.NewPostMovie(support.NewUploadToAmazonS3(),thumb.NewUploadThumbnailToAmazonS3(),infra.NewMoviePersistence(),*newMovie)
-	err := uploadUsecase.PostMovie(postMovieDTO)
+	newMovieModel,err := uploadUsecase.PostMovie(postMovieDTO)
 	if err != nil{
 		c.JSON(http.StatusBadRequest, gin.H{
 			"result": "PostMovie Error.",
@@ -73,8 +73,7 @@ func UploadMovieFile(c *gin.Context){
 		c.Abort()
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"result": "OK",
-		"messages": "OK",
-	})
+
+	jsonNewMovieModel,_ := json.Marshal(newMovieModel)
+	c.JSON(http.StatusOK, string(jsonNewMovieModel))
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"log"
 	"mime/multipart"
+	"path/filepath"
 	"strconv"
 )
 
@@ -16,11 +17,11 @@ func NewUploadThumbnailToAmazonS3()*UploadThumbnailToAmazonS3{
 	return &UploadThumbnailToAmazonS3{}
 }
 
-func (u UploadThumbnailToAmazonS3)Upload(file multipart.File,movie model.Movie) error{
+func (u UploadThumbnailToAmazonS3)Upload(file multipart.File,movieFileHeader multipart.FileHeader,movieID model.MovieID) error{
 	sess := session.Must(session.NewSession())
+	extension := filepath.Ext(movieFileHeader.Filename)
 	bucketName := "mypipe-111"
-	movieIdString := strconv.FormatUint(uint64(movie.ID),10)
-	objectKey := "thumbnails/" + movieIdString + string(movie.ThumbnailName)
+	objectKey := "thumbnails/" + strconv.FormatUint(uint64(movieID), 10) + extension
 
 	// Uploaderを作成し、ローカルファイルをアップロード
 	uploader := s3manager.NewUploader(sess)
