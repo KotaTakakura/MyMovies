@@ -35,15 +35,15 @@ func (m *MockThumbnailUploadRepository) EXPECT() *MockThumbnailUploadRepositoryM
 }
 
 // Upload mocks base method
-func (m *MockThumbnailUploadRepository) Upload(file multipart.File, movieFileHeader multipart.FileHeader, movieID model.MovieID) error {
+func (m *MockThumbnailUploadRepository) Upload(file multipart.File, movie model.Movie) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Upload", file, movieFileHeader, movieID)
+	ret := m.ctrl.Call(m, "Upload", file, movie)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Upload indicates an expected call of Upload
-func (mr *MockThumbnailUploadRepositoryMockRecorder) Upload(file, movieFileHeader, movieID interface{}) *gomock.Call {
+func (mr *MockThumbnailUploadRepositoryMockRecorder) Upload(file, movie interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Upload", reflect.TypeOf((*MockThumbnailUploadRepository)(nil).Upload), file, movieFileHeader, movieID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Upload", reflect.TypeOf((*MockThumbnailUploadRepository)(nil).Upload), file, movie)
 }

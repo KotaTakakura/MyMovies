@@ -44,10 +44,10 @@ func TestPostMovie(t *testing.T){
 	})
 
 	FileRepository.EXPECT().Upload(postMovieDTO.File,postMovieDTO.FileHeader,model.Movie{}.ID).Return(nil)
-	ThumbnailUploadRepository.EXPECT().Upload(postMovieDTO.Thumbnail,postMovieDTO.ThumbnailHeader,model.Movie{}.ID).Return(nil)
+	ThumbnailUploadRepository.EXPECT().Upload(postMovieDTO.Thumbnail,model.Movie{}).Return(nil)
 
 	postMovieUsecase := usecase.NewPostMovie(FileRepository,ThumbnailUploadRepository,MovieRepository,MovieFactory)
-	result := postMovieUsecase.PostMovie(&postMovieDTO)
+	_,result := postMovieUsecase.PostMovie(&postMovieDTO)
 	if result != nil{
 		t.Error("PostMovie Usecase Error.")
 	}

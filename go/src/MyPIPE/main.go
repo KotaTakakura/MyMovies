@@ -74,6 +74,7 @@ func main() {
 		auth.GET("/hello", helloHandler)
 		auth.POST("/movie", handler.UploadMovieFile)
 		auth.PUT("/movie",handler.UpdateMovie)
+		auth.PUT("/thumbnail",handler.ChangeThumbnail)
 		auth.POST("/evaluates", handler.EvaluateMovie)
 		auth.POST("/play-lists",handler.CreatePlayList)
 		auth.POST("/play-list-items",handler.AddPlayList)
