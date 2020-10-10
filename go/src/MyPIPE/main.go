@@ -66,6 +66,7 @@ func main() {
 	router.GET("/refresh_token", authMiddleware.RefreshHandler)
 	router.POST("/new", handler.TemporaryRegisterUser)
 	router.POST("/register", handler.RegisterUser)
+	router.GET("/comments",handler.GetComments)
 
 	auth := router.Group("/auth/api/v1")
 	auth.Use(authMiddleware.MiddlewareFunc())
