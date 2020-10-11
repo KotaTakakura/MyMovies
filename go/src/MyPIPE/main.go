@@ -67,8 +67,9 @@ func main() {
 	router.POST("/new", handler.TemporaryRegisterUser)
 	router.POST("/register", handler.RegisterUser)
 
-	api := router.Group("/auth/api/v1")
+	api := router.Group("/api/v1")
 	api.GET("/movie-and-comments",handler.GetMovieAndComments)
+	api.GET("/index-movies",handler.IndexMovie)
 
 	auth := router.Group("/auth/api/v1")
 	auth.Use(authMiddleware.MiddlewareFunc())
