@@ -10,7 +10,7 @@ import (
 	"strconv"
 )
 
-func GetComments(c *gin.Context){
+func GetMovieAndComments(c *gin.Context){
 	var getCommentsJson GetCommentsJson
 	c.Bind(&getCommentsJson)
 
@@ -31,9 +31,9 @@ func GetComments(c *gin.Context){
 		return
 	}
 
-	getCommentsDTO := usecase.NewGetCommentsDTO(movieId)
+	getCommentsDTO := usecase.NewGetMovieAndCommentsDTO(movieId)
 	commentQueryService := queryService_infra.NewCommentQueryService()
-	getCommentsUsecase := usecase.NewGetComments(commentQueryService)
+	getCommentsUsecase := usecase.NewGetMovieAndComments(commentQueryService)
 	comments := getCommentsUsecase.Get(*getCommentsDTO)
 
 	jsonResult, jsonMarshalErr := json.Marshal(comments)
