@@ -85,6 +85,7 @@ func main() {
 		auth.POST("/follows",handler.FollowUser)
 
 		auth.GET("/movies",handler.GetUploadedMovies)
+		auth.GET("/play-lists",handler.IndexPlayListsInMyPage)
 	}
 
 	router.Run()
