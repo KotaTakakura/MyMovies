@@ -30,17 +30,28 @@ func NewPlayListName(playListName string)(PlayListName,error){
 	return PlayListName(playListName),nil
 }
 
+type PlayListDescription string
+
+func NewPlayListDescription(playListDescription string)(PlayListDescription,error){
+	return PlayListDescription(playListDescription),nil
+}
+
 type PlayList struct {
 	ID            PlayListID `json:"id" gorm:"primaryKey"`
 	UserID        UserID `gorm:"column:user_id"`
 	Name          PlayListName `gorm:"column:name"`
+	Description	  PlayListDescription
 	PlayListItems []MovieID `gorm:"-"`
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 }
 
-func NewPlayList()*PlayList{
-	return &PlayList{}
+func NewPlayList(userId UserID,name PlayListName,description PlayListDescription)*PlayList{
+	return &PlayList{
+		UserID:        userId,
+		Name:          name,
+		Description:   description,
+	}
 }
 
 func (PlayList) TableName() string {

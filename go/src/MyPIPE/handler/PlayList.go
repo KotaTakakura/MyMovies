@@ -38,6 +38,12 @@ func CreatePlayList(c *gin.Context){
 		validationErrors["play_list_name"] = playListNameErr.Error()
 	}
 
+	var playListDescriptionErr error
+	CreatePlayListDTO.PlayListDescription,playListDescriptionErr = model.NewPlayListDescription(playListJson.PlayListDescription)
+	if playListDescriptionErr != nil{
+		validationErrors["play_list_description"] = playListDescriptionErr.Error()
+	}
+
 	if len(validationErrors) != 0{
 		validationErrors,_ := json.Marshal(validationErrors)
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -70,4 +76,5 @@ func CreatePlayList(c *gin.Context){
 type CreatePlayListJson struct{
 	UserID uint64
 	PlayListName string `json:"play_list_name"`
+	PlayListDescription string `json:"play_list_description"`
 }
