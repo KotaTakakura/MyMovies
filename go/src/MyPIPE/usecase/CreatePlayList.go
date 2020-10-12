@@ -21,10 +21,7 @@ func NewCreatePlayList(u repository.UserRepository,p repository.PlayListReposito
 }
 
 func (c CreatePlayList)CreatePlayList(createPlayList CreatePlayListDTO)error{
-	playList := model.NewPlayList()
-	playList.UserID = createPlayList.UserID
-
-	playList.Name = createPlayList.PlayListName
+	playList := model.NewPlayList(createPlayList.UserID,createPlayList.PlayListName,createPlayList.PlayListDescription)
 
 	playListRepository := infra.NewPlayListPersistence()
 	checkSameUserIDAndNameExistsService := domain_service.NewCheckSameUserIDAndNameExists(playListRepository)
@@ -46,4 +43,5 @@ func (c CreatePlayList)CreatePlayList(createPlayList CreatePlayListDTO)error{
 type CreatePlayListDTO struct{
 	UserID model.UserID
 	PlayListName model.PlayListName
+	PlayListDescription	model.PlayListDescription
 }
