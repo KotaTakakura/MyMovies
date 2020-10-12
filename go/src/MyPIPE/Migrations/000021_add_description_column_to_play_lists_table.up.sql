@@ -1,0 +1,1 @@
+ALTER TABLE play_lists ADD COLUMN description LONGTEXT NULL AFTER name;
