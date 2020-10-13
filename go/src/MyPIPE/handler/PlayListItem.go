@@ -2,8 +2,8 @@ package handler
 
 import (
 	"MyPIPE/domain/model"
-	domain_service "MyPIPE/domain/service/PlayList"
 	"MyPIPE/infra"
+	"MyPIPE/infra/factory"
 	"MyPIPE/usecase"
 	"encoding/json"
 	jwt "github.com/appleboy/gin-jwt/v2"
@@ -11,7 +11,7 @@ import (
 	"net/http"
 )
 
-func AddPlayList(c *gin.Context){
+func AddPlayListMovie(c *gin.Context){
 	var playListItemAddJson AddPlayListItemJson
 	c.Bind(&playListItemAddJson)
 	userId := uint64(jwt.ExtractClaims(c)["id"].(float64))
@@ -48,9 +48,9 @@ func AddPlayList(c *gin.Context){
 	}
 
 	playListRepository := infra.NewPlayListPersistence()
-	movieRepository := infra.NewMoviePersistence()
-	playListService := domain_service.NewPlayListService(movieRepository)
-	playListItemAddUsecase := usecase.NewAddPlayListItem(playListRepository,playListService)
+	playListMovieRepository := infra.NewPlayListMoviePersistence()
+	playListMovieFactory := factory.NewPlayListMovieFactory()
+	playListItemAddUsecase := usecase.NewAddPlayListItem(playListRepository,playListMovieRepository,playListMovieFactory)
 	err := playListItemAddUsecase.AddPlayListItem(playListItemAddDTO)
 	if err != nil{
 		c.JSON(http.StatusBadRequest, gin.H{
