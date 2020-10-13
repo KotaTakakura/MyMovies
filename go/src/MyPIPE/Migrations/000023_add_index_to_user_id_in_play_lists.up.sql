@@ -1,0 +1,1 @@
+ALTER TABLE play_lists ADD INDEX user_id_idx(user_id);

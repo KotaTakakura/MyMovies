@@ -1,0 +1,1 @@
+ALTER TABLE play_list_movies ADD INDEX play_list_id_idx(play_list_id);

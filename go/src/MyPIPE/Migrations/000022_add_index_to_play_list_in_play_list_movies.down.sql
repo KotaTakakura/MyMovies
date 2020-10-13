@@ -1,0 +1,1 @@
+ALTER TABLE play_list_movies DROP INDEX play_list_id_idx;
