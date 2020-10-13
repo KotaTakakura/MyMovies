@@ -81,7 +81,7 @@ func main() {
 		auth.PUT("/thumbnail",handler.ChangeThumbnail)
 		auth.POST("/evaluates", handler.EvaluateMovie)
 		auth.POST("/play-lists",handler.CreatePlayList)
-		auth.POST("/play-list-items",handler.AddPlayList)
+		auth.POST("/play-list-items",handler.AddPlayListMovie)
 		auth.POST("/follows",handler.FollowUser)
 
 		auth.GET("/movies",handler.GetUploadedMovies)

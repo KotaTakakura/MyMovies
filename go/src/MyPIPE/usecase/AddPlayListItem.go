@@ -1,21 +1,23 @@
 package usecase
 
 import (
+	"MyPIPE/domain/factory"
 	"MyPIPE/domain/model"
 	"MyPIPE/domain/repository"
-	domain_service "MyPIPE/domain/service/PlayList"
 	"errors"
 )
 
 type AddPlayListItem struct{
 	PlayListRepository	repository.PlayListRepository
-	PlayListService domain_service.IPlayListService
+	PlayListMovieRepository repository.PlayListMovieRepository
+	PlaylistMovieFactory factory.IPlayListMovie
 }
 
-func NewAddPlayListItem(p repository.PlayListRepository,ps domain_service.IPlayListService)*AddPlayListItem{
+func NewAddPlayListItem(p repository.PlayListRepository,plmr repository.PlayListMovieRepository,plmf factory.IPlayListMovie)*AddPlayListItem{
 	return &AddPlayListItem{
 		PlayListRepository: p,
-		PlayListService: ps,
+		PlayListMovieRepository: plmr,
+		PlaylistMovieFactory: plmf,
 	}
 }
 
@@ -29,23 +31,17 @@ func (a AddPlayListItem)AddPlayListItem(playListItemAddJson AddPlayListItemAddJs
 		return playListFindErr
 	}
 
-	var addPlayListItemErr error
-
-	if a.PlayListService.CanAddItem(playListItemAddJson.MovieID) {
-		addPlayListItemErr = playList.AddItem(playListItemAddJson.MovieID)
-	}else{
-		return errors.New("Can't Add This Movie.")
+	playListMovie,err := a.PlaylistMovieFactory.CreatePlayListMovie(playListItemAddJson.PlayListID,playListItemAddJson.MovieID)
+	if err != nil{
+		return err
 	}
-	if addPlayListItemErr != nil{
-		return addPlayListItemErr
-	}
-
-	savePlayListErr := a.PlayListRepository.Save(playList)
-	if savePlayListErr != nil{
-		return savePlayListErr
+	savePlayListMovieErr := a.PlayListMovieRepository.Save(playListMovie)
+	if savePlayListMovieErr != nil{
+		return savePlayListMovieErr
 	}
 
 	return nil
+
 }
 
 type AddPlayListItemAddJson struct{
