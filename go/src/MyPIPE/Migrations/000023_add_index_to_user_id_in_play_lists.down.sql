@@ -1,0 +1,1 @@
+ALTER TABLE play_lists DROP INDEX user_id_idx;
