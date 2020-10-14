@@ -86,7 +86,9 @@ func main() {
 
 		auth.GET("/movies",handler.GetUploadedMovies)
 		auth.GET("/play-lists",handler.IndexPlayListsInMyPage)
-		auth.GET("/play-list-items/:play_list_id",handler.IndexPlaylistMovies)
+		auth.GET("/play-list-items/:movie_id",handler.IndexPlaylistMovies)
+
+		auth.GET("play-lists/:movie_id",handler.IndexPlayListInMovieListPage)
 	}
 
 	router.Run()
