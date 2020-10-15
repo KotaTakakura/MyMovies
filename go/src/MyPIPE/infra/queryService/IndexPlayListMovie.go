@@ -23,6 +23,9 @@ func (i IndexPlayListMovieInMyPage)Find(userId uint64,playListId uint64)*querySe
 		"left join movies on play_list_movies.movie_id = movies.id " +
 		"order by `order`",userId,playListId).
 		Scan(&playListMovies)
+	if len(playListMovies) == 1 && playListMovies[0].MovieID == 0{
+		playListMovies = nil
+	}
 
 	var playList queryService.PlayListForIndexPlayListMovieInMyPageDTO
 	db.Raw("select id as play_list_id,name as play_list_name,description as play_list_description from play_lists where id = ? and user_id = ?",playListId,userId).Scan(&playList)
