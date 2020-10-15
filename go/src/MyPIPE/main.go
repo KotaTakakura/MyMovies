@@ -56,7 +56,7 @@ func main() {
 
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"POST","PUT", "PATCH"},
+		AllowMethods:     []string{"POST","PUT", "PATCH","DELETE"},
 		AllowHeaders:     []string{"Origin","Access-Control-Allow-Origin","Content-type","Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
@@ -86,9 +86,11 @@ func main() {
 
 		auth.GET("/movies",handler.GetUploadedMovies)
 		auth.GET("/play-lists",handler.IndexPlayListsInMyPage)
-		auth.GET("/play-list-items/:movie_id",handler.IndexPlaylistMovies)
+		auth.GET("/play-list-items/:play_list_id",handler.IndexPlaylistMovies)
 
 		auth.GET("play-lists/:movie_id",handler.IndexPlayListInMovieListPage)
+
+		auth.DELETE("/play-list-items",handler.DeletePlayListMovie)
 	}
 
 	router.Run()

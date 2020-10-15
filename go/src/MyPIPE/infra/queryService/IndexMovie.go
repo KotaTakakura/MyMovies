@@ -19,8 +19,8 @@ func (i IndexMovie)Search(page int,keyWord string)queryService.IndexMovieDTO{
 		Select("movies.id as movie_id, movies.display_name as movie_display_name,movies.thumbnail_name as thumbnail_name,users.id as user_id,users.name as user_name").
 		Joins("inner join users on movies.user_id = users.id").
 		Where("match(movies.display_name) against(? IN BOOLEAN MODE)",keyWord).
-		Limit(50).
-		Offset((page - 1) * 50).
+		Limit(24).
+		Offset((page - 1) * 24).
 		Scan(&movies)
 
 	var count uint64
@@ -45,8 +45,8 @@ func (i IndexMovie)All(page int)queryService.IndexMovieDTO{
 	db.Table("movies").
 		Select("movies.id as movie_id, movies.display_name as movie_display_name,movies.thumbnail_name as thumbnail_name,users.id as user_id,users.name as user_name").
 		Joins("inner join users on movies.user_id = users.id").
-		Limit(50).
-		Offset((page - 1) * 50).
+		Limit(24).
+		Offset((page - 1) * 24).
 		Scan(&movies)
 
 	var count uint64
