@@ -12,9 +12,23 @@ func NewIndexMovie(imq queryService.IndexMovieQueryService)*IndexMovie{
 	}
 }
 
-func (i IndexMovie)Search(page int,keyWord string)queryService.IndexMovieDTO{
-	if keyWord == ""{
-		return i.IndexMovieQueryService.All(page)
+func (i IndexMovie)Search(indexMovieSearchDTO *IndexMovieSearchDTO)queryService.IndexMovieDTO{
+	if indexMovieSearchDTO.KeyWord == ""{
+		return i.IndexMovieQueryService.All(indexMovieSearchDTO.Page,indexMovieSearchDTO.Order)
 	}
-	return i.IndexMovieQueryService.Search(page,keyWord)
+	return i.IndexMovieQueryService.Search(indexMovieSearchDTO.Page,indexMovieSearchDTO.KeyWord,indexMovieSearchDTO.Order)
+}
+
+type IndexMovieSearchDTO struct{
+	Page int
+	KeyWord string
+	Order queryService.IndexMovieQueryServiceOrder
+}
+
+func NewIndexMovieSearchDTO(page int,keyWord string,order queryService.IndexMovieQueryServiceOrder)*IndexMovieSearchDTO{
+	return &IndexMovieSearchDTO{
+		Page:    page,
+		KeyWord: keyWord,
+		Order:   order,
+	}
 }
