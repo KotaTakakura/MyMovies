@@ -17,7 +17,11 @@ func NewMovieEvaluatePersistence()*MovieEvaluatePersistence{
 
 func (m MovieEvaluatePersistence) FindByUserIdAndMovieId(userId model.UserID, movieId model.MovieID) *model.MovieEvaluation {
 	var evaluation model.MovieEvaluation
-	m.DatabaseAccessor.Where("movie_id = ? and user_id = ?",movieId,userId).Take(&evaluation)
+	var count int
+	result := m.DatabaseAccessor.Where("movie_id = ? and user_id = ?",movieId,userId).Take(&evaluation)
+	if count == 0{
+		return nil
+	}
 	return &evaluation
 }
 

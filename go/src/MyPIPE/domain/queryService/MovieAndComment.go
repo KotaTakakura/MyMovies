@@ -9,6 +9,7 @@ type CommentQueryService interface {
 
 type FindByMovieIdDTO struct{
 	Movie MovieForFindByMovieIdDTO	`json:"movie"`
+	MovieLikeCount	int	`json:"movie_like_count"`
 	User UserForFindByMovieIdDTO	`json:"posted_user"`
 	Comments []CommentsFoundByMovieId	`json:"comments"`
 }
