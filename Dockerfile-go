@@ -3,4 +3,4 @@ WORKDIR /go/src/MyPIPE
 ADD ./go /go
 EXPOSE 8080
 RUN go build
-CMD ["./MyPIPE"]
+CMD ["/go/src/MyPIPE/MyPIPE"]
