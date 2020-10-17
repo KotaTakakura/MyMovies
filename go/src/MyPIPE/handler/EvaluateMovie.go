@@ -71,7 +71,6 @@ func EvaluateMovie(c *gin.Context){
 }
 
 type EvaluateMovieJson struct{
-	UserID uint64
 	MovieID uint64	`json:"movie_id"`
 	Evaluation string `json:"evaluate"`
 }
