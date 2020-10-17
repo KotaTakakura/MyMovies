@@ -29,14 +29,20 @@ func (e EvaluateMovie)EvaluateMovie(evaluateMovieDTO EvaluateMovieDTO)error{
 	}
 	
 	movieEvaluation := e.MovieEvaluationRepository.FindByUserIdAndMovieId(evaluateMovieDTO.UserID,evaluateMovieDTO.MovieID)
+
+	if movieEvaluation == nil{
+		newMovieEvaluation := model.NewMovieEvaluation(evaluateMovieDTO.UserID,evaluateMovieDTO.MovieID,evaluateMovieDTO.Evaluation)
+		evaluationSaveErr := e.MovieEvaluationRepository.Save(newMovieEvaluation)
+		if evaluationSaveErr != nil{
+			return evaluationSaveErr
+		}
+		return nil
+	}
+
 	evaluationErr := movieEvaluation.EvaluateMovie(evaluateMovieDTO.Evaluation)
 	if evaluationErr != nil {
 		return evaluationErr
 	}
-
-	movieEvaluation.MovieID = evaluateMovieDTO.MovieID
-	movieEvaluation.UserID = evaluateMovieDTO.UserID
-	movieEvaluation.Evaluation = evaluateMovieDTO.Evaluation
 
 	evaluationSaveErr := e.MovieEvaluationRepository.Save(movieEvaluation)
 	if evaluationSaveErr != nil{
