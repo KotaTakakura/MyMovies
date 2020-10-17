@@ -2,5 +2,5 @@ FROM golang:latest
 WORKDIR /go/src/MyPIPE
 ADD ./go /go
 EXPOSE 8080
-CMD ["go","build"]
-CMD ["./MyPIPE"]
+RUN go build
+CMD ["/go/src/MyPIPE/MyPIPE"]
