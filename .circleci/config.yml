@@ -18,6 +18,19 @@ workflows:
           filters:
             branches:
               only: master
+      - aws-ecr/build-and-push-image:
+          account-url: AWS_ECR_ACCOUNT_URL
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          create-repo: true
+          dockerfile: Dockerfile-nginx
+          path: .
+          region: AWS_REGION
+          repo: my_movies_nginx_repo
+          tag: "$CIRCLE_SHA1"
+          filters:
+            branches:
+              only: master
 #       - aws-ecs/deploy-service-update:
 #           requires:
 #             - aws-ecr/build-and-push-image
