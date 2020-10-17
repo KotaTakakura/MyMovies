@@ -30,13 +30,13 @@ func (c CommentQueryService)FindByMovieId(movieId model.MovieID)queryService.Fin
 
 	var likeCount int
 	db.Table("movie_evaluations").
-		Where("movie_id = ?",movieId).
+		Where("movie_id = ? and evaluation = 0",movieId).
 		Count(&likeCount)
 
 	var user queryService.UserForFindByMovieIdDTO
 	db.Table("users").
 		Where("id = ?",movie.UserID).
-		Take(&movie)
+		Take(&user)
 
 	result := queryService.FindByMovieIdDTO{
 		Movie:    movie,

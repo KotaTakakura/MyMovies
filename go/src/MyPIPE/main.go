@@ -67,6 +67,7 @@ func main() {
 	router.GET("/refresh_token", authMiddleware.RefreshHandler)
 	router.POST("/new", handler.TemporaryRegisterUser)
 	router.POST("/register", handler.RegisterUser)
+	router.GET("/evaluated",handler.CheckUserAlreadyLikedMovie)
 
 	api := router.Group("/api/v1")
 	api.GET("/movie-and-comments",handler.GetMovieAndComments)
