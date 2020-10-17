@@ -10,6 +10,7 @@ import (
 	"github.com/gin-contrib/cors"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"log"
+	"net/http"
 	"os"
 	"time"
 )
@@ -92,6 +93,11 @@ func main() {
 
 		auth.DELETE("/play-list-items",handler.DeletePlayListMovie)
 	}
+
+	router.GET("/health",func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Healthy."})
+	})
 
 	router.Run()
 }

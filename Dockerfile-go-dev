@@ -6,5 +6,4 @@ ENV Dialect="mysql"
 ENV DBName="mypipe"
 ENV AWS_REGION="ap-northeast-1"
 ENV DBProtocol="tcp(MyPIPE-mysql)"
-CMD ["go","build"]
-CMD ["./MyPIPE"]
+RUN go build
