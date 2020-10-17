@@ -1,75 +1,75 @@
 version: 2.1
-#orbs:
-#  aws-ecr: circleci/aws-ecr@6.12.2
-#  aws-ecs: circleci/aws-ecs@1.2.0
-#workflows:
-#  build-and-deploy:
-#    jobs:
-#      - aws-ecr/build-and-push-image:
-#          account-url: AWS_ECR_ACCOUNT_URL
-#          aws-access-key-id: AWS_ACCESS_KEY_ID
-#          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-#          create-repo: true
-#          dockerfile: Dockerfile-go
-#          path: .
-#          region: AWS_REGION
-#          repo: mp-go
-#          tag: "$CIRCLE_SHA1"
-#          filters:
-#            branches:
-#              only: master
-      # - aws-ecs/deploy-service-update:
-      #     requires:
-      #       - aws-ecr/build-and-push-image
-      #     family: 'Go'
-      #     cluster-name: 'mypipe'
-      #     service-name: 'sss'
-jobs:
-  build:
-    docker:
-      - image: circleci/golang:latest
-      - image: circleci/mysql:5.7
-        environment:
-          MYSQL_DATABASE: 'mypipe'
-          MYSQL_USER: 'root'
-          MYSQL_ROOT_PASSWORD: 'root'
-    steps:
-      - checkout
-
-      - restore_cache:
-          key: mod-aaa-{{ checksum "./go/src/MyPIPE/go.sum" }}
-
-      - run:
-          name: install_migrate
-          command: sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y curl gnupg2 vim && sudo curl -L https://github.com/golang-migrate/migrate/releases/download/v4.11.0/migrate.linux-amd64.tar.gz | tar xvz && sudo mv ./migrate.linux-amd64 /usr/bin/migrate
-
-      - run:
-          name: go_build
-          command: cd ./go/src/MyPIPE && go build
-
-      - run:
-          name: usecaseTest
-          command: cd ./go/src/MyPIPE && go test -v ./Test/usecase/...
-
-      - run:
-          name: valueObjectTest
-          command: cd ./go/src/MyPIPE && go test -v ./Test/model/value_object/...
-
-      - run:
-          name: install dockerize
-          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
-          environment:
-            DOCKERIZE_VERSION: v0.3.0
-
-      - run:
-          name: wait for db
-          command: dockerize -wait tcp://localhost:3306 -timeout 1m
-
-      - run:
-          name: migrationTest
-          command: cd ./go/src/MyPIPE && migrate -database "mysql://root:root@tcp(127.0.0.1:3306)/mypipe" -path ./Migrations up
-
-      - save_cache:
-          key: mod-aaa-{{ checksum "./go/src/MyPIPE/go.sum" }}
-          paths:
-            - /go/pkg/mod
+orbs:
+  aws-ecr: circleci/aws-ecr@6.12.2
+  aws-ecs: circleci/aws-ecs@1.2.0
+workflows:
+  build-and-deploy:
+    jobs:
+      - aws-ecr/build-and-push-image:
+          account-url: AWS_ECR_ACCOUNT_URL
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          create-repo: true
+          dockerfile: Dockerfile-go
+          path: .
+          region: AWS_REGION
+          repo: my_movies_api_repo
+          tag: "$CIRCLE_SHA1"
+          filters:
+            branches:
+              only: master
+#       - aws-ecs/deploy-service-update:
+#           requires:
+#             - aws-ecr/build-and-push-image
+#           family: 'Go'
+#           cluster-name: 'MyPIPE'
+#           service-name: 'sss'
+#jobs:
+#  build:
+#    docker:
+#      - image: circleci/golang:latest
+#      - image: circleci/mysql:5.7
+#        environment:
+#          MYSQL_DATABASE: 'mypipe'
+#          MYSQL_USER: 'root'
+#          MYSQL_ROOT_PASSWORD: 'root'
+#    steps:
+#      - checkout
+#
+#      - restore_cache:
+#          key: mod-aaa-{{ checksum "./go/src/MyPIPE/go.sum" }}
+#
+#      - run:
+#          name: install_migrate
+#          command: sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y curl gnupg2 vim && sudo curl -L https://github.com/golang-migrate/migrate/releases/download/v4.11.0/migrate.linux-amd64.tar.gz | tar xvz && sudo mv ./migrate.linux-amd64 /usr/bin/migrate
+#
+#      - run:
+#          name: go_build
+#          command: cd ./go/src/MyPIPE && go build
+#
+#      - run:
+#          name: usecaseTest
+#          command: cd ./go/src/MyPIPE && go test -v ./Test/usecase/...
+#
+#      - run:
+#          name: valueObjectTest
+#          command: cd ./go/src/MyPIPE && go test -v ./Test/model/value_object/...
+#
+#      - run:
+#          name: install dockerize
+#          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+#          environment:
+#            DOCKERIZE_VERSION: v0.3.0
+#
+#      - run:
+#          name: wait for db
+#          command: dockerize -wait tcp://localhost:3306 -timeout 1m
+#
+#      - run:
+#          name: migrationTest
+#          command: cd ./go/src/MyPIPE && migrate -database "mysql://root:root@tcp(127.0.0.1:3306)/mypipe" -path ./Migrations up
+#
+#      - save_cache:
+#          key: mod-aaa-{{ checksum "./go/src/MyPIPE/go.sum" }}
+#          paths:
+#            - /go/pkg/mod
