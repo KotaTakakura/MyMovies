@@ -2,22 +2,19 @@ package infra
 
 import (
 	"MyPIPE/domain/model"
-	"github.com/jinzhu/gorm"
 )
 
-type CommentPersistence struct {
-	DatabaseAccessor *gorm.DB
-}
+type CommentPersistence struct {}
 
 func NewCommentPersistence() *CommentPersistence {
-	return &CommentPersistence{
-		DatabaseAccessor: ConnectGorm(),
-	}
+	return &CommentPersistence{}
 }
 
 func (c *CommentPersistence) GetAll() ([]model.Comment, error) {
+	db := ConnectGorm()
+	defer db.Close()
 	var comments []model.Comment
-	result := c.DatabaseAccessor.Find(comments)
+	result := db.Find(comments)
 	if result != nil {
 		return nil, result.Error
 	}
@@ -25,8 +22,10 @@ func (c *CommentPersistence) GetAll() ([]model.Comment, error) {
 }
 
 func (c *CommentPersistence) FindById(commentID model.CommentID) (*model.Comment, error) {
+	db := ConnectGorm()
+	defer db.Close()
 	var comment *model.Comment
-	result := c.DatabaseAccessor.Find(comment, commentID)
+	result := db.Find(comment, commentID)
 	if result != nil {
 		return nil, result.Error
 	}
@@ -34,8 +33,10 @@ func (c *CommentPersistence) FindById(commentID model.CommentID) (*model.Comment
 }
 
 func (c *CommentPersistence) FindByUserId(userId model.UserID) ([]model.Comment, error) {
+	db := ConnectGorm()
+	defer db.Close()
 	var comments []model.Comment
-	result := c.DatabaseAccessor.Where("user_id = ?", userId).Find(comments)
+	result := db.Where("user_id = ?", userId).Find(comments)
 	if result != nil {
 		return nil, result.Error
 	}
@@ -43,8 +44,10 @@ func (c *CommentPersistence) FindByUserId(userId model.UserID) ([]model.Comment,
 }
 
 func (c *CommentPersistence) FindByMovieId(movieId model.MovieID) ([]model.Comment, error) {
+	db := ConnectGorm()
+	defer db.Close()
 	var comments []model.Comment
-	result := c.DatabaseAccessor.Where("movie_id = ?", movieId).Find(comments)
+	result := db.Where("movie_id = ?", movieId).Find(comments)
 	if result != nil {
 		return nil, result.Error
 	}
@@ -52,14 +55,16 @@ func (c *CommentPersistence) FindByMovieId(movieId model.MovieID) ([]model.Comme
 }
 
 func (c *CommentPersistence)Save(comment *model.Comment)error{
+	db := ConnectGorm()
+	defer db.Close()
 	if comment.ID == 0{
-		createResult := c.DatabaseAccessor.Create(&comment)
+		createResult := db.Create(&comment)
 		if createResult != nil{
 			return createResult.Error
 		}
 		return nil
 	}
-	updateResult := c.DatabaseAccessor.Update(&comment)
+	updateResult := db.Update(&comment)
 	if updateResult.Error != nil{
 		return updateResult.Error
 	}
