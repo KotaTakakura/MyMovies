@@ -25,7 +25,7 @@ func (c ChangeOrderOfPlayListMovies)ChangeOrderOfPlayListMovies(changeOrderOfPla
 	}
 
 	for i := 0; i < len(playListMovies); i++ {
-		playListMovies[i].Order = movieIdAndOrderMap[playListMovies[i].MovieID]
+		playListMovies[i].ChangeOrder(movieIdAndOrderMap[playListMovies[i].MovieID])
 	}
 
 	fmt.Println(playListMovies)

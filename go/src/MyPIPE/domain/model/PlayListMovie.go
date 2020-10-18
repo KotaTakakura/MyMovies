@@ -23,3 +23,7 @@ func NewPlayListMovie(playListId PlayListID,movieId MovieID,order PlayListMovieO
 		Order:      order,
 	}
 }
+
+func (p *PlayListMovie)ChangeOrder(order PlayListMovieOrder){
+	p.Order = order
+}
