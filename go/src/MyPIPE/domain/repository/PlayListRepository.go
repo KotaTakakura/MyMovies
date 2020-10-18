@@ -8,4 +8,5 @@ type PlayListRepository interface {
 	FindByUserID(playListUserID model.UserID) ([]model.PlayList,error)
 	FindByUserIDAndName(playListUserID model.UserID,playListName model.PlayListName) ([]model.PlayList,error)
 	Save(playList *model.PlayList) error
+	Remove(userId model.UserID,playListId model.PlayListID) error
 }

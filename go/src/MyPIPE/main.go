@@ -94,6 +94,7 @@ func main() {
 		auth.GET("play-lists/:movie_id",handler.IndexPlayListInMovieListPage)
 
 		auth.DELETE("/play-list-items",handler.DeletePlayListMovie)
+		auth.DELETE("/play-lists",handler.DeletePlayList)
 	}
 
 	router.GET("/health",func(c *gin.Context) {
