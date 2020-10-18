@@ -76,6 +76,7 @@ func main() {
 	auth := router.Group("/auth/api/v1")
 	auth.Use(authMiddleware.MiddlewareFunc())
 	{
+		auth.GET("/user", handler.GetLoggedInUserData)
 		auth.POST("/comments", handler.PostComment)
 		auth.GET("/hello", helloHandler)
 		auth.POST("/movie", handler.UploadMovieFile)
