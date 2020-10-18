@@ -85,6 +85,7 @@ func main() {
 		auth.POST("/evaluates", handler.EvaluateMovie)
 		auth.POST("/play-lists",handler.CreatePlayList)
 		auth.POST("/play-list-items",handler.AddPlayListMovie)
+		auth.PUT("/play-list-items",handler.ChangeOrderOfPlayListMovies)
 		auth.POST("/follows",handler.FollowUser)
 
 		auth.GET("/movies",handler.GetUploadedMovies)
