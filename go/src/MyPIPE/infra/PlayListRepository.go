@@ -4,6 +4,7 @@ import (
 	"MyPIPE/domain/model"
 	"github.com/jinzhu/gorm"
 	"time"
+	"fmt"
 )
 
 type PlayListPersistence struct{}
@@ -20,7 +21,7 @@ func (p PlayListPersistence) FindByID(playListID model.PlayListID) (*model.PlayL
 	if result.Error != nil{
 		return nil,result.Error
 	}
-	result = db.Table("play_list_items").Where("play_list_id = ?",playListID).Pluck("movie_id",&playLists.PlayListItems)
+	result = db.Table("play_list_movies").Where("play_list_id = ?",playListID).Pluck("movie_id",&playLists.PlayListMovies)
 	if result.Error != nil{
 		return nil,result.Error
 	}
@@ -57,23 +58,7 @@ func (p *PlayListPersistence) Save(playList *model.PlayList) error {
 		return nil
 	}
 
-	var playListItem playListItem
-
 	transactionErr := db.Transaction(func(tx *gorm.DB) error {
-
-		deleteResult :=tx.Exec("Delete From play_list_items Where play_list_id = ?",playList.ID)
-		if deleteResult.Error != nil{
-			return deleteResult.Error
-		}
-
-		for _,movieId := range playList.PlayListItems{
-			playListItem.PlayListID = playList.ID
-			playListItem.MovieID = movieId
-			insertResult := tx.Create(&playListItem)
-			if insertResult.Error != nil{
-				return insertResult.Error
-			}
-		}
 
 		saveResult := tx.Save(playList)
 		if saveResult.Error != nil{
@@ -90,9 +75,34 @@ func (p *PlayListPersistence) Save(playList *model.PlayList) error {
 	return nil
 }
 
-type playListItem struct{
+type playListMovie struct{
 	PlayListID model.PlayListID
 	MovieID model.MovieID
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
+}
+
+func (p *PlayListPersistence)Remove(userId model.UserID,playListId model.PlayListID) error{
+	db := ConnectGorm()
+	defer db.Close()
+	transactionErr := db.Transaction(func(tx *gorm.DB) error {
+
+		deletePlayListMoviesResult := tx.Exec("Delete From play_list_movies Where play_list_id in (Select id From play_lists Where user_id = ? and id = ?)",userId,playListId)
+		if deletePlayListMoviesResult.Error != nil{
+			return deletePlayListMoviesResult.Error
+		}
+		fmt.Println(userId)
+		deletePlayListResult := tx.Exec("Delete From play_lists Where id = ? and user_id = ?",playListId,userId)
+		if deletePlayListResult.Error != nil{
+			return deletePlayListResult.Error
+		}
+		fmt.Println(playListId)
+		return nil
+	})
+
+	if transactionErr != nil{
+		return transactionErr
+	}
+
+	return nil
 }

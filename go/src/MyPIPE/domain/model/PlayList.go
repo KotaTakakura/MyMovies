@@ -41,7 +41,7 @@ type PlayList struct {
 	UserID        UserID `gorm:"column:user_id"`
 	Name          PlayListName `gorm:"column:name"`
 	Description	  PlayListDescription
-	PlayListItems []MovieID `gorm:"-"`
+	PlayListMovies []MovieID `gorm:"-"`
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 }
@@ -59,11 +59,11 @@ func (PlayList) TableName() string {
 }
 
 func (p *PlayList)AddItem(movieId MovieID)error{
-	for _,playListItem := range p.PlayListItems{
+	for _,playListItem := range p.PlayListMovies{
 		if playListItem == movieId{
 			return errors.New("Duplicate PlayList Item.")
 		}
 	}
-	p.PlayListItems = append(p.PlayListItems,movieId)
+	p.PlayListMovies = append(p.PlayListMovies,movieId)
 	return nil
 }
