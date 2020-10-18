@@ -2,22 +2,19 @@ package infra
 
 import (
 	"MyPIPE/domain/model"
-	"github.com/jinzhu/gorm"
 )
 
-type FollowUserPersistence struct{
-	DatabaseAccessor *gorm.DB
-}
+type FollowUserPersistence struct{}
 
 func NewFollowUserPersistence()*FollowUserPersistence{
-	return &FollowUserPersistence{
-		DatabaseAccessor: ConnectGorm(),
-	}
+	return &FollowUserPersistence{}
 }
 
 func (f FollowUserPersistence)FindByUserIdAndFollowId(userId model.UserID,followId model.UserID)*model.FollowUser{
+	db := ConnectGorm()
+	defer db.Close()
 	var followUser model.FollowUser
-	findResult := f.DatabaseAccessor.Where("user_id = ? and follow_id = ?",userId,followId).Find(&followUser)
+	findResult := db.Where("user_id = ? and follow_id = ?",userId,followId).Find(&followUser)
 	if findResult.RowsAffected == 0{
 		return nil
 	}
@@ -25,11 +22,13 @@ func (f FollowUserPersistence)FindByUserIdAndFollowId(userId model.UserID,follow
 }
 
 func (f FollowUserPersistence)Save(user *model.FollowUser)error{
+	db := ConnectGorm()
+	defer db.Close()
 	var followUser model.FollowUser
-	result := f.DatabaseAccessor.Where("user_id = ? and follow_id = ?",user.UserID,user.FollowID).Find(&followUser)
+	result := db.Where("user_id = ? and follow_id = ?",user.UserID,user.FollowID).Find(&followUser)
 
 	if result.RowsAffected == 0{
-		createResult := f.DatabaseAccessor.Create(&user)
+		createResult := db.Create(&user)
 		if createResult.Error != nil{
 			return createResult.Error
 		}

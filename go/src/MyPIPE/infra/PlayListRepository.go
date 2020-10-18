@@ -6,23 +6,21 @@ import (
 	"time"
 )
 
-type PlayListPersistence struct{
-	databaseAccessor *gorm.DB
-}
+type PlayListPersistence struct{}
 
 func NewPlayListPersistence()*PlayListPersistence{
-	return &PlayListPersistence{
-		databaseAccessor: ConnectGorm(),
-	}
+	return &PlayListPersistence{}
 }
 
 func (p PlayListPersistence) FindByID(playListID model.PlayListID) (*model.PlayList, error) {
+	db := ConnectGorm()
+	defer db.Close()
 	var playLists model.PlayList
-	result := p.databaseAccessor.Where("id = ?",playListID).Take(&playLists)
+	result := db.Where("id = ?",playListID).Take(&playLists)
 	if result.Error != nil{
 		return nil,result.Error
 	}
-	result = p.databaseAccessor.Table("play_list_items").Where("play_list_id = ?",playListID).Pluck("movie_id",&playLists.PlayListItems)
+	result = db.Table("play_list_items").Where("play_list_id = ?",playListID).Pluck("movie_id",&playLists.PlayListItems)
 	if result.Error != nil{
 		return nil,result.Error
 	}
@@ -38,8 +36,10 @@ func (p PlayListPersistence) FindByUserID(playListUserID model.UserID) ([]model.
 }
 
 func (p PlayListPersistence) FindByUserIDAndName(playListUserID model.UserID, playListName model.PlayListName) ([]model.PlayList, error) {
+	db := ConnectGorm()
+	defer db.Close()
 	var playLists []model.PlayList
-	resultFindPlayList := p.databaseAccessor.Where("user_id = ? and name = ?",playListUserID,playListName).Find(&playLists)
+	resultFindPlayList := db.Where("user_id = ? and name = ?",playListUserID,playListName).Find(&playLists)
 	if resultFindPlayList.Error != nil{
 		return nil,resultFindPlayList.Error
 	}
@@ -47,8 +47,10 @@ func (p PlayListPersistence) FindByUserIDAndName(playListUserID model.UserID, pl
 }
 
 func (p *PlayListPersistence) Save(playList *model.PlayList) error {
+	db := ConnectGorm()
+	defer db.Close()
 	if playList.ID == 0{
-		createResult := p.databaseAccessor.Create(&playList)
+		createResult := db.Create(&playList)
 		if createResult.Error != nil{
 			return createResult.Error
 		}
@@ -57,7 +59,7 @@ func (p *PlayListPersistence) Save(playList *model.PlayList) error {
 
 	var playListItem playListItem
 
-	transactionErr := p.databaseAccessor.Transaction(func(tx *gorm.DB) error {
+	transactionErr := db.Transaction(func(tx *gorm.DB) error {
 
 		deleteResult :=tx.Exec("Delete From play_list_items Where play_list_id = ?",playList.ID)
 		if deleteResult.Error != nil{

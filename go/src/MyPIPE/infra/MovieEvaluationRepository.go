@@ -2,23 +2,20 @@ package infra
 
 import (
 	"MyPIPE/domain/model"
-	"github.com/jinzhu/gorm"
 )
 
-type MovieEvaluatePersistence struct{
-	DatabaseAccessor *gorm.DB
-}
+type MovieEvaluatePersistence struct{}
 
 func NewMovieEvaluatePersistence()*MovieEvaluatePersistence{
-	return &MovieEvaluatePersistence{
-		DatabaseAccessor:	ConnectGorm(),
-	}
+	return &MovieEvaluatePersistence{}
 }
 
 func (m MovieEvaluatePersistence) FindByUserIdAndMovieId(userId model.UserID, movieId model.MovieID) *model.MovieEvaluation {
+	db := ConnectGorm()
+	defer db.Close()
 	var evaluation model.MovieEvaluation
 	var count int
-	m.DatabaseAccessor.Where("movie_id = ? and user_id = ?",movieId,userId).Take(&evaluation).Count(&count)
+	db.Where("movie_id = ? and user_id = ?",movieId,userId).Take(&evaluation).Count(&count)
 	if count == 0{
 		return nil
 	}
@@ -26,9 +23,11 @@ func (m MovieEvaluatePersistence) FindByUserIdAndMovieId(userId model.UserID, mo
 }
 
 func (m MovieEvaluatePersistence) FindByUserIdAndMovieIdAndEvaluation(userId model.UserID, movieId model.MovieID,evaluation model.Evaluation) *model.MovieEvaluation {
+	db := ConnectGorm()
+	defer db.Close()
 	var movieEvaluation model.MovieEvaluation
 	var count int
-	m.DatabaseAccessor.Where("movie_id = ? and user_id = ? and evaluation = ?",movieId,userId,evaluation).Take(&movieEvaluation).Count(&count)
+	db.Where("movie_id = ? and user_id = ? and evaluation = ?",movieId,userId,evaluation).Take(&movieEvaluation).Count(&count)
 	if count == 0{
 		return nil
 	}
@@ -36,13 +35,15 @@ func (m MovieEvaluatePersistence) FindByUserIdAndMovieIdAndEvaluation(userId mod
 }
 
 func (m MovieEvaluatePersistence) Save(evaluation *model.MovieEvaluation)error{
+	db := ConnectGorm()
+	defer db.Close()
 	var alreadyExistsEvaluation model.MovieEvaluation
-	result := m.DatabaseAccessor.Where("movie_id = ? and user_id = ?",evaluation.MovieID,evaluation.UserID).Take(&alreadyExistsEvaluation)
+	result := db.Where("movie_id = ? and user_id = ?",evaluation.MovieID,evaluation.UserID).Take(&alreadyExistsEvaluation)
 	if result.RowsAffected == 0{
-		m.DatabaseAccessor.Create(&evaluation)
+		db.Create(&evaluation)
 		return nil
 	}
-	result = m.DatabaseAccessor.
+	result = db.
 		Model(&evaluation).
 		Table("movie_evaluations").
 		Where("movie_id = ? and user_id = ?",evaluation.MovieID,evaluation.UserID).
