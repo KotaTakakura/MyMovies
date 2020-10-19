@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-func ChangeUserName(c *gin.Context){
+func ChangePassword(c *gin.Context){
 	userIdUint := uint64(jwt.ExtractClaims(c)["id"].(float64))
 	validationErrors := make(map[string]string)
 
@@ -19,13 +19,13 @@ func ChangeUserName(c *gin.Context){
 		validationErrors["user_id"] = userIdErr.Error()
 	}
 
-	var changeUserNameJson ChangeUserNameJson
-	c.Bind(&changeUserNameJson)
-	userName,userNameErr := model.NewUserName(changeUserNameJson.UserName)
-	if userNameErr != nil{
-		validationErrors["user_name"] = userNameErr.Error()
+	var changePasswordJson ChangePasswordJson
+	c.Bind(&changePasswordJson)
+	userPassword,userPasswordErr := model.NewUserPassword(changePasswordJson.Password)
+	if userPasswordErr != nil{
+		validationErrors["user_name"] = userPasswordErr.Error()
 	}
-	
+
 	if len(validationErrors) != 0{
 		validationErrors,_ :=  json.Marshal(validationErrors)
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -36,10 +36,10 @@ func ChangeUserName(c *gin.Context){
 		return
 	}
 
-	changeUserNameDTO := usecase.NewChangeUserNameDTO(userId,userName)
+	changePasswordDTO := usecase.NewChangePasswordDTO(userId,userPassword)
 	userRepository := infra.NewUserPersistence()
-	changeUserNameUsecase := usecase.NewChangeUserName(userRepository)
-	err := changeUserNameUsecase.ChangeUserName(changeUserNameDTO)
+	changePasswordUsecase := usecase.NewChangePassword(userRepository)
+	err := changePasswordUsecase.ChangePassword(changePasswordDTO)
 
 	if err != nil{
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -57,6 +57,6 @@ func ChangeUserName(c *gin.Context){
 
 }
 
-type ChangeUserNameJson struct{
-	UserName string	`json:"user_name"`
+type ChangePasswordJson struct{
+	Password string	`json:"password"`
 }
