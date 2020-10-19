@@ -75,103 +75,6 @@ func NewUserToken(userToken string) (UserToken, error) {
 	return UserToken(userToken), nil
 }
 
-//type GoodEvaluate struct{}
-//
-//func (g GoodEvaluate)Evaluate(user *User,movieId MovieID)error{
-//	for _,goodMovieIds := range user.GoodMovies{
-//		if goodMovieIds == movieId{
-//			return errors.New("Duplicate Good Movie.")
-//		}
-//	}
-//	user.GoodMovies = append(user.GoodMovies,movieId)
-//	_ = g.UnsetBad(user,movieId)
-//	return nil
-//}
-//
-//func (g GoodEvaluate)UnsetBad(user *User,movieId MovieID)error{
-//	var result []MovieID
-//	for _, badMovieIds := range user.BadMovies {
-//		if badMovieIds != movieId {
-//			result = append(result, badMovieIds)
-//		}
-//	}
-//	user.BadMovies = result
-//	return nil
-//}
-//
-//type BadEvaluate struct{}
-//
-//func (g BadEvaluate)Evaluate(user *User,movieId MovieID)error{
-//	for _,badMovieIds := range user.BadMovies{
-//		if badMovieIds == movieId{
-//			return errors.New("Duplicate Bad Movie.")
-//		}
-//	}
-//
-//	user.BadMovies = append(user.BadMovies,movieId)
-//	_ = g.UnsetGood(user,movieId)
-//	return nil
-//}
-//
-//func (g BadEvaluate)UnsetGood(user *User,movieId MovieID)error{
-//	var result []MovieID
-//	for _, goodMovieIds := range user.GoodMovies {
-//		if goodMovieIds != movieId {
-//			result = append(result, goodMovieIds)
-//		}
-//	}
-//	user.GoodMovies = result
-//	return nil
-//}
-//
-//type UnsetGoodEvaluate struct{}
-//
-//func (u UnsetGoodEvaluate)Evaluate(user *User,movieId MovieID)error{
-//	var result []MovieID
-//	for _, goodMovieIds := range user.GoodMovies {
-//		if goodMovieIds != movieId {
-//			result = append(result, goodMovieIds)
-//		}
-//	}
-//	user.GoodMovies = result
-//	return nil
-//}
-//
-//type UnsetBadEvaluate struct{}
-//
-//func (u UnsetBadEvaluate)Evaluate(user *User,movieId MovieID)error{
-//	var result []MovieID
-//	for _, badMovieIds := range user.BadMovies {
-//		if badMovieIds != movieId {
-//			result = append(result, badMovieIds)
-//		}
-//	}
-//	user.BadMovies = result
-//	return nil
-//}
-//
-//func NewEvaluate(evaluation string)(IEvaluate,error){
-//	err := validation.Validate(evaluation,
-//		validation.Required,
-//		validation.In("good", "bad","unset_good","unset_bad"),
-//	)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	switch evaluation {
-//	case "good":
-//		return GoodEvaluate{},nil
-//	case "bad":
-//		return BadEvaluate{},nil
-//	case "unset_good":
-//		return UnsetGoodEvaluate{},nil
-//	case "unset_bad":
-//		return UnsetBadEvaluate{},nil
-//	}
-//	return nil,errors.New("Invalid Evaluation.")
-//}
-
 type User struct {
 	ID                UserID   `json:"id" gorm:"primaryKey"`
 	Name              UserName `json:"name"`
@@ -179,12 +82,6 @@ type User struct {
 	Email             UserEmail `json:"email"`
 	Birthday          time.Time `json:"birthday"`
 	Token             UserToken `json:"token"`
-	//Movies            []MovieID `gorm:"-"`
-	//Comments          []CommentID `gorm:"-"`
-	//GoodMovies        []MovieID `gorm:"-"`
-	//BadMovies         []MovieID `gorm:"-"`
-	//PlayLists         []PlayListID `gorm:"-"`
-	//Follows           []UserID `gorm:"-"`
 	CreatedAt         time.Time `json:"created_at"`
 	UpdatedAt         time.Time `json:"updated_at"`
 }
@@ -236,6 +133,21 @@ func (u User) CheckPassword(pass string) bool {
 		return false
 	}
 	return true
+}
+
+func (u *User)ChangeName(name UserName)error{
+	u.Name = name
+	return nil
+}
+
+func (u *User)ChangeEmail(email UserEmail)error{
+	u.Email = email
+	return nil
+}
+
+func (u *User)ChangePassword(password UserPassword)error{
+	u.Password = password
+	return nil
 }
 
 func (u *User) EmptyToken() {

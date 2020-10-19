@@ -18,7 +18,7 @@ func (i IndexMovie)Search(page int,keyWord string,order queryService.IndexMovieQ
 	db.Table("movies").
 		Select("movies.id as movie_id, movies.display_name as movie_display_name,movies.thumbnail_name as thumbnail_name,users.id as user_id,users.name as user_name").
 		Joins("inner join users on movies.user_id = users.id").
-		Where("match(movies.display_name) against(? IN BOOLEAN MODE) and moviespublic = 1",keyWord).
+		Where("match(movies.display_name) against(? IN BOOLEAN MODE) and movies.public = 1",keyWord).
 		Limit(24).
 		Offset((page - 1) * 24).
 		Order("movies.created_at " + string(order)).
