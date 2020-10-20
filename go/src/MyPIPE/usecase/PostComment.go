@@ -6,6 +6,10 @@ import (
 	"errors"
 )
 
+type IPostComment interface {
+	PostComment(comment model.Comment)error
+}
+
 type PostComment struct {
 	CommentRepository	repository.CommentRepository
 	MovieRepository	repository.MovieRepository

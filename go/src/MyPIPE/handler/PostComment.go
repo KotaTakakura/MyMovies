@@ -2,17 +2,31 @@ package handler
 
 import (
 	"MyPIPE/domain/model"
-	"MyPIPE/infra"
+	"MyPIPE/domain/repository"
 	"MyPIPE/usecase"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-func PostComment(c *gin.Context) {
-	commentRepository := infra.NewCommentPersistence()
-	movieRepository := infra.NewMoviePersistence()
-	postCommentUsecase := usecase.NewPostComment(commentRepository,movieRepository)
+type PostComment struct{
+	CommentRepository repository.CommentRepository
+	MovieRepository repository.MovieRepository
+	PostCommentUsecase usecase.IPostComment
+}
+
+func NewPostComment(commentRepo repository.CommentRepository,movieRepo repository.MovieRepository,postCommentUsecase usecase.IPostComment)*PostComment{
+	return &PostComment{
+		CommentRepository:  commentRepo,
+		MovieRepository:    movieRepo,
+		PostCommentUsecase: postCommentUsecase,
+	}
+}
+
+func (postComment PostComment)PostComment(c *gin.Context) {
+	//commentRepository := infra.NewCommentPersistence()
+	//movieRepository := infra.NewMoviePersistence()
+	//postCommentUsecase := usecase.NewPostComment(commentRepository,movieRepository)
 	userId := jwt.ExtractClaims(c)["id"]
 	iuserId := uint64(userId.(float64))
 
@@ -60,7 +74,7 @@ func PostComment(c *gin.Context) {
 		return
 	}
 
-	postCommentErr := postCommentUsecase.PostComment(newComment)
+	postCommentErr := postComment.PostCommentUsecase.PostComment(newComment)
 	if postCommentErr != nil{
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"result": "Comment Post Failed.",
