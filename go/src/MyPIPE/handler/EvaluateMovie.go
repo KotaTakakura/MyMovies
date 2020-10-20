@@ -2,7 +2,7 @@ package handler
 
 import (
 	"MyPIPE/domain/model"
-	"MyPIPE/infra"
+	"MyPIPE/domain/repository"
 	"MyPIPE/usecase"
 	"encoding/json"
 	jwt "github.com/appleboy/gin-jwt/v2"
@@ -10,7 +10,21 @@ import (
 	"net/http"
 )
 
-func EvaluateMovie(c *gin.Context){
+type EvaluateMovie struct{
+	MovieRepository repository.MovieRepository
+	MovieEvaluationRepository	repository.MovieEvaluationRepository
+	EvaluateMovieUsecase usecase.IEvaluateMovie
+}
+
+func NewEvaluateMovie(movieRepo repository.MovieRepository,movieEvaluateRepo repository.MovieEvaluationRepository,evaluateMovieUsecase usecase.IEvaluateMovie)*EvaluateMovie{
+	return &EvaluateMovie{
+		MovieRepository: movieRepo,
+		MovieEvaluationRepository: movieEvaluateRepo,
+		EvaluateMovieUsecase: evaluateMovieUsecase,
+	}
+}
+
+func (evaluateMovie EvaluateMovie)EvaluateMovie(c *gin.Context){
 	var evaluateMovieJson EvaluateMovieJson
 	evaluateMovieJsonErr := c.Bind(&evaluateMovieJson)
 	if evaluateMovieJsonErr != nil{
@@ -51,11 +65,8 @@ func EvaluateMovie(c *gin.Context){
 		c.Abort()
 		return
 	}
-
-	movieRepository := infra.NewMoviePersistence()
-	movieEvaluationRepository := infra.NewMovieEvaluatePersistence()
-	evaluateMovieUsecase := usecase.NewEvaluateUsecase(movieRepository,movieEvaluationRepository)
-	evaluateMovieUsecaseErr := evaluateMovieUsecase.EvaluateMovie(evaluateMovieDTO)
+	
+	evaluateMovieUsecaseErr := evaluateMovie.EvaluateMovieUsecase.EvaluateMovie(evaluateMovieDTO)
 	if evaluateMovieUsecaseErr != nil{
 		c.JSON(http.StatusBadRequest, gin.H{
 			"result": "Error.",
