@@ -43,6 +43,7 @@ func main() {
 
 	userRepository := infra.NewUserPersistence()
 	userProfileImageRepository := infra.NewUserProfileImagePersistence()
+	movieEvaluationRepository := infra.NewMovieEvaluatePersistence()
 
 	// the jwt middleware
 	authMiddleware, err := authMiddlewareByJWT()
@@ -71,7 +72,10 @@ func main() {
 	router.GET("/refresh_token", authMiddleware.RefreshHandler)
 	router.POST("/new", handler.TemporaryRegisterUser)
 	router.POST("/register", handler.RegisterUser)
-	router.GET("/evaluated",handler.CheckUserAlreadyLikedMovie)
+
+	checkUserAlreadyLikedMovieUsecase := usecase.NewCheckUserAlreadyLikedMovie(movieEvaluationRepository)
+	checkUserAlreadyLikedMovieHandler := handler.NewCheckUserAlreadyLikedMovie(movieEvaluationRepository,checkUserAlreadyLikedMovieUsecase)
+	router.GET("/evaluated",checkUserAlreadyLikedMovieHandler.CheckUserAlreadyLikedMovie)
 
 	api := router.Group("/api/v1")
 	api.GET("/movie-and-comments",handler.GetMovieAndComments)

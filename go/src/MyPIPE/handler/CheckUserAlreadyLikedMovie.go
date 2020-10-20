@@ -2,7 +2,7 @@ package handler
 
 import (
 	"MyPIPE/domain/model"
-	"MyPIPE/infra"
+	"MyPIPE/domain/repository"
 	"MyPIPE/usecase"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
@@ -10,7 +10,19 @@ import (
 	"strconv"
 )
 
-func CheckUserAlreadyLikedMovie(c *gin.Context){
+type CheckUserAlreadyLikedMovie struct{
+	MovieEvaluationRepository repository.MovieEvaluationRepository
+	CheckUserAlreadyLikedMovieUsecase usecase.ICheckUserAlreadyLikedMovie
+}
+
+func NewCheckUserAlreadyLikedMovie(movieEvaluationRepo repository.MovieEvaluationRepository, checkUserAlreadyLikedMovieUsecase usecase.ICheckUserAlreadyLikedMovie)*CheckUserAlreadyLikedMovie{
+	return &CheckUserAlreadyLikedMovie{
+		MovieEvaluationRepository: movieEvaluationRepo,
+		CheckUserAlreadyLikedMovieUsecase: checkUserAlreadyLikedMovieUsecase,
+	}
+}
+
+func (checkUserAlreadyLikedMovie CheckUserAlreadyLikedMovie)CheckUserAlreadyLikedMovie(c *gin.Context){
 	var checkUserAlreadyLikedMovieJson CheckUserAlreadyLikedMovieJson
 	c.Bind(&checkUserAlreadyLikedMovieJson)
 	userIdString :=c.Query("user_id")
@@ -54,8 +66,7 @@ func CheckUserAlreadyLikedMovie(c *gin.Context){
 	}
 
 	checkUserAlreadyLikedMovieFindDTO := usecase.NewCheckUserAlreadyLikedMovieFindDTO(userId,movieId)
-	movieEvaluationRepository := infra.NewMovieEvaluatePersistence()
-	result := usecase.NewCheckUserAlreadyLikedMovie(movieEvaluationRepository).Find(checkUserAlreadyLikedMovieFindDTO)
+	result := checkUserAlreadyLikedMovie.CheckUserAlreadyLikedMovieUsecase.Find(checkUserAlreadyLikedMovieFindDTO)
 
 	if result {
 		c.JSON(http.StatusOK, gin.H{

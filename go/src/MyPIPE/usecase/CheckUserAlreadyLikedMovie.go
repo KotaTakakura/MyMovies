@@ -5,6 +5,10 @@ import (
 	"MyPIPE/domain/repository"
 )
 
+type ICheckUserAlreadyLikedMovie interface {
+	Find(checkUserAlreadyLikedMovieFindDTO *CheckUserAlreadyLikedMovieFindDTO)bool
+}
+
 type CheckUserAlreadyLikedMovie struct{
 	MovieEvaluationRepository repository.MovieEvaluationRepository
 }
