@@ -6,6 +6,10 @@ import (
 	"mime/multipart"
 )
 
+type IChangeUserProfilieImage interface{
+	ChangeUserProfileImage(changeUserProfileImageDTO *ChangeUserProfileImageDTO)error
+}
+
 type ChangeUserProfileImage struct{
 	UserRepository	repository.UserRepository
 	UserProfileImageRepository repository.UserProfileImageRepository

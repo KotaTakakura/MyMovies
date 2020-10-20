@@ -42,6 +42,7 @@ func helloHandler(c *gin.Context) {
 func main() {
 
 	userRepository := infra.NewUserPersistence()
+	userProfileImageRepository := infra.NewUserProfileImagePersistence()
 
 	// the jwt middleware
 	authMiddleware, err := authMiddlewareByJWT()
@@ -89,7 +90,9 @@ func main() {
 		changePasswordHandler := handler.NewChangePassword(userRepository,*changePasswordUsecase)
 		auth.PUT("/password", changePasswordHandler.ChangePassword)
 
-		auth.PUT("/profile-image", handler.ChangeUserProfileImage)
+		changeUserProfileImageUsecase := usecase.NewChangeUserProfileImage(userRepository,userProfileImageRepository)
+		changeUserProfileImageHandler := handler.NewChangeUserProfileImage(userRepository,userProfileImageRepository,changeUserProfileImageUsecase)
+		auth.PUT("/profile-image", changeUserProfileImageHandler.ChangeUserProfileImage)
 		auth.POST("/comments", handler.PostComment)
 		auth.GET("/hello", helloHandler)
 		auth.POST("/movie", handler.UploadMovieFile)
