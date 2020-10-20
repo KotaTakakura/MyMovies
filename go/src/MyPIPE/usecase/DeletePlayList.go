@@ -5,6 +5,10 @@ import (
 	"MyPIPE/domain/repository"
 )
 
+type IDeletePlayList interface {
+	Delete(deletePlayListDTO *DeletePlayListDTO)error
+}
+
 type DeletePlayList struct{
 	PlayListRepository repository.PlayListRepository
 }
