@@ -5,6 +5,10 @@ import (
 	"MyPIPE/domain/repository"
 )
 
+type IChangeUserName interface {
+	ChangeUserName(changeUserNameDTO *ChangeUserNameDTO)error
+}
+
 type ChangeUserName struct{
 	UserRepository repository.UserRepository
 }

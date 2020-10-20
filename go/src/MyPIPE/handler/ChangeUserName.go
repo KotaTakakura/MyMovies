@@ -2,7 +2,7 @@ package handler
 
 import (
 	"MyPIPE/domain/model"
-	"MyPIPE/infra"
+	"MyPIPE/domain/repository"
 	"MyPIPE/usecase"
 	"encoding/json"
 	jwt "github.com/appleboy/gin-jwt/v2"
@@ -10,7 +10,19 @@ import (
 	"net/http"
 )
 
-func ChangeUserName(c *gin.Context){
+type ChangeUserName struct{
+	UserRepository repository.UserRepository
+	ChangeUserNameUsecase usecase.IChangeUserName
+}
+
+func NewChangeUserName(u repository.UserRepository,c usecase.IChangeUserName)*ChangeUserName{
+	return &ChangeUserName{
+		UserRepository: u,
+		ChangeUserNameUsecase: c,
+	}
+}
+
+func (changeUserName ChangeUserName)ChangeUserName(c *gin.Context){
 	userIdUint := uint64(jwt.ExtractClaims(c)["id"].(float64))
 	validationErrors := make(map[string]string)
 
@@ -37,9 +49,9 @@ func ChangeUserName(c *gin.Context){
 	}
 
 	changeUserNameDTO := usecase.NewChangeUserNameDTO(userId,userName)
-	userRepository := infra.NewUserPersistence()
-	changeUserNameUsecase := usecase.NewChangeUserName(userRepository)
-	err := changeUserNameUsecase.ChangeUserName(changeUserNameDTO)
+	//userRepository := infra.NewUserPersistence()
+	//changeUserNameUsecase := usecase.NewChangeUserName(userRepository)
+	err := changeUserName.ChangeUserNameUsecase.ChangeUserName(changeUserNameDTO)
 
 	if err != nil{
 		c.JSON(http.StatusInternalServerError, gin.H{
