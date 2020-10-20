@@ -108,7 +108,10 @@ func main() {
 		auth.POST("/movie", handler.UploadMovieFile)
 		auth.PUT("/movie",handler.UpdateMovie)
 		auth.PUT("/thumbnail",handler.ChangeThumbnail)
-		auth.POST("/evaluates", handler.EvaluateMovie)
+
+		evaluateMovieUsecase := usecase.NewEvaluateUsecase(movieRepository,movieEvaluationRepository)
+		evaluateMovieHandler := handler.NewEvaluateMovie(movieRepository,movieEvaluationRepository,evaluateMovieUsecase)
+		auth.POST("/evaluates", evaluateMovieHandler.EvaluateMovie)
 		auth.POST("/play-lists",handler.CreatePlayList)
 		auth.POST("/play-list-items",handler.AddPlayListMovie)
 		auth.PUT("/play-list-items",handler.ChangeOrderOfPlayListMovies)

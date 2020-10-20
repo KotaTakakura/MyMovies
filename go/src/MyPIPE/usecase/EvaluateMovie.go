@@ -6,6 +6,10 @@ import (
 	"errors"
 )
 
+type IEvaluateMovie interface {
+	EvaluateMovie(evaluateMovieDTO EvaluateMovieDTO)error
+}
+
 type EvaluateMovie struct{
 	MovieRepository repository.MovieRepository
 	MovieEvaluationRepository repository.MovieEvaluationRepository
