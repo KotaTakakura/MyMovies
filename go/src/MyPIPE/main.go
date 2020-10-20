@@ -44,6 +44,8 @@ func main() {
 	userRepository := infra.NewUserPersistence()
 	userProfileImageRepository := infra.NewUserProfileImagePersistence()
 	movieEvaluationRepository := infra.NewMovieEvaluatePersistence()
+	commentRepository := infra.NewCommentPersistence()
+	movieRepository := infra.NewMoviePersistence()
 
 	// the jwt middleware
 	authMiddleware, err := authMiddlewareByJWT()
@@ -97,7 +99,10 @@ func main() {
 		changeUserProfileImageUsecase := usecase.NewChangeUserProfileImage(userRepository,userProfileImageRepository)
 		changeUserProfileImageHandler := handler.NewChangeUserProfileImage(userRepository,userProfileImageRepository,changeUserProfileImageUsecase)
 		auth.PUT("/profile-image", changeUserProfileImageHandler.ChangeUserProfileImage)
-		auth.POST("/comments", handler.PostComment)
+
+		postCommentUsecase := usecase.NewPostComment(commentRepository,movieRepository)
+		postCommentHandler := handler.NewPostComment(commentRepository,movieRepository,postCommentUsecase)
+		auth.POST("/comments", postCommentHandler.PostComment)
 		auth.GET("/hello", helloHandler)
 		auth.POST("/movie", handler.UploadMovieFile)
 		auth.PUT("/movie",handler.UpdateMovie)
