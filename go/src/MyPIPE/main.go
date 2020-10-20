@@ -46,6 +46,7 @@ func main() {
 	movieEvaluationRepository := infra.NewMovieEvaluatePersistence()
 	commentRepository := infra.NewCommentPersistence()
 	movieRepository := infra.NewMoviePersistence()
+	playListRepository := infra.NewPlayListPersistence()
 
 	// the jwt middleware
 	authMiddleware, err := authMiddlewareByJWT()
@@ -120,7 +121,10 @@ func main() {
 		auth.GET("play-lists/:movie_id",handler.IndexPlayListInMovieListPage)
 
 		auth.DELETE("/play-list-items",handler.DeletePlayListMovie)
-		auth.DELETE("/play-lists",handler.DeletePlayList)
+
+		deletePlayListUsecase := usecase.NewDeletePlayList(playListRepository)
+		deletePlayListHandler := handler.NewDeletePlayList(playListRepository,deletePlayListUsecase)
+		auth.DELETE("/play-lists",deletePlayListHandler.DeletePlayList)
 	}
 
 	router.GET("/health",func(c *gin.Context) {

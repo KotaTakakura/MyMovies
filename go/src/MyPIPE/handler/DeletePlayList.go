@@ -2,7 +2,7 @@ package handler
 
 import (
 	"MyPIPE/domain/model"
-	"MyPIPE/infra"
+	"MyPIPE/domain/repository"
 	"MyPIPE/usecase"
 	"encoding/json"
 	jwt "github.com/appleboy/gin-jwt/v2"
@@ -11,7 +11,19 @@ import (
 	"strconv"
 )
 
-func DeletePlayList(c *gin.Context){
+type DeletePlayList struct{
+	PlayListRepository repository.PlayListRepository
+	DeletePlayListUsecase usecase.IDeletePlayList
+}
+
+func NewDeletePlayList(playListRepo repository.PlayListRepository,deletePlayListUsecase usecase.IDeletePlayList)*DeletePlayList{
+	return &DeletePlayList{
+		PlayListRepository: playListRepo,
+		DeletePlayListUsecase: deletePlayListUsecase,
+	}
+}
+
+func (deletePlayList DeletePlayList)DeletePlayList(c *gin.Context){
 	validationErrors := make(map[string]string)
 	userIdUint := uint64((jwt.ExtractClaims(c)["id"]).(float64))
 	userId,userIdErr := model.NewUserID(userIdUint)
@@ -42,10 +54,10 @@ func DeletePlayList(c *gin.Context){
 		return
 	}
 
-	playListRepository := infra.NewPlayListPersistence()
-	deletePlayListUsecase := usecase.NewDeletePlayList(playListRepository)
+	//playListRepository := infra.NewPlayListPersistence()
+	//deletePlayListUsecase := usecase.NewDeletePlayList(playListRepository)
 	deletePlayListDTO := usecase.NewDeletePlayListDTO(userId,playListId)
-	result := deletePlayListUsecase.Delete(deletePlayListDTO)
+	result := deletePlayList.DeletePlayListUsecase.Delete(deletePlayListDTO)
 
 	if result != nil{
 		c.JSON(http.StatusInternalServerError, gin.H{
