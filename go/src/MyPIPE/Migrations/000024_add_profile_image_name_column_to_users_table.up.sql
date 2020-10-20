@@ -1,0 +1,1 @@
+ALTER TABLE users ADD COLUMN profile_image_name LONGTEXT NULL AFTER password;

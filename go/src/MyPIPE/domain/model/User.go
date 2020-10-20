@@ -5,6 +5,8 @@ import (
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
 	"golang.org/x/crypto/bcrypt"
+	"mime/multipart"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"time"
@@ -81,6 +83,7 @@ type User struct {
 	Password          UserPassword
 	Email             UserEmail `json:"email"`
 	Birthday          time.Time `json:"birthday"`
+	ProfileImageName	string	`json:"profile_image_name"`
 	Token             UserToken `json:"token"`
 	CreatedAt         time.Time `json:"created_at"`
 	UpdatedAt         time.Time `json:"updated_at"`
@@ -168,5 +171,12 @@ func (u *User)Evaluate(ievaluate IEvaluate,movieID MovieID)error{
 	if err != nil{
 		return err
 	}
+	return nil
+}
+
+func(u *User)SetProfileImage(profileImageHeader *multipart.FileHeader)error{
+	extension := filepath.Ext(profileImageHeader.Filename)
+	timestamp := strconv.FormatInt(time.Now().Unix(),10)
+	u.ProfileImageName = timestamp + extension
 	return nil
 }
