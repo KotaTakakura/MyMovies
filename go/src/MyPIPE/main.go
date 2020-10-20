@@ -40,6 +40,9 @@ func helloHandler(c *gin.Context) {
 }
 
 func main() {
+
+	userRepository := infra.NewUserPersistence()
+
 	// the jwt middleware
 	authMiddleware, err := authMiddlewareByJWT()
 
@@ -77,8 +80,15 @@ func main() {
 	auth.Use(authMiddleware.MiddlewareFunc())
 	{
 		auth.GET("/user", handler.GetLoggedInUserData)
-		auth.PUT("/user-name", handler.ChangeUserName)
-		auth.PUT("/password", handler.ChangePassword)
+
+		changeUserNameUsecase := usecase.NewChangeUserName(userRepository)
+		changeUserNameHandler := handler.NewChangeUserName(userRepository,changeUserNameUsecase)
+		auth.PUT("/user-name", changeUserNameHandler.ChangeUserName)
+
+		changePasswordUsecase := usecase.NewChangePassword(userRepository)
+		changePasswordHandler := handler.NewChangePassword(userRepository,*changePasswordUsecase)
+		auth.PUT("/password", changePasswordHandler.ChangePassword)
+
 		auth.PUT("/profile-image", handler.ChangeUserProfileImage)
 		auth.POST("/comments", handler.PostComment)
 		auth.GET("/hello", helloHandler)

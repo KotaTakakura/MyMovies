@@ -5,6 +5,10 @@ import (
 	"MyPIPE/domain/repository"
 )
 
+type IChangePassword interface{
+	ChangePassword(changePasswordDTO *ChangePasswordDTO)error
+}
+
 type ChangePassword struct{
 	UserRepository repository.UserRepository
 }
