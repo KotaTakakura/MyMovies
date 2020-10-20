@@ -5,6 +5,10 @@ import (
 	"MyPIPE/domain/queryService"
 )
 
+type IGetMovieAndComments interface {
+	Get(getDTO MovieAndGetCommentsDTO)queryService.FindByMovieIdDTO
+}
+
 type GetMovieAndComments struct{
 	CommentQueryService queryService.CommentQueryService
 }

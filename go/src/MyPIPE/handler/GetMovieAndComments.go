@@ -2,7 +2,7 @@ package handler
 
 import (
 	"MyPIPE/domain/model"
-	queryService_infra "MyPIPE/infra/queryService"
+	"MyPIPE/domain/queryService"
 	"MyPIPE/usecase"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
@@ -10,7 +10,19 @@ import (
 	"strconv"
 )
 
-func GetMovieAndComments(c *gin.Context){
+type GetMovieAndComments struct{
+	CommentQueryService queryService.CommentQueryService
+	GetCommentsUsecase usecase.IGetMovieAndComments
+}
+
+func NewGetMovieAndComments(commentQueryService queryService.CommentQueryService,getCommentsUsecase usecase.IGetMovieAndComments)*GetMovieAndComments{
+	return &GetMovieAndComments{
+		CommentQueryService: commentQueryService,
+		GetCommentsUsecase: getCommentsUsecase,
+	}
+}
+
+func (getMovieAndComments GetMovieAndComments)GetMovieAndComments(c *gin.Context){
 	var getCommentsJson GetCommentsJson
 	c.Bind(&getCommentsJson)
 
@@ -32,9 +44,7 @@ func GetMovieAndComments(c *gin.Context){
 	}
 
 	getCommentsDTO := usecase.NewGetMovieAndCommentsDTO(movieId)
-	commentQueryService := queryService_infra.NewCommentQueryService()
-	getCommentsUsecase := usecase.NewGetMovieAndComments(commentQueryService)
-	comments := getCommentsUsecase.Get(*getCommentsDTO)
+	comments := getMovieAndComments.GetCommentsUsecase.Get(*getCommentsDTO)
 
 	jsonResult, jsonMarshalErr := json.Marshal(comments)
 	if jsonMarshalErr != nil{

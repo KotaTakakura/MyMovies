@@ -82,7 +82,11 @@ func main() {
 	router.GET("/evaluated",checkUserAlreadyLikedMovieHandler.CheckUserAlreadyLikedMovie)
 
 	api := router.Group("/api/v1")
-	api.GET("/movie-and-comments",handler.GetMovieAndComments)
+
+	commentQueryService := queryService_infra.NewCommentQueryService()
+	getCommentsUsecase := usecase.NewGetMovieAndComments(commentQueryService)
+	getMovieAndCommentsHandler := handler.NewGetMovieAndComments(commentQueryService,getCommentsUsecase)
+	api.GET("/movie-and-comments",getMovieAndCommentsHandler.GetMovieAndComments)
 	api.GET("/index-movies",handler.IndexMovie)
 
 	auth := router.Group("/auth/api/v1")
