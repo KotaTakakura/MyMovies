@@ -4,6 +4,7 @@ import (
 	"MyPIPE/domain/model"
 	"MyPIPE/handler"
 	"MyPIPE/infra"
+	queryService_infra "MyPIPE/infra/queryService"
 	"MyPIPE/usecase"
 	"github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
@@ -87,7 +88,10 @@ func main() {
 	auth := router.Group("/auth/api/v1")
 	auth.Use(authMiddleware.MiddlewareFunc())
 	{
-		auth.GET("/user", handler.GetLoggedInUserData)
+		getLoggedInUserDataQueryService := queryService_infra.NewGetLoggedInUserData()
+		getLoggedInUserDataUsecase := usecase.NewGetLoggedInUserData(getLoggedInUserDataQueryService)
+		getLoggedInUserDataHandler := handler.NewGetLoggedInUserData(getLoggedInUserDataQueryService,getLoggedInUserDataUsecase)
+		auth.GET("/user", getLoggedInUserDataHandler.GetLoggedInUserData)
 
 		changeUserNameUsecase := usecase.NewChangeUserName(userRepository)
 		changeUserNameHandler := handler.NewChangeUserName(userRepository,changeUserNameUsecase)

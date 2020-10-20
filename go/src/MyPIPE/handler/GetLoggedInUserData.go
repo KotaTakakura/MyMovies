@@ -2,7 +2,7 @@ package handler
 
 import (
 	"MyPIPE/domain/model"
-	queryService_infra "MyPIPE/infra/queryService"
+	"MyPIPE/domain/queryService"
 	"MyPIPE/usecase"
 	"encoding/json"
 	jwt "github.com/appleboy/gin-jwt/v2"
@@ -10,7 +10,19 @@ import (
 	"net/http"
 )
 
-func GetLoggedInUserData(c *gin.Context){
+type GetLoggedInUserData struct{
+	GetLoggedInUserDataQueryService queryService.GetLoggedInUserDataQueryService
+	GetLoggedInUserDataUsecase usecase.IGetLoggedInUserData
+}
+
+func NewGetLoggedInUserData(GetLoggedInUserDataQueryService queryService.GetLoggedInUserDataQueryService,getLoggedInUserDataUsecase usecase.IGetLoggedInUserData)*GetLoggedInUserData{
+	return &GetLoggedInUserData{
+		GetLoggedInUserDataQueryService: GetLoggedInUserDataQueryService,
+		GetLoggedInUserDataUsecase: getLoggedInUserDataUsecase,
+	}
+}
+
+func (getLoggedInUserData GetLoggedInUserData)GetLoggedInUserData(c *gin.Context){
 	validationErrors := make(map[string]string)
 	userIdUint := uint64((jwt.ExtractClaims(c)["id"]).(float64))
 	userId,userIdErr := model.NewUserID(userIdUint)
@@ -27,11 +39,9 @@ func GetLoggedInUserData(c *gin.Context){
 		c.Abort()
 		return
 	}
-
-	getLoggedInUserDataQueryService := queryService_infra.NewGetLoggedInUserData()
-	getLoggedInUserDataUsecase := usecase.NewGetLoggedInUserData(getLoggedInUserDataQueryService)
+	
 	getLoggedInUserDataDTO := usecase.NewGetLoggedInUserDataDTO(userId)
-	loggedInUser := getLoggedInUserDataUsecase.Find(getLoggedInUserDataDTO)
+	loggedInUser := getLoggedInUserData.GetLoggedInUserDataUsecase.Find(getLoggedInUserDataDTO)
 
 	c.JSON(http.StatusOK, loggedInUser)
 }
