@@ -5,6 +5,10 @@ import (
 	"MyPIPE/domain/queryService"
 )
 
+type IGetLoggedInUserData interface{
+	Find(getLoggedInUserDataDTO *GetLoggedInUserDataDTO)*queryService.GetLoggedInUserDataDTO
+}
+
 type GetLoggedInUserData struct{
 	GetLoggedInUserDataQueryService queryService.GetLoggedInUserDataQueryService
 }
