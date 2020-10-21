@@ -131,7 +131,11 @@ func main() {
 
 		auth.GET("/movies",handler.GetUploadedMovies)
 		auth.GET("/play-lists",handler.IndexPlayListsInMyPage)
-		auth.GET("/play-list-items/:play_list_id",handler.IndexPlaylistMovies)
+
+		indexPlaylistMoviesQueryService := queryService_infra.NewIndexPlayListMovieInMyPage()
+		indexPlaylistMoviesUsecase := usecase.NewIndexPlayListItemInMyPage(indexPlaylistMoviesQueryService)
+		indexPlayListMoviesHandler := handler.NewIndexPlaylistMovies(indexPlaylistMoviesQueryService,indexPlaylistMoviesUsecase)
+		auth.GET("/play-list-items/:play_list_id",indexPlayListMoviesHandler.IndexPlaylistMovies)
 
 		indexPlayListInMovieListPageQueryService := queryService_infra.NewIndexPlayListInMovieListPage()
 		indexPlayListInMovieListPageUsecase := usecase.NewIndexPlayListInMovieListPage(indexPlayListInMovieListPageQueryService)
