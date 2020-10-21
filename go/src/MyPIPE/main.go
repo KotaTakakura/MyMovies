@@ -130,7 +130,11 @@ func main() {
 		auth.POST("/follows",handler.FollowUser)
 
 		auth.GET("/movies",handler.GetUploadedMovies)
-		auth.GET("/play-lists",handler.IndexPlayListsInMyPage)
+
+		indexPlayListsInMyPageQueryService := queryService_infra.NewIndexPlayListsInMyPage()
+		indexPlayListsInMyPageUsecase := usecase.NewIndexPlayListsInMyPage(indexPlayListsInMyPageQueryService)
+		indexPlayListsInMyPageHandler := handler.NewIndexPlayListsInMyPage(indexPlayListsInMyPageQueryService,indexPlayListsInMyPageUsecase)
+		auth.GET("/play-lists",indexPlayListsInMyPageHandler.IndexPlayListsInMyPage)
 
 		indexPlaylistMoviesQueryService := queryService_infra.NewIndexPlayListMovieInMyPage()
 		indexPlaylistMoviesUsecase := usecase.NewIndexPlayListItemInMyPage(indexPlaylistMoviesQueryService)
