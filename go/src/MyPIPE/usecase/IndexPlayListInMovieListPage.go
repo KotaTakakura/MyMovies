@@ -3,17 +3,24 @@ package usecase
 import (
 	"MyPIPE/domain/model"
 	"MyPIPE/domain/queryService"
-	queryService_infra "MyPIPE/infra/queryService"
 )
 
-type IndexPlayListInMovieListPage struct{}
+type IIndexPlayListInMovieListPage interface {
+	Find(findDTO FindDTO)*queryService.IndexPlayListInMovieListPageDTO
+}
 
-func NewIndexPlayListInMovieListPage()*IndexPlayListInMovieListPage{
-	return &IndexPlayListInMovieListPage{}
+type IndexPlayListInMovieListPage struct{
+	IndexPlayListInMovieListPageQueryService queryService.IndexPlayListInMovieListPageQueryService
+}
+
+func NewIndexPlayListInMovieListPage(indexPlayListInMovieListPage queryService.IndexPlayListInMovieListPageQueryService)*IndexPlayListInMovieListPage{
+	return &IndexPlayListInMovieListPage{
+		IndexPlayListInMovieListPageQueryService: indexPlayListInMovieListPage,
+	}
 }
 
 func (i IndexPlayListInMovieListPage)Find(findDTO FindDTO)*queryService.IndexPlayListInMovieListPageDTO{
-	return queryService_infra.NewIndexPlayListInMovieListPage().Find(findDTO.UserID,findDTO.MovieID)
+	return i.IndexPlayListInMovieListPageQueryService.Find(findDTO.UserID,findDTO.MovieID)
 }
 
 type FindDTO struct{
