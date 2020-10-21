@@ -24,9 +24,6 @@ func NewPostComment(commentRepo repository.CommentRepository,movieRepo repositor
 }
 
 func (postComment PostComment)PostComment(c *gin.Context) {
-	//commentRepository := infra.NewCommentPersistence()
-	//movieRepository := infra.NewMoviePersistence()
-	//postCommentUsecase := usecase.NewPostComment(commentRepository,movieRepository)
 	userId := jwt.ExtractClaims(c)["id"]
 	iuserId := uint64(userId.(float64))
 

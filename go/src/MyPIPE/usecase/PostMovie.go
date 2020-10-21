@@ -7,6 +7,10 @@ import (
 	"mime/multipart"
 )
 
+type IPostMovie interface {
+	PostMovie(postMovieDTO *PostMovieDTO)(*model.Movie,error)
+}
+
 type PostMovie struct{
 	FileUploadRepository	repository.FileUpload
 	ThumbnailUploadRepository	repository.ThumbnailUploadRepository
