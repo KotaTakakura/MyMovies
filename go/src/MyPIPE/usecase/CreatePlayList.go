@@ -8,6 +8,10 @@ import (
 	"errors"
 )
 
+type ICreatePlayList interface {
+	CreatePlayList(createPlayList CreatePlayListDTO)error
+}
+
 type CreatePlayList struct{
 	UserRepository repository.UserRepository
 	PlayListRepository repository.PlayListRepository

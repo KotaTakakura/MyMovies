@@ -140,7 +140,11 @@ func main() {
 		evaluateMovieUsecase := usecase.NewEvaluateUsecase(movieRepository,movieEvaluationRepository)
 		evaluateMovieHandler := handler.NewEvaluateMovie(movieRepository,movieEvaluationRepository,evaluateMovieUsecase)
 		auth.POST("/evaluates", evaluateMovieHandler.EvaluateMovie)
-		auth.POST("/play-lists",handler.CreatePlayList)
+
+		createPlayListUsecase := usecase.NewCreatePlayList(userRepository,playListRepository)
+		createPlayListHandler := handler.NewCreatePlayList(userRepository,playListRepository,createPlayListUsecase)
+		auth.POST("/play-lists",createPlayListHandler.CreatePlayList)
+
 		auth.POST("/play-list-items",handler.AddPlayListMovie)
 		auth.PUT("/play-list-items",handler.ChangeOrderOfPlayListMovies)
 		auth.POST("/follows",handler.FollowUser)
