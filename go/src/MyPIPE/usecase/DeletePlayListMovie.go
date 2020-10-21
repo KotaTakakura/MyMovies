@@ -6,6 +6,10 @@ import (
 	"errors"
 )
 
+type IDeletePlayListMovie interface{
+	DeletePlayListItem(playListItemDeleteJson *DeletePlayListMovieDTO)error
+}
+
 type DeletePlayListMovie struct{
 	PlayListRepository	repository.PlayListRepository
 	PlayListMovieRepository repository.PlayListMovieRepository
