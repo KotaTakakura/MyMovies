@@ -2,6 +2,7 @@ package handler
 
 import (
 	"MyPIPE/domain/model"
+	"MyPIPE/domain/queryService"
 	"MyPIPE/usecase"
 	"encoding/json"
 	jwt "github.com/appleboy/gin-jwt/v2"
@@ -10,7 +11,19 @@ import (
 	"strconv"
 )
 
-func IndexPlayListInMovieListPage(c *gin.Context){
+type IndexPlayListInMovieListPage struct{
+	IndexPlayListInMovieListPageQueryService queryService.IndexPlayListInMovieListPageQueryService
+	IndexPlayListInMovieListPageUsecase usecase.IIndexPlayListInMovieListPage
+}
+
+func NewIndexPlayListInMovieListPage(indexPlayListInMovieListPageQueryService queryService.IndexPlayListInMovieListPageQueryService,indexPlayListInMovieListPageUsecase usecase.IIndexPlayListInMovieListPage)*IndexPlayListInMovieListPage{
+	return &IndexPlayListInMovieListPage{
+		IndexPlayListInMovieListPageQueryService: indexPlayListInMovieListPageQueryService,
+		IndexPlayListInMovieListPageUsecase: indexPlayListInMovieListPageUsecase,
+	}
+}
+
+func (indexPlayListInMovieListPage IndexPlayListInMovieListPage)IndexPlayListInMovieListPage(c *gin.Context){
 	userId,userIdErr :=  model.NewUserID(uint64(jwt.ExtractClaims(c)["id"].(float64)))
 
 	validationErrors := make(map[string]string)
@@ -35,9 +48,8 @@ func IndexPlayListInMovieListPage(c *gin.Context){
 		c.Abort()
 		return
 	}
-	indexPlayListInMovieListPageUsecase := usecase.NewIndexPlayListInMovieListPage()
 	findDTO := usecase.NewFindDTO(userId,movieId)
-	result := indexPlayListInMovieListPageUsecase.Find(*findDTO)
+	result := indexPlayListInMovieListPage.IndexPlayListInMovieListPageUsecase.Find(*findDTO)
 
 	jsonResult, jsonMarshalErr := json.Marshal(result)
 	if jsonMarshalErr != nil{

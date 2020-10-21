@@ -133,7 +133,10 @@ func main() {
 		auth.GET("/play-lists",handler.IndexPlayListsInMyPage)
 		auth.GET("/play-list-items/:play_list_id",handler.IndexPlaylistMovies)
 
-		auth.GET("play-lists/:movie_id",handler.IndexPlayListInMovieListPage)
+		indexPlayListInMovieListPageQueryService := queryService_infra.NewIndexPlayListInMovieListPage()
+		indexPlayListInMovieListPageUsecase := usecase.NewIndexPlayListInMovieListPage(indexPlayListInMovieListPageQueryService)
+		indexPlayListInMovieListPageHandler := handler.NewIndexPlayListInMovieListPage(indexPlayListInMovieListPageQueryService,indexPlayListInMovieListPageUsecase)
+		auth.GET("play-lists/:movie_id",indexPlayListInMovieListPageHandler.IndexPlayListInMovieListPage)
 
 		auth.DELETE("/play-list-items",handler.DeletePlayListMovie)
 
