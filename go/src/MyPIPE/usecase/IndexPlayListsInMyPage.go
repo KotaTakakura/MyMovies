@@ -2,6 +2,10 @@ package usecase
 
 import "MyPIPE/domain/queryService"
 
+type IIndexPlayListsInMyPage interface {
+	All(userId uint64)*queryService.IndexPlayListsInMyPageDTO
+}
+
 type IndexPlayListsInMyPage struct{
 	IndexPlayListsInMyPageQueryService queryService.IndexPlayListsInMyPageQueryService
 }

@@ -1,7 +1,7 @@
 package handler
 
 import (
-	queryService_infra "MyPIPE/infra/queryService"
+	"MyPIPE/domain/queryService"
 	"MyPIPE/usecase"
 	"encoding/json"
 	jwt "github.com/appleboy/gin-jwt/v2"
@@ -9,11 +9,21 @@ import (
 	"net/http"
 )
 
-func IndexPlayListsInMyPage(c *gin.Context){
+type IndexPlayListsInMyPage struct{
+	IndexPlayListsInMyPageQueryService	queryService.IndexPlayListsInMyPageQueryService
+	IndexPlayListsInMyPageUsecase	usecase.IIndexPlayListsInMyPage
+}
+
+func NewIndexPlayListsInMyPage(indexPlayListsInMyPageQueryService queryService.IndexPlayListsInMyPageQueryService,indexPlayListsInMyPageUsecase usecase.IIndexPlayListsInMyPage)*IndexPlayListsInMyPage{
+	return &IndexPlayListsInMyPage{
+		IndexPlayListsInMyPageQueryService: indexPlayListsInMyPageQueryService,
+		IndexPlayListsInMyPageUsecase: indexPlayListsInMyPageUsecase,
+	}
+}
+
+func (indexPlayListsInMyPage IndexPlayListsInMyPage)IndexPlayListsInMyPage(c *gin.Context){
 	userId :=  uint64(jwt.ExtractClaims(c)["id"].(float64))
-	indexPlayListsInMyPageQueryService := queryService_infra.NewIndexPlayListsInMyPage()
-	indexPlayListsInMyPageUsecase := usecase.NewIndexPlayListsInMyPage(indexPlayListsInMyPageQueryService)
-	playLists := indexPlayListsInMyPageUsecase.All(userId)
+	playLists := indexPlayListsInMyPage.IndexPlayListsInMyPageUsecase.All(userId)
 
 	jsonResult, jsonMarshalErr := json.Marshal(playLists)
 	if jsonMarshalErr != nil{
