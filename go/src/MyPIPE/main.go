@@ -7,6 +7,8 @@ import (
 	support "MyPIPE/infra/UploadThumbnail"
 	"MyPIPE/infra/factory"
 	queryService_infra "MyPIPE/infra/queryService"
+	uploadThumbnailRepository_infra "MyPIPE/infra/UploadThumbnail"
+	uploadMovieRepository_infra "MyPIPE/infra/UploadMovieFile"
 	"MyPIPE/usecase"
 	"github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
@@ -51,6 +53,8 @@ func main() {
 	movieRepository := infra.NewMoviePersistence()
 	playListRepository := infra.NewPlayListPersistence()
 	playListMovieRepository := infra.NewPlayListMoviePersistence()
+	thumbnailUploadRepository := uploadThumbnailRepository_infra.NewUploadThumbnailToAmazonS3()
+	movieUploadRepository := uploadMovieRepository_infra.NewUploadToAmazonS3()
 
 	// the jwt middleware
 	authMiddleware, err := authMiddlewareByJWT()
@@ -120,7 +124,10 @@ func main() {
 		postCommentHandler := handler.NewPostComment(commentRepository,movieRepository,postCommentUsecase)
 		auth.POST("/comments", postCommentHandler.PostComment)
 
-		auth.POST("/movie", handler.UploadMovieFile)
+		movieFactory := factory.NewMovieModelFactory()
+		postMovieUsecase := usecase.NewPostMovie(movieUploadRepository,thumbnailUploadRepository,movieRepository,movieFactory)
+		uploadMovieHandler := handler.NewUploadMovieFile(movieRepository,thumbnailUploadRepository,movieUploadRepository,postMovieUsecase)
+		auth.POST("/movie", uploadMovieHandler.UploadMovieFile)
 
 		uploadedMoviesQueryService := queryService_infra.NewUploadedMovies()
 		uploadedMoviesUsecase := usecase.NewUploadedMovies(uploadedMoviesQueryService)

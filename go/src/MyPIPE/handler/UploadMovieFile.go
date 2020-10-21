@@ -2,10 +2,7 @@ package handler
 
 import (
 	"MyPIPE/domain/model"
-	infra "MyPIPE/infra"
-	support "MyPIPE/infra/UploadMovieFile"
-	thumb "MyPIPE/infra/UploadThumbnail"
-	"MyPIPE/infra/factory"
+	"MyPIPE/domain/repository"
 	"MyPIPE/usecase"
 	"encoding/json"
 	jwt "github.com/appleboy/gin-jwt/v2"
@@ -13,7 +10,28 @@ import (
 	"net/http"
 )
 
-func UploadMovieFile(c *gin.Context){
+type UploadMovieFile struct{
+	MovieRepository	repository.MovieRepository
+	ThumbnailUploadRepository	repository.ThumbnailUploadRepository
+	MovieUploadRepository	repository.FileUpload
+	PostMovieUsecase	usecase.IPostMovie
+}
+
+func NewUploadMovieFile(
+	movieRepository	repository.MovieRepository,
+	thumbnailUploadRepository	repository.ThumbnailUploadRepository,
+	movieUploadRepository	repository.FileUpload,
+	postMovieUsecase	usecase.IPostMovie,
+	)*UploadMovieFile{
+	return &UploadMovieFile{
+		MovieRepository:           movieRepository,
+		ThumbnailUploadRepository: thumbnailUploadRepository,
+		MovieUploadRepository:     movieUploadRepository,
+		PostMovieUsecase:          postMovieUsecase,
+	}
+}
+
+func (uploadMovieFile UploadMovieFile)UploadMovieFile(c *gin.Context){
 
 	//バリデーションエラー格納
 	validationErrors := make(map[string]string)
@@ -62,9 +80,12 @@ func UploadMovieFile(c *gin.Context){
 	//動画投稿用のDTO
 	postMovieDTO := usecase.NewPostMovieDTO(file,*header,thumbnail,*thumbnailHeader,userId)
 
-	newMovie := factory.NewMovieModelFactory()
-	uploadUsecase := usecase.NewPostMovie(support.NewUploadToAmazonS3(),thumb.NewUploadThumbnailToAmazonS3(),infra.NewMoviePersistence(),*newMovie)
-	newMovieModel,err := uploadUsecase.PostMovie(postMovieDTO)
+	//newMovie := factory.NewMovieModelFactory()
+	//movieRepository := infra.NewMoviePersistence()
+	//thumbnailUploadRepository := uploadThumbnail.NewUploadThumbnailToAmazonS3()
+	//movieUploadRepository := uploadMovie.NewUploadToAmazonS3()
+	//uploadUsecase := usecase.NewPostMovie(movieUploadRepository,thumbnailUploadRepository,movieRepository,*newMovie)
+	newMovieModel,err := uploadMovieFile.PostMovieUsecase.PostMovie(postMovieDTO)
 	if err != nil{
 		c.JSON(http.StatusBadRequest, gin.H{
 			"result": "PostMovie Error.",
