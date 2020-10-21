@@ -2,6 +2,10 @@ package usecase
 
 import "MyPIPE/domain/queryService"
 
+type IIndexPlaylistItemInMyPage interface {
+	Find(indexPlayListMoviesInMyPageDTO IndexPlayListItemInMyPageDTO)*queryService.IndexPlayListMovieInMyPageDTO
+}
+
 type IndexPlayListItemInMyPage struct{
 	IndexPlayListMovieInMyPage queryService.IndexPlayListMovieQueryService
 }
