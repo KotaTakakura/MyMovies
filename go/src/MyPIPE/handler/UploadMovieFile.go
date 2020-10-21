@@ -80,11 +80,6 @@ func (uploadMovieFile UploadMovieFile)UploadMovieFile(c *gin.Context){
 	//動画投稿用のDTO
 	postMovieDTO := usecase.NewPostMovieDTO(file,*header,thumbnail,*thumbnailHeader,userId)
 
-	//newMovie := factory.NewMovieModelFactory()
-	//movieRepository := infra.NewMoviePersistence()
-	//thumbnailUploadRepository := uploadThumbnail.NewUploadThumbnailToAmazonS3()
-	//movieUploadRepository := uploadMovie.NewUploadToAmazonS3()
-	//uploadUsecase := usecase.NewPostMovie(movieUploadRepository,thumbnailUploadRepository,movieRepository,*newMovie)
 	newMovieModel,err := uploadMovieFile.PostMovieUsecase.PostMovie(postMovieDTO)
 	if err != nil{
 		c.JSON(http.StatusBadRequest, gin.H{

@@ -2,16 +2,27 @@ package handler
 
 import (
 	"MyPIPE/domain/model"
-	domain_service "MyPIPE/domain/service/User"
-	"MyPIPE/infra"
+	"MyPIPE/domain/repository"
 	"MyPIPE/usecase"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-func TemporaryRegisterUser(c *gin.Context) {
-	userPersistence := infra.NewUserPersistence()
-	userRegistration := usecase.NewUserTemporaryRegistration(userPersistence)
+type Authorization struct{
+	UserRepository	repository.UserRepository
+	UserTemporaryRegistrationUsecase	usecase.IUserTemporaryRegistration
+	UserRegisterUsecase 	usecase.IUserRegister
+}
+
+func NewAuthorization(userRep repository.UserRepository,userTemporaryRegistrationUsecase usecase.IUserTemporaryRegistration,userRegisterUsecase usecase.IUserRegister)*Authorization{
+	return &Authorization{
+		UserRepository: userRep,
+		UserTemporaryRegistrationUsecase: userTemporaryRegistrationUsecase,
+		UserRegisterUsecase:	userRegisterUsecase,
+	}
+}
+
+func (authorization Authorization)TemporaryRegisterUser(c *gin.Context) {
 
 	var newUserInfo TemporaryRegisterUserJson
 	var newUser model.User
@@ -23,7 +34,7 @@ func TemporaryRegisterUser(c *gin.Context) {
 
 	if validationError["user_email"] != nil {
 		validationErrorMessages["user_email"] = validationError["user_email"].Error()
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"result": "Validation Error",
 			"message": validationErrorMessages,
 		})
@@ -31,9 +42,9 @@ func TemporaryRegisterUser(c *gin.Context) {
 		return
 	}
 
-	err := userRegistration.TemporaryRegister(&newUser)
+	err := authorization.UserTemporaryRegistrationUsecase.TemporaryRegister(&newUser)
 	if err != nil{
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Temporary Registered!",
 		})
 		c.Abort()
@@ -45,10 +56,10 @@ func TemporaryRegisterUser(c *gin.Context) {
 }
 
 type TemporaryRegisterUserJson struct{
-	Email	string	`json:"email"`
+	Email	string	`json:"user_email"`
 }
 
-func RegisterUser(c *gin.Context) {
+func (authorization Authorization)RegisterUser(c *gin.Context) {
 
 	var newUserInfo RegisterUserJson
 	c.Bind(&newUserInfo)
@@ -56,11 +67,6 @@ func RegisterUser(c *gin.Context) {
 	validationErrors := map[string]error{}
 	errorMessages := map[string]string{}
 	validationErrorFlag := false
-
-	userPersistence := infra.NewUserPersistence()
-	userService := domain_service.NewUserService(userPersistence)
-	userRegistration := usecase.NewUserRegister(userPersistence,userService)
-
 
 	token := c.Query("token")
 
@@ -89,10 +95,10 @@ func RegisterUser(c *gin.Context) {
 		return
 	}
 
-	registerUserError := userRegistration.RegisterUser(&newUser)
+	registerUserError := authorization.UserRegisterUsecase.RegisterUser(&newUser)
 
 	if registerUserError != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"result": "Registration Error",
 			"messages": registerUserError.Error(),
 		})
@@ -106,7 +112,7 @@ func RegisterUser(c *gin.Context) {
 }
 
 type RegisterUserJson struct{
-	Name string	`json:"name"`
-	Password string	`json:"password"`
-	Birthday	string	`json:"birthday"`
+	Name string	`json:"user_name"`
+	Password string	`json:"user_password"`
+	Birthday	string	`json:"user_birthday"`
 }
