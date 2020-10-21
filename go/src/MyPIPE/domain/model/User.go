@@ -4,12 +4,14 @@ import (
 	"fmt"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"mime/multipart"
 	"path/filepath"
 	"regexp"
 	"strconv"
 	"time"
+	"errors"
 )
 
 type UserID uint64
@@ -89,8 +91,11 @@ type User struct {
 	UpdatedAt         time.Time `json:"updated_at"`
 }
 
-func NewUser() *User {
-	return &User{}
+func NewUser(email UserEmail,birthday time.Time) *User {
+	return &User{
+		Email: email,
+		Birthday: birthday,
+	}
 }
 
 func (u *User) SetBirthday(stringBirthday string) error {
@@ -178,5 +183,22 @@ func(u *User)SetProfileImage(profileImageHeader *multipart.FileHeader)error{
 	extension := filepath.Ext(profileImageHeader.Filename)
 	timestamp := strconv.FormatInt(time.Now().Unix(),10)
 	u.ProfileImageName = timestamp + extension
+	return nil
+}
+
+func(u *User)SetNewToken()error{
+	u.Token = UserToken(uuid.New().String())
+	return nil
+}
+
+func (u *User)Register(name UserName,password UserPassword,birthday time.Time)error{
+	duration := time.Now().Sub(u.UpdatedAt)
+	if int(duration.Minutes()) > 60{
+		return errors.New("Invalid Token.")
+	}
+	u.Token = ""
+	u.Name = name
+	u.Password = password
+	u.Birthday = birthday
 	return nil
 }

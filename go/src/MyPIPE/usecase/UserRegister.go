@@ -7,6 +7,10 @@ import (
 	"errors"
 )
 
+type IUserRegister interface {
+	RegisterUser(newUser *model.User) error
+}
+
 type UserRegister struct{
 	UserRepository	repository.UserRepository
 	UserService		domain_service.IUserService
@@ -26,18 +30,10 @@ func (u UserRegister)RegisterUser(newUser *model.User) error{
 		return errors.New("Invalid Token.")
 	}
 
-	if !registeredUserWithToken.TemporaryRegisteredWithinOneHour() {
-		return errors.New("Invalid Token.")
+	registerErr := registeredUserWithToken.Register(newUser.Name,newUser.Password,newUser.Birthday)
+	if registerErr != nil{
+		return registerErr
 	}
-
-	if u.UserService.CheckNameExists(newUser.Name) {
-		return errors.New("User Name Already Exists.")
-	}
-
-	registeredUserWithToken.EmptyToken()
-	registeredUserWithToken.Password = newUser.Password
-	registeredUserWithToken.Name = newUser.Name
-	registeredUserWithToken.Birthday = newUser.Birthday
 	e := u.UserRepository.UpdateUser(registeredUserWithToken)
 
 	if e != nil {

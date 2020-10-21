@@ -2,6 +2,7 @@ package main
 
 import (
 	"MyPIPE/domain/model"
+	domain_service "MyPIPE/domain/service/User"
 	"MyPIPE/handler"
 	"MyPIPE/infra"
 	support "MyPIPE/infra/UploadThumbnail"
@@ -81,8 +82,13 @@ func main() {
 
 	router.POST("/login", authMiddleware.LoginHandler)
 	router.GET("/refresh_token", authMiddleware.RefreshHandler)
-	router.POST("/new", handler.TemporaryRegisterUser)
-	router.POST("/register", handler.RegisterUser)
+
+	userTemporaryRegistrationUsecase := usecase.NewUserTemporaryRegistration(userRepository)
+	userService := domain_service.NewUserService(userRepository)
+	userRegisterUsecase := usecase.NewUserRegister(userRepository,userService)
+	authorizationHandler := handler.NewAuthorization(userRepository,userTemporaryRegistrationUsecase,userRegisterUsecase)
+	router.POST("/new", authorizationHandler.TemporaryRegisterUser)
+	router.POST("/register", authorizationHandler.RegisterUser)
 
 	checkUserAlreadyLikedMovieUsecase := usecase.NewCheckUserAlreadyLikedMovie(movieEvaluationRepository)
 	checkUserAlreadyLikedMovieHandler := handler.NewCheckUserAlreadyLikedMovie(movieEvaluationRepository,checkUserAlreadyLikedMovieUsecase)
