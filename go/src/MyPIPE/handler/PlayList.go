@@ -2,7 +2,7 @@ package handler
 
 import (
 	"MyPIPE/domain/model"
-	"MyPIPE/infra"
+	"MyPIPE/domain/repository"
 	"MyPIPE/usecase"
 	"encoding/json"
 	jwt "github.com/appleboy/gin-jwt/v2"
@@ -10,7 +10,25 @@ import (
 	"net/http"
 )
 
-func CreatePlayList(c *gin.Context){
+type CreatePlayList struct{
+	UserRepository	repository.UserRepository
+	PlayListRepository	repository.PlayListRepository
+	CreatePlayListUsecase usecase.ICreatePlayList
+}
+
+func NewCreatePlayList(
+	userRepository	repository.UserRepository,
+	playListRepository	repository.PlayListRepository,
+	createPlayListUsecase usecase.ICreatePlayList,
+	)*CreatePlayList{
+	return &CreatePlayList{
+		UserRepository:        userRepository,
+		PlayListRepository:    playListRepository,
+		CreatePlayListUsecase: createPlayListUsecase,
+	}
+}
+
+func (createPlayList CreatePlayList)CreatePlayList(c *gin.Context){
 	var playListJson CreatePlayListJson
 	bindErr := c.Bind(&playListJson)
 	if bindErr != nil{
@@ -53,11 +71,8 @@ func CreatePlayList(c *gin.Context){
 		c.Abort()
 		return
 	}
-
-	userPersistence := infra.NewUserPersistence()
-	playListPersistence := infra.NewPlayListPersistence()
-	createPlayListUsecase := usecase.NewCreatePlayList(userPersistence,playListPersistence)
-	createPlayListUsecaseErr := createPlayListUsecase.CreatePlayList(CreatePlayListDTO)
+	
+	createPlayListUsecaseErr := createPlayList.CreatePlayListUsecase.CreatePlayList(CreatePlayListDTO)
 	if createPlayListUsecaseErr != nil{
 		c.JSON(http.StatusBadRequest, gin.H{
 			"result": "Error.",
