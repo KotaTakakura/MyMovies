@@ -4,6 +4,7 @@ import (
 	"MyPIPE/domain/model"
 	"MyPIPE/handler"
 	"MyPIPE/infra"
+	support "MyPIPE/infra/UploadThumbnail"
 	queryService_infra "MyPIPE/infra/queryService"
 	"MyPIPE/usecase"
 	"github.com/appleboy/gin-jwt/v2"
@@ -116,10 +117,25 @@ func main() {
 		postCommentUsecase := usecase.NewPostComment(commentRepository,movieRepository)
 		postCommentHandler := handler.NewPostComment(commentRepository,movieRepository,postCommentUsecase)
 		auth.POST("/comments", postCommentHandler.PostComment)
-		auth.GET("/hello", helloHandler)
+
 		auth.POST("/movie", handler.UploadMovieFile)
-		auth.PUT("/movie",handler.UpdateMovie)
-		auth.PUT("/thumbnail",handler.ChangeThumbnail)
+
+		uploadedMoviesQueryService := queryService_infra.NewUploadedMovies()
+		uploadedMoviesUsecase := usecase.NewUploadedMovies(uploadedMoviesQueryService)
+		updateMovieUsecase := usecase.NewUpdateMovie(movieRepository)
+		thumbnailUploadRepository := support.NewUploadThumbnailToAmazonS3()
+		changeThumbnailUsecase := usecase.NewChangeThumbnail(movieRepository,thumbnailUploadRepository)
+		movieHandler := handler.NewMovie(
+			uploadedMoviesQueryService,
+			uploadedMoviesUsecase,
+			movieRepository,
+			updateMovieUsecase,
+			thumbnailUploadRepository,
+			changeThumbnailUsecase,
+			)
+		auth.PUT("/movie",movieHandler.UpdateMovie)
+		auth.PUT("/thumbnail",movieHandler.ChangeThumbnail)
+		auth.GET("/movies",movieHandler.GetUploadedMovies)
 
 		evaluateMovieUsecase := usecase.NewEvaluateUsecase(movieRepository,movieEvaluationRepository)
 		evaluateMovieHandler := handler.NewEvaluateMovie(movieRepository,movieEvaluationRepository,evaluateMovieUsecase)
@@ -128,8 +144,6 @@ func main() {
 		auth.POST("/play-list-items",handler.AddPlayListMovie)
 		auth.PUT("/play-list-items",handler.ChangeOrderOfPlayListMovies)
 		auth.POST("/follows",handler.FollowUser)
-
-		auth.GET("/movies",handler.GetUploadedMovies)
 
 		indexPlayListsInMyPageQueryService := queryService_infra.NewIndexPlayListsInMyPage()
 		indexPlayListsInMyPageUsecase := usecase.NewIndexPlayListsInMyPage(indexPlayListsInMyPageQueryService)
