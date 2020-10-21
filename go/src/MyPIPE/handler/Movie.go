@@ -2,18 +2,44 @@ package handler
 
 import (
 	"MyPIPE/domain/model"
-	"MyPIPE/infra"
-	queryService_infra "MyPIPE/infra/queryService"
+	queryService_uploadMovies "MyPIPE/domain/queryService/UploadedMovies"
+	"MyPIPE/domain/repository"
 	"MyPIPE/usecase"
 	"encoding/json"
 	jwt "github.com/appleboy/gin-jwt/v2"
-	support "MyPIPE/infra/UploadThumbnail"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 )
 
-func GetUploadedMovies(c *gin.Context){
+type Movie struct{
+	UploadMovieQueryService	queryService_uploadMovies.UploadedMovies
+	UploadMovieUsecase	usecase.IUploadedMovies
+	MovieRepository	repository.MovieRepository
+	UpdateMovieUsecase	usecase.IUpdateMovie
+	ThumbnailUploadRepository	repository.ThumbnailUploadRepository
+	ChangeThumbnailUsecase	usecase.IChangeThumbnail
+}
+
+func NewMovie(
+		uploadMovieQueryService	queryService_uploadMovies.UploadedMovies,
+		uploadMovieUsecase	usecase.IUploadedMovies,
+		movieRepository	repository.MovieRepository,
+		updateMovieUsecase	usecase.IUpdateMovie,
+		thumbnailUploadRepository	repository.ThumbnailUploadRepository,
+		changeThumbnailUsecase	usecase.IChangeThumbnail,
+	)*Movie{
+		return &Movie{
+			UploadMovieQueryService: uploadMovieQueryService,
+			UploadMovieUsecase:	uploadMovieUsecase,
+			MovieRepository:	movieRepository,
+			UpdateMovieUsecase:	updateMovieUsecase,
+			ThumbnailUploadRepository: thumbnailUploadRepository,
+			ChangeThumbnailUsecase:	changeThumbnailUsecase,
+		}
+}
+
+func (movie Movie)GetUploadedMovies(c *gin.Context){
 	userId := jwt.ExtractClaims(c)["id"]
 	iuserId := uint64(userId.(float64))
 
@@ -22,9 +48,7 @@ func GetUploadedMovies(c *gin.Context){
 		return
 	}
 
-	uploadedMoviesQueryService := queryService_infra.NewUploadedMovies()
-	uploadedMoviesUsecase := usecase.NewUploadedMovies(uploadedMoviesQueryService)
-	result := uploadedMoviesUsecase.Get(userIdModel)
+	result := movie.UploadMovieUsecase.Get(userIdModel)
 	jsonResult, jsonMarshalErr := json.Marshal(result)
 	if jsonMarshalErr != nil {
 		return
@@ -33,7 +57,7 @@ func GetUploadedMovies(c *gin.Context){
 	c.JSON(http.StatusOK, string(jsonResult))
 }
 
-func UpdateMovie(c *gin.Context){
+func (movie Movie)UpdateMovie(c *gin.Context){
 	userId := jwt.ExtractClaims(c)["id"]
 	iuserId := uint64(userId.(float64))
 
@@ -92,9 +116,7 @@ func UpdateMovie(c *gin.Context){
 		Status:      status,
 	}
 
-	movieRepository := infra.NewMoviePersistence()
-	updateMovieUsecase := usecase.NewUpdateMovie(movieRepository)
-	result,updateMovieUsecaseErr := updateMovieUsecase.Update(updateDTO)
+	result,updateMovieUsecaseErr := movie.UpdateMovieUsecase.Update(updateDTO)
 	if updateMovieUsecaseErr != nil{
 		jsonUpdateMovieUsecaseErr,_ := json.Marshal(updateMovieUsecaseErr.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -122,7 +144,7 @@ type UpdateMovieDTO struct{
 	Status uint	`json:"status"`
 }
 
-func ChangeThumbnail(c *gin.Context){
+func (movie Movie)ChangeThumbnail(c *gin.Context){
 
 	//バリデーションエラー格納
 	validationErrors := make(map[string]string)
@@ -162,10 +184,7 @@ func ChangeThumbnail(c *gin.Context){
 	}
 
 	changeThumbnailDTO := usecase.NewChangeThumbnailDTO(userId,movieId,thumbnail,*thumbnailHeader)
-	movieRepository := infra.NewMoviePersistence()
-	thumbnailUploadRepository := support.NewUploadThumbnailToAmazonS3()
-	changeThumbnailUsecase := usecase.NewChangeThumbnail(movieRepository,thumbnailUploadRepository)
-	changeThumbnailUsecaseErr := changeThumbnailUsecase.ChangeThumbnail(*changeThumbnailDTO)
+	changeThumbnailUsecaseErr := movie.ChangeThumbnailUsecase.ChangeThumbnail(*changeThumbnailDTO)
 	if changeThumbnailUsecaseErr != nil{
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"result": "Server Error.",

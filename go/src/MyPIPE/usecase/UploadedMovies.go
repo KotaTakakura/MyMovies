@@ -5,6 +5,10 @@ import (
 	queryService "MyPIPE/domain/queryService/UploadedMovies"
 )
 
+type IUploadedMovies interface {
+	Get(userId model.UserID)[]queryService.UploadedMoviesDTO
+}
+
 type UploadedMovies struct{
 	UploadedMoviesQueryService	queryService.UploadedMovies
 }

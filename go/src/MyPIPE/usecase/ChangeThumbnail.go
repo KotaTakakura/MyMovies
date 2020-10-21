@@ -6,6 +6,10 @@ import (
 	"mime/multipart"
 )
 
+type IChangeThumbnail interface {
+	ChangeThumbnail(changeThumbnailDTO ChangeThumbnailDTO)error
+}
+
 type ChangeThumbnail struct{
 	MovieRepository repository.MovieRepository
 	ThumbnailUploadRepository repository.ThumbnailUploadRepository

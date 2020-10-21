@@ -5,6 +5,11 @@ import (
 	"MyPIPE/domain/repository"
 )
 
+type IUpdateMovie interface {
+	Update(updateDTO UpdateDTO)(*model.Movie,error)
+	UpdateStatus(updateStatusDTO UpdateStatusDTO)(*model.Movie,error)
+}
+
 type UpdateMovie struct{
 	MovieRepository repository.MovieRepository
 }
