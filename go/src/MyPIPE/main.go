@@ -87,7 +87,11 @@ func main() {
 	getCommentsUsecase := usecase.NewGetMovieAndComments(commentQueryService)
 	getMovieAndCommentsHandler := handler.NewGetMovieAndComments(commentQueryService,getCommentsUsecase)
 	api.GET("/movie-and-comments",getMovieAndCommentsHandler.GetMovieAndComments)
-	api.GET("/index-movies",handler.IndexMovie)
+
+	indexMovieQueryService := queryService_infra.NewIndexMovie()
+	indexMovieUsecase := usecase.NewIndexMovie(indexMovieQueryService)
+	indexMovieHandler := handler.NewIndexMovie(indexMovieQueryService,indexMovieUsecase)
+	api.GET("/index-movies",indexMovieHandler.IndexMovie)
 
 	auth := router.Group("/auth/api/v1")
 	auth.Use(authMiddleware.MiddlewareFunc())
