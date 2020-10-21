@@ -2,6 +2,10 @@ package usecase
 
 import "MyPIPE/domain/queryService"
 
+type IIndexMovie interface {
+	Search(indexMovieSearchDTO *IndexMovieSearchDTO)queryService.IndexMovieDTO
+}
+
 type IndexMovie struct{
 	IndexMovieQueryService queryService.IndexMovieQueryService
 }

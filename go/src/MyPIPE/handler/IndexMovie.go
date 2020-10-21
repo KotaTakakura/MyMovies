@@ -2,7 +2,6 @@ package handler
 
 import (
 	"MyPIPE/domain/queryService"
-	queryService_infra "MyPIPE/infra/queryService"
 	"MyPIPE/usecase"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
@@ -10,7 +9,19 @@ import (
 	"strconv"
 )
 
-func IndexMovie(c *gin.Context){
+type IndexMovie struct {
+	IndexMovieQueryService queryService.IndexMovieQueryService
+	IndexMovieUsecase usecase.IIndexMovie
+}
+
+func NewIndexMovie(indexMovieQueryService queryService.IndexMovieQueryService,indexMovieUsecase usecase.IIndexMovie)*IndexMovie{
+	return &IndexMovie{
+		IndexMovieQueryService: indexMovieQueryService,
+		IndexMovieUsecase: indexMovieUsecase,
+	}
+}
+
+func (indexMovie IndexMovie)IndexMovie(c *gin.Context){
 	keyWord := c.Query("keyWord")
 
 	page,err := strconv.Atoi(c.Query("page"))
@@ -35,10 +46,8 @@ func IndexMovie(c *gin.Context){
 		return
 	}
 
-	indexMovieQueryService := queryService_infra.NewIndexMovie()
-	indexMovieUsecase := usecase.NewIndexMovie(indexMovieQueryService)
 	indexMovieSearchDTO := usecase.NewIndexMovieSearchDTO(page,keyWord,order)
-	movies := indexMovieUsecase.Search(indexMovieSearchDTO)
+	movies := indexMovie.IndexMovieUsecase.Search(indexMovieSearchDTO)
 
 	jsonResult, jsonMarshalErr := json.Marshal(movies)
 	if jsonMarshalErr != nil{
