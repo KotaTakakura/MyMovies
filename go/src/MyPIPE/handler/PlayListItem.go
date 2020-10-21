@@ -2,8 +2,8 @@ package handler
 
 import (
 	"MyPIPE/domain/model"
-	"MyPIPE/infra"
-	"MyPIPE/infra/factory"
+	"MyPIPE/domain/repository"
+	"MyPIPE/domain/factory"
 	"MyPIPE/usecase"
 	"encoding/json"
 	jwt "github.com/appleboy/gin-jwt/v2"
@@ -12,7 +12,31 @@ import (
 	"strconv"
 )
 
-func AddPlayListMovie(c *gin.Context){
+type PlayList struct{
+	PlayListRepository	repository.PlayListRepository
+	PlayListMovieRepository	repository.PlayListMovieRepository
+	PlayListMovieFactory	factory.IPlayListMovie
+	AddPlayListItemUsecase	usecase.IAddPlayListItem
+	DeletePlayListMovieUsecase	usecase.IDeletePlayListMovie
+}
+
+func NewPlayList(
+	playListRepository	repository.PlayListRepository,
+	playListMovieRepository	repository.PlayListMovieRepository,
+	playListMovieFactory	factory.IPlayListMovie,
+	addPlayListItemUsecase	usecase.IAddPlayListItem,
+	deletePlayListMovieUsecase	usecase.IDeletePlayListMovie,
+	)*PlayList{
+	return &PlayList{
+		PlayListRepository:	playListRepository,
+		PlayListMovieRepository: playListMovieRepository,
+		PlayListMovieFactory: playListMovieFactory,
+		AddPlayListItemUsecase: addPlayListItemUsecase,
+		DeletePlayListMovieUsecase: deletePlayListMovieUsecase,
+	}
+}
+
+func (playList PlayList)AddPlayListMovie(c *gin.Context){
 	var playListItemAddJson AddPlayListItemJson
 	c.Bind(&playListItemAddJson)
 	userId := uint64(jwt.ExtractClaims(c)["id"].(float64))
@@ -48,11 +72,7 @@ func AddPlayListMovie(c *gin.Context){
 		return
 	}
 
-	playListRepository := infra.NewPlayListPersistence()
-	playListMovieRepository := infra.NewPlayListMoviePersistence()
-	playListMovieFactory := factory.NewPlayListMovieFactory()
-	playListItemAddUsecase := usecase.NewAddPlayListItem(playListRepository,playListMovieRepository,playListMovieFactory)
-	err := playListItemAddUsecase.AddPlayListItem(playListItemAddDTO)
+	err := playList.AddPlayListItemUsecase.AddPlayListItem(playListItemAddDTO)
 	if err != nil{
 		c.JSON(http.StatusBadRequest, gin.H{
 			"result": "Error.",
@@ -73,7 +93,7 @@ type AddPlayListItemJson struct{
 	MovieID uint64 `json:"movie_id"`
 }
 
-func DeletePlayListMovie(c *gin.Context){
+func (playList PlayList)DeletePlayListMovie(c *gin.Context){
 	var playListItemDeleteJson DeletePlayListItemJson
 	c.Bind(&playListItemDeleteJson)
 
@@ -106,12 +126,8 @@ func DeletePlayListMovie(c *gin.Context){
 	}
 
 	playListMovieDeleteDTO := usecase.NewDeletePlayListItemAddJson(playListID,userId,movieId)
-
-	playListRepository := infra.NewPlayListPersistence()
-	playListMovieRepository := infra.NewPlayListMoviePersistence()
-
-	playListMovieDeleteUsecase := usecase.NewDeletePlayListMovie(playListRepository,playListMovieRepository)
-	err := playListMovieDeleteUsecase.DeletePlayListItem(playListMovieDeleteDTO)
+	
+	err := playList.DeletePlayListMovieUsecase.DeletePlayListItem(playListMovieDeleteDTO)
 	if err != nil{
 		c.JSON(http.StatusBadRequest, gin.H{
 			"result": "Error.",

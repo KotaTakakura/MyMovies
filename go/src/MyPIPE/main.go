@@ -5,6 +5,7 @@ import (
 	"MyPIPE/handler"
 	"MyPIPE/infra"
 	support "MyPIPE/infra/UploadThumbnail"
+	"MyPIPE/infra/factory"
 	queryService_infra "MyPIPE/infra/queryService"
 	"MyPIPE/usecase"
 	"github.com/appleboy/gin-jwt/v2"
@@ -49,6 +50,7 @@ func main() {
 	commentRepository := infra.NewCommentPersistence()
 	movieRepository := infra.NewMoviePersistence()
 	playListRepository := infra.NewPlayListPersistence()
+	playListMovieRepository := infra.NewPlayListMoviePersistence()
 
 	// the jwt middleware
 	authMiddleware, err := authMiddlewareByJWT()
@@ -145,8 +147,15 @@ func main() {
 		createPlayListHandler := handler.NewCreatePlayList(userRepository,playListRepository,createPlayListUsecase)
 		auth.POST("/play-lists",createPlayListHandler.CreatePlayList)
 
-		auth.POST("/play-list-items",handler.AddPlayListMovie)
+		playListMovieFactory := factory.NewPlayListMovieFactory()
+		addPlayListItemUsecase := usecase.NewAddPlayListItem(playListRepository,playListMovieRepository,playListMovieFactory)
+		deletePlayListMovieUsecase := usecase.NewDeletePlayListMovie(playListRepository,playListMovieRepository)
+		addPlayListMovieHandler := handler.NewPlayList(playListRepository,playListMovieRepository,playListMovieFactory,addPlayListItemUsecase,deletePlayListMovieUsecase)
+		auth.POST("/play-list-items",addPlayListMovieHandler.AddPlayListMovie)
+		auth.DELETE("/play-list-items",addPlayListMovieHandler.DeletePlayListMovie)
+
 		auth.PUT("/play-list-items",handler.ChangeOrderOfPlayListMovies)
+
 		auth.POST("/follows",handler.FollowUser)
 
 		indexPlayListsInMyPageQueryService := queryService_infra.NewIndexPlayListsInMyPage()
@@ -163,8 +172,6 @@ func main() {
 		indexPlayListInMovieListPageUsecase := usecase.NewIndexPlayListInMovieListPage(indexPlayListInMovieListPageQueryService)
 		indexPlayListInMovieListPageHandler := handler.NewIndexPlayListInMovieListPage(indexPlayListInMovieListPageQueryService,indexPlayListInMovieListPageUsecase)
 		auth.GET("play-lists/:movie_id",indexPlayListInMovieListPageHandler.IndexPlayListInMovieListPage)
-
-		auth.DELETE("/play-list-items",handler.DeletePlayListMovie)
 
 		deletePlayListUsecase := usecase.NewDeletePlayList(playListRepository)
 		deletePlayListHandler := handler.NewDeletePlayList(playListRepository,deletePlayListUsecase)

@@ -7,6 +7,10 @@ import (
 	"errors"
 )
 
+type IAddPlayListItem interface {
+	AddPlayListItem(playListItemAddJson AddPlayListItemAddJson)error
+}
+
 type AddPlayListItem struct{
 	PlayListRepository	repository.PlayListRepository
 	PlayListMovieRepository repository.PlayListMovieRepository
