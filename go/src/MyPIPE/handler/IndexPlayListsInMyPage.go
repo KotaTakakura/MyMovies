@@ -9,26 +9,26 @@ import (
 	"net/http"
 )
 
-type IndexPlayListsInMyPage struct{
-	IndexPlayListsInMyPageQueryService	queryService.IndexPlayListsInMyPageQueryService
-	IndexPlayListsInMyPageUsecase	usecase.IIndexPlayListsInMyPage
+type IndexPlayListsInMyPage struct {
+	IndexPlayListsInMyPageQueryService queryService.IndexPlayListsInMyPageQueryService
+	IndexPlayListsInMyPageUsecase      usecase.IIndexPlayListsInMyPage
 }
 
-func NewIndexPlayListsInMyPage(indexPlayListsInMyPageQueryService queryService.IndexPlayListsInMyPageQueryService,indexPlayListsInMyPageUsecase usecase.IIndexPlayListsInMyPage)*IndexPlayListsInMyPage{
+func NewIndexPlayListsInMyPage(indexPlayListsInMyPageQueryService queryService.IndexPlayListsInMyPageQueryService, indexPlayListsInMyPageUsecase usecase.IIndexPlayListsInMyPage) *IndexPlayListsInMyPage {
 	return &IndexPlayListsInMyPage{
 		IndexPlayListsInMyPageQueryService: indexPlayListsInMyPageQueryService,
-		IndexPlayListsInMyPageUsecase: indexPlayListsInMyPageUsecase,
+		IndexPlayListsInMyPageUsecase:      indexPlayListsInMyPageUsecase,
 	}
 }
 
-func (indexPlayListsInMyPage IndexPlayListsInMyPage)IndexPlayListsInMyPage(c *gin.Context){
-	userId :=  uint64(jwt.ExtractClaims(c)["id"].(float64))
+func (indexPlayListsInMyPage IndexPlayListsInMyPage) IndexPlayListsInMyPage(c *gin.Context) {
+	userId := uint64(jwt.ExtractClaims(c)["id"].(float64))
 	playLists := indexPlayListsInMyPage.IndexPlayListsInMyPageUsecase.All(userId)
 
 	jsonResult, jsonMarshalErr := json.Marshal(playLists)
-	if jsonMarshalErr != nil{
+	if jsonMarshalErr != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"result": "Internal Server Error.",
+			"result":   "Internal Server Error.",
 			"messages": jsonMarshalErr.Error(),
 		})
 		c.Abort()

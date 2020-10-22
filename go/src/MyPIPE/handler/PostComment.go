@@ -9,13 +9,13 @@ import (
 	"net/http"
 )
 
-type PostComment struct{
-	CommentRepository repository.CommentRepository
-	MovieRepository repository.MovieRepository
+type PostComment struct {
+	CommentRepository  repository.CommentRepository
+	MovieRepository    repository.MovieRepository
 	PostCommentUsecase usecase.IPostComment
 }
 
-func NewPostComment(commentRepo repository.CommentRepository,movieRepo repository.MovieRepository,postCommentUsecase usecase.IPostComment)*PostComment{
+func NewPostComment(commentRepo repository.CommentRepository, movieRepo repository.MovieRepository, postCommentUsecase usecase.IPostComment) *PostComment {
 	return &PostComment{
 		CommentRepository:  commentRepo,
 		MovieRepository:    movieRepo,
@@ -23,7 +23,7 @@ func NewPostComment(commentRepo repository.CommentRepository,movieRepo repositor
 	}
 }
 
-func (postComment PostComment)PostComment(c *gin.Context) {
+func (postComment PostComment) PostComment(c *gin.Context) {
 	userId := jwt.ExtractClaims(c)["id"]
 	iuserId := uint64(userId.(float64))
 
@@ -31,7 +31,7 @@ func (postComment PostComment)PostComment(c *gin.Context) {
 	bindErr := c.Bind(&comment)
 	if bindErr != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"result": "Server Error.",
+			"result":   "Server Error.",
 			"messages": bindErr.Error(),
 		})
 		c.Abort()
@@ -43,28 +43,27 @@ func (postComment PostComment)PostComment(c *gin.Context) {
 	errorMessages := map[string]string{}
 	validationErrorFlag := false
 
-
-	newComment.Body,validationErrors["comment_body"] = model.NewCommentBody(comment.CommentBody)
-	if validationErrors["comment_body"] != nil{
+	newComment.Body, validationErrors["comment_body"] = model.NewCommentBody(comment.CommentBody)
+	if validationErrors["comment_body"] != nil {
 		validationErrorFlag = true
 		errorMessages["comment_body"] = validationErrors["comment_body"].Error()
 	}
 
-	newComment.UserID,validationErrors["user_id"] = model.NewUserID(iuserId)
-	if validationErrors["user_id"] != nil{
+	newComment.UserID, validationErrors["user_id"] = model.NewUserID(iuserId)
+	if validationErrors["user_id"] != nil {
 		validationErrorFlag = true
 		errorMessages["user_id"] = validationErrors["user_id"].Error()
 	}
 
-	newComment.MovieID,validationErrors["movie_id"] = model.NewMovieID(comment.MovieID)
-	if validationErrors["movie_id"] != nil{
+	newComment.MovieID, validationErrors["movie_id"] = model.NewMovieID(comment.MovieID)
+	if validationErrors["movie_id"] != nil {
 		validationErrorFlag = true
 		errorMessages["movie_id"] = validationErrors["movie_id"].Error()
 	}
 
 	if validationErrorFlag {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"result": "Validation Error.",
+			"result":   "Validation Error.",
 			"messages": errorMessages,
 		})
 		c.Abort()
@@ -72,9 +71,9 @@ func (postComment PostComment)PostComment(c *gin.Context) {
 	}
 
 	postCommentErr := postComment.PostCommentUsecase.PostComment(newComment)
-	if postCommentErr != nil{
+	if postCommentErr != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"result": "Comment Post Failed.",
+			"result":   "Comment Post Failed.",
 			"messages": postCommentErr.Error(),
 		})
 		c.Abort()
@@ -86,7 +85,7 @@ func (postComment PostComment)PostComment(c *gin.Context) {
 	})
 }
 
-type PostCommentJson struct{
-	CommentBody	string	`json:"comment_body"`
-	MovieID uint64	`json:"movie_id"`
+type PostCommentJson struct {
+	CommentBody string `json:"comment_body"`
+	MovieID     uint64 `json:"movie_id"`
 }

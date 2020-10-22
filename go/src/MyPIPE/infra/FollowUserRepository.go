@@ -6,30 +6,30 @@ import (
 
 type FollowUserPersistence struct{}
 
-func NewFollowUserPersistence()*FollowUserPersistence{
+func NewFollowUserPersistence() *FollowUserPersistence {
 	return &FollowUserPersistence{}
 }
 
-func (f FollowUserPersistence)FindByUserIdAndFollowId(userId model.UserID,followId model.UserID)*model.FollowUser{
+func (f FollowUserPersistence) FindByUserIdAndFollowId(userId model.UserID, followId model.UserID) *model.FollowUser {
 	db := ConnectGorm()
 	defer db.Close()
 	var followUser model.FollowUser
-	findResult := db.Where("user_id = ? and follow_id = ?",userId,followId).Find(&followUser)
-	if findResult.RowsAffected == 0{
+	findResult := db.Where("user_id = ? and follow_id = ?", userId, followId).Find(&followUser)
+	if findResult.RowsAffected == 0 {
 		return nil
 	}
 	return &followUser
 }
 
-func (f FollowUserPersistence)Save(user *model.FollowUser)error{
+func (f FollowUserPersistence) Save(user *model.FollowUser) error {
 	db := ConnectGorm()
 	defer db.Close()
 	var followUser model.FollowUser
-	result := db.Where("user_id = ? and follow_id = ?",user.UserID,user.FollowID).Find(&followUser)
+	result := db.Where("user_id = ? and follow_id = ?", user.UserID, user.FollowID).Find(&followUser)
 
-	if result.RowsAffected == 0{
+	if result.RowsAffected == 0 {
 		createResult := db.Create(&user)
-		if createResult.Error != nil{
+		if createResult.Error != nil {
 			return createResult.Error
 		}
 	}

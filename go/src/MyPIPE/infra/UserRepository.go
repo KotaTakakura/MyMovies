@@ -5,7 +5,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-type UserPersistence struct {}
+type UserPersistence struct{}
 
 func NewUserPersistence() *UserPersistence {
 	return &UserPersistence{}
@@ -54,8 +54,8 @@ func (u UserPersistence) FindById(id model.UserID) (*model.User, error) {
 	if e.Error != nil {
 		return nil, e.Error
 	}
-	if e.RowsAffected == 0{
-		return nil,nil
+	if e.RowsAffected == 0 {
+		return nil, nil
 	}
 
 	return &user, nil
@@ -83,7 +83,7 @@ func (u UserPersistence) SetUser(newUser *model.User) error {
 	return nil
 }
 
-func (u UserPersistence) UpdateUser(updateUser *model.User) error{
+func (u UserPersistence) UpdateUser(updateUser *model.User) error {
 	db := ConnectGorm()
 	defer db.Close()
 
@@ -95,7 +95,7 @@ func (u UserPersistence) UpdateUser(updateUser *model.User) error{
 		return nil
 	})
 
-	if transactionErr != nil{
+	if transactionErr != nil {
 		return transactionErr
 	}
 

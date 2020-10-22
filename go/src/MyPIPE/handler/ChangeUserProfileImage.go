@@ -10,13 +10,13 @@ import (
 	"net/http"
 )
 
-type ChangeUserProfileImage struct{
-	UserRepository	repository.UserRepository
-	UserProfileImageRepository repository.UserProfileImageRepository
-	ChangeUserProfileImageUsecase	usecase.IChangeUserProfilieImage
+type ChangeUserProfileImage struct {
+	UserRepository                repository.UserRepository
+	UserProfileImageRepository    repository.UserProfileImageRepository
+	ChangeUserProfileImageUsecase usecase.IChangeUserProfilieImage
 }
 
-func NewChangeUserProfileImage(userRepo repository.UserRepository,userProfileImageRepo repository.UserProfileImageRepository,changeUserProfileImageUsecase usecase.IChangeUserProfilieImage)*ChangeUserProfileImage{
+func NewChangeUserProfileImage(userRepo repository.UserRepository, userProfileImageRepo repository.UserProfileImageRepository, changeUserProfileImageUsecase usecase.IChangeUserProfilieImage) *ChangeUserProfileImage {
 	return &ChangeUserProfileImage{
 		UserRepository:                userRepo,
 		UserProfileImageRepository:    userProfileImageRepo,
@@ -24,36 +24,35 @@ func NewChangeUserProfileImage(userRepo repository.UserRepository,userProfileIma
 	}
 }
 
-func (changeUserProfileImage ChangeUserProfileImage)ChangeUserProfileImage(c *gin.Context){
+func (changeUserProfileImage ChangeUserProfileImage) ChangeUserProfileImage(c *gin.Context) {
 	userIdUint := uint64(jwt.ExtractClaims(c)["id"].(float64))
 	validationErrors := make(map[string]string)
 
-	userId,userIdErr := model.NewUserID(userIdUint)
-	if userIdErr != nil{
+	userId, userIdErr := model.NewUserID(userIdUint)
+	if userIdErr != nil {
 		validationErrors["user_id"] = userIdErr.Error()
 	}
 
-	imageFile,imageHeader,imageFileErr := c.Request.FormFile("profileImage")
-	if imageFileErr != nil{
+	imageFile, imageHeader, imageFileErr := c.Request.FormFile("profileImage")
+	if imageFileErr != nil {
 		validationErrors["profile_image"] = imageFileErr.Error()
 	}
 
-
-	if len(validationErrors) != 0{
-		validationErrors,_ :=  json.Marshal(validationErrors)
+	if len(validationErrors) != 0 {
+		validationErrors, _ := json.Marshal(validationErrors)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"result": "Validation Error.",
+			"result":   "Validation Error.",
 			"messages": string(validationErrors),
 		})
 		c.Abort()
 		return
 	}
 
-	changeUserProfileImageDTO := usecase.NewChangeUserProfileImageDTO(userId,imageFile,imageHeader)
+	changeUserProfileImageDTO := usecase.NewChangeUserProfileImageDTO(userId, imageFile, imageHeader)
 	changeProfileImageErr := changeUserProfileImage.ChangeUserProfileImageUsecase.ChangeUserProfileImage(changeUserProfileImageDTO)
-	if changeProfileImageErr != nil{
+	if changeProfileImageErr != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"result": "Profile Image Set Failed.",
+			"result":   "Profile Image Set Failed.",
 			"messages": changeProfileImageErr.Error(),
 		})
 		c.Abort()

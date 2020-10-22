@@ -11,14 +11,14 @@ import (
 
 type UserProfileImagePersistence struct{}
 
-func NewUserProfileImagePersistence()*UserProfileImagePersistence{
+func NewUserProfileImagePersistence() *UserProfileImagePersistence {
 	return &UserProfileImagePersistence{}
 }
 
-func (u UserProfileImagePersistence)Upload(file multipart.File,user *model.User)error{
+func (u UserProfileImagePersistence) Upload(file multipart.File, user *model.User) error {
 	sess := session.Must(session.NewSession())
 	bucketName := "mypipe-111"
-	userIdString := strconv.FormatUint(uint64(user.ID),10)
+	userIdString := strconv.FormatUint(uint64(user.ID), 10)
 	objectKey := "profile_images/" + userIdString + "/" + string(user.ProfileImageName)
 
 	uploader := s3manager.NewUploader(sess)

@@ -10,26 +10,26 @@ import (
 	"net/http"
 )
 
-type EvaluateMovie struct{
-	MovieRepository repository.MovieRepository
-	MovieEvaluationRepository	repository.MovieEvaluationRepository
-	EvaluateMovieUsecase usecase.IEvaluateMovie
+type EvaluateMovie struct {
+	MovieRepository           repository.MovieRepository
+	MovieEvaluationRepository repository.MovieEvaluationRepository
+	EvaluateMovieUsecase      usecase.IEvaluateMovie
 }
 
-func NewEvaluateMovie(movieRepo repository.MovieRepository,movieEvaluateRepo repository.MovieEvaluationRepository,evaluateMovieUsecase usecase.IEvaluateMovie)*EvaluateMovie{
+func NewEvaluateMovie(movieRepo repository.MovieRepository, movieEvaluateRepo repository.MovieEvaluationRepository, evaluateMovieUsecase usecase.IEvaluateMovie) *EvaluateMovie {
 	return &EvaluateMovie{
-		MovieRepository: movieRepo,
+		MovieRepository:           movieRepo,
 		MovieEvaluationRepository: movieEvaluateRepo,
-		EvaluateMovieUsecase: evaluateMovieUsecase,
+		EvaluateMovieUsecase:      evaluateMovieUsecase,
 	}
 }
 
-func (evaluateMovie EvaluateMovie)EvaluateMovie(c *gin.Context){
+func (evaluateMovie EvaluateMovie) EvaluateMovie(c *gin.Context) {
 	var evaluateMovieJson EvaluateMovieJson
 	evaluateMovieJsonErr := c.Bind(&evaluateMovieJson)
-	if evaluateMovieJsonErr != nil{
+	if evaluateMovieJsonErr != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"result": "Error.",
+			"result":   "Error.",
 			"messages": evaluateMovieJsonErr.Error(),
 		})
 		c.Abort()
@@ -39,49 +39,49 @@ func (evaluateMovie EvaluateMovie)EvaluateMovie(c *gin.Context){
 	var evaluateMovieDTO usecase.EvaluateMovieDTO
 	validationErrors := make(map[string]string)
 	var userIdErr error
-	evaluateMovieDTO.UserID,userIdErr = model.NewUserID(userId)
-	if userIdErr != nil{
+	evaluateMovieDTO.UserID, userIdErr = model.NewUserID(userId)
+	if userIdErr != nil {
 		validationErrors["user_id"] = userIdErr.Error()
 	}
 
 	var movieIdErr error
-	evaluateMovieDTO.MovieID,movieIdErr = model.NewMovieID(evaluateMovieJson.MovieID)
-	if movieIdErr != nil{
+	evaluateMovieDTO.MovieID, movieIdErr = model.NewMovieID(evaluateMovieJson.MovieID)
+	if movieIdErr != nil {
 		validationErrors["movie_id"] = movieIdErr.Error()
 	}
 
 	var evaluationErr error
-	evaluateMovieDTO.Evaluation,evaluationErr = model.NewEvaluation(evaluateMovieJson.Evaluation)
-	if evaluationErr != nil{
+	evaluateMovieDTO.Evaluation, evaluationErr = model.NewEvaluation(evaluateMovieJson.Evaluation)
+	if evaluationErr != nil {
 		validationErrors["evaluation"] = evaluationErr.Error()
 	}
 
-	if len(validationErrors) != 0{
-		validationErrors,_ :=  json.Marshal(validationErrors)
+	if len(validationErrors) != 0 {
+		validationErrors, _ := json.Marshal(validationErrors)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"result": "Validation Error.",
+			"result":   "Validation Error.",
 			"messages": string(validationErrors),
 		})
 		c.Abort()
 		return
 	}
-	
+
 	evaluateMovieUsecaseErr := evaluateMovie.EvaluateMovieUsecase.EvaluateMovie(&evaluateMovieDTO)
-	if evaluateMovieUsecaseErr != nil{
+	if evaluateMovieUsecaseErr != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"result": "Error.",
+			"result":   "Error.",
 			"messages": evaluateMovieUsecaseErr.Error(),
 		})
 		c.Abort()
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"result": "Success.",
+		"result":   "Success.",
 		"messages": "OK",
 	})
 }
 
-type EvaluateMovieJson struct{
-	MovieID uint64	`json:"movie_id"`
+type EvaluateMovieJson struct {
+	MovieID    uint64 `json:"movie_id"`
 	Evaluation string `json:"evaluate"`
 }
