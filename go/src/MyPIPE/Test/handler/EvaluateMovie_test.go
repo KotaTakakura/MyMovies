@@ -63,7 +63,6 @@ func TestEvaluateMovie(t *testing.T){
 
 		evaluateMovieUsecase.EXPECT().EvaluateMovie(gomock.Any()).DoAndReturn(func(data interface{})error{
 			if reflect.TypeOf(data) != reflect.TypeOf(&(usecase.EvaluateMovieDTO{})){
-				fmt.Println(reflect.TypeOf(data))
 				t.Fatal("Type Not Match.")
 			}
 			if data.(*usecase.EvaluateMovieDTO).UserID != model.UserID(trueCase.userId){
