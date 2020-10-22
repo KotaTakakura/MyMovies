@@ -6,35 +6,35 @@ import (
 )
 
 type IDeletePlayList interface {
-	Delete(deletePlayListDTO *DeletePlayListDTO)error
+	Delete(deletePlayListDTO *DeletePlayListDTO) error
 }
 
-type DeletePlayList struct{
+type DeletePlayList struct {
 	PlayListRepository repository.PlayListRepository
 }
 
-func NewDeletePlayList(p repository.PlayListRepository)*DeletePlayList{
+func NewDeletePlayList(p repository.PlayListRepository) *DeletePlayList {
 	return &DeletePlayList{
 		PlayListRepository: p,
 	}
 }
 
-func (d DeletePlayList)Delete(deletePlayListDTO *DeletePlayListDTO)error{
-	result := d.PlayListRepository.Remove(deletePlayListDTO.UserID,deletePlayListDTO.PlaylistID)
-	if result != nil{
+func (d DeletePlayList) Delete(deletePlayListDTO *DeletePlayListDTO) error {
+	result := d.PlayListRepository.Remove(deletePlayListDTO.UserID, deletePlayListDTO.PlaylistID)
+	if result != nil {
 		return result
 	}
 	return nil
 }
 
-type DeletePlayListDTO struct{
-	UserID model.UserID
+type DeletePlayListDTO struct {
+	UserID     model.UserID
 	PlaylistID model.PlayListID
 }
 
-func NewDeletePlayListDTO(userId model.UserID,playListId model.PlayListID)*DeletePlayListDTO{
+func NewDeletePlayListDTO(userId model.UserID, playListId model.PlayListID) *DeletePlayListDTO {
 	return &DeletePlayListDTO{
-		UserID: userId,
+		UserID:     userId,
 		PlaylistID: playListId,
 	}
 }
