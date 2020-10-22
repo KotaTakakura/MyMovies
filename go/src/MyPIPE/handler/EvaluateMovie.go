@@ -66,7 +66,7 @@ func (evaluateMovie EvaluateMovie)EvaluateMovie(c *gin.Context){
 		return
 	}
 	
-	evaluateMovieUsecaseErr := evaluateMovie.EvaluateMovieUsecase.EvaluateMovie(evaluateMovieDTO)
+	evaluateMovieUsecaseErr := evaluateMovie.EvaluateMovieUsecase.EvaluateMovie(&evaluateMovieDTO)
 	if evaluateMovieUsecaseErr != nil{
 		c.JSON(http.StatusBadRequest, gin.H{
 			"result": "Error.",

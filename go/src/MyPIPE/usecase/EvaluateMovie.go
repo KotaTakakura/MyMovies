@@ -7,7 +7,7 @@ import (
 )
 
 type IEvaluateMovie interface {
-	EvaluateMovie(evaluateMovieDTO EvaluateMovieDTO)error
+	EvaluateMovie(evaluateMovieDTO *EvaluateMovieDTO)error
 }
 
 type EvaluateMovie struct{
@@ -22,7 +22,7 @@ func NewEvaluateUsecase(m repository.MovieRepository,me repository.MovieEvaluati
 	}
 }
 
-func (e EvaluateMovie)EvaluateMovie(evaluateMovieDTO EvaluateMovieDTO)error{
+func (e EvaluateMovie)EvaluateMovie(evaluateMovieDTO *EvaluateMovieDTO)error{
 	movie,movieErr := e.MovieRepository.FindById(evaluateMovieDTO.MovieID)
 	if movieErr != nil{
 		return movieErr

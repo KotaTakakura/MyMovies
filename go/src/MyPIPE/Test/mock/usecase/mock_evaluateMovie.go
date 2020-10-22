@@ -34,7 +34,7 @@ func (m *MockIEvaluateMovie) EXPECT() *MockIEvaluateMovieMockRecorder {
 }
 
 // EvaluateMovie mocks base method
-func (m *MockIEvaluateMovie) EvaluateMovie(evaluateMovieDTO usecase.EvaluateMovieDTO) error {
+func (m *MockIEvaluateMovie) EvaluateMovie(evaluateMovieDTO *usecase.EvaluateMovieDTO) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "EvaluateMovie", evaluateMovieDTO)
 	ret0, _ := ret[0].(error)
