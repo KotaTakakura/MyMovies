@@ -6,7 +6,7 @@ import (
 )
 
 type IGetMovieAndComments interface {
-	Get(getDTO MovieAndGetCommentsDTO)queryService.FindByMovieIdDTO
+	Get(getDTO *MovieAndGetCommentsDTO)queryService.FindByMovieIdDTO
 }
 
 type GetMovieAndComments struct{
@@ -19,7 +19,7 @@ func NewGetMovieAndComments(cqs queryService.CommentQueryService)*GetMovieAndCom
 	}
 }
 
-func (g GetMovieAndComments)Get(getDTO MovieAndGetCommentsDTO)queryService.FindByMovieIdDTO{
+func (g GetMovieAndComments)Get(getDTO *MovieAndGetCommentsDTO)queryService.FindByMovieIdDTO{
 	return g.CommentQueryService.FindByMovieId(getDTO.MovieID)
 }
 

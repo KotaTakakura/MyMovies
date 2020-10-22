@@ -44,7 +44,7 @@ func (getMovieAndComments GetMovieAndComments)GetMovieAndComments(c *gin.Context
 	}
 
 	getCommentsDTO := usecase.NewGetMovieAndCommentsDTO(movieId)
-	comments := getMovieAndComments.GetCommentsUsecase.Get(*getCommentsDTO)
+	comments := getMovieAndComments.GetCommentsUsecase.Get(getCommentsDTO)
 
 	jsonResult, jsonMarshalErr := json.Marshal(comments)
 	if jsonMarshalErr != nil{

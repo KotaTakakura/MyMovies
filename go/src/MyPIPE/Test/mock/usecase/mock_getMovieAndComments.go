@@ -35,7 +35,7 @@ func (m *MockIGetMovieAndComments) EXPECT() *MockIGetMovieAndCommentsMockRecorde
 }
 
 // Get mocks base method
-func (m *MockIGetMovieAndComments) Get(getDTO usecase.MovieAndGetCommentsDTO) queryService.FindByMovieIdDTO {
+func (m *MockIGetMovieAndComments) Get(getDTO *usecase.MovieAndGetCommentsDTO) queryService.FindByMovieIdDTO {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Get", getDTO)
 	ret0, _ := ret[0].(queryService.FindByMovieIdDTO)
