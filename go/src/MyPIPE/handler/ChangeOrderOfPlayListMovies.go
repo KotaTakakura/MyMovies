@@ -69,8 +69,6 @@ func (changeOrderOfPlayListMovies ChangeOrderOfPlayListMovies)ChangeOrderOfPlayL
 	changeOrderOfPlayListMoviesDTO.UserID = userId
 	changeOrderOfPlayListMoviesDTO.PlayListID = playListID
 
-	//playListMovieRepository := infra.NewPlayListMoviePersistence()
-	//changeOrderOfPlayListMovies := usecase.NewChangeOrderOfPlayListMovies(playListMovieRepository)
 	result := changeOrderOfPlayListMovies.ChangeOrderOfPlayListMoviesUsecase.ChangeOrderOfPlayListMovies(&changeOrderOfPlayListMoviesDTO)
 	if result != nil{
 		c.JSON(http.StatusInternalServerError, gin.H{
