@@ -46,7 +46,7 @@ func TestCheckUserAlreadyLikedMovie(t *testing.T){
 		ginContext, _ := gin.CreateTestContext(httptest.NewRecorder())
 		ginContext.Request = req
 
-		checkAlreadyLikeDMovieUsecase.EXPECT().Find(gomock.Any()).DoAndReturn(func(data interface{})error{
+		checkAlreadyLikeDMovieUsecase.EXPECT().Find(gomock.Any()).DoAndReturn(func(data interface{})bool{
 			if reflect.TypeOf(data) != reflect.TypeOf(&(usecase.CheckUserAlreadyLikedMovieFindDTO{})){
 				t.Fatal("Type Not Match.")
 			}
@@ -56,7 +56,7 @@ func TestCheckUserAlreadyLikedMovie(t *testing.T){
 			if data.(*usecase.CheckUserAlreadyLikedMovieFindDTO).MovieID != model.MovieID(trueCase.movieId){
 				t.Fatal("MovieID Not Match,")
 			}
-			return nil
+			return true
 		})
 
 		checkUserAlreadyLikedMovieHandler.CheckUserAlreadyLikedMovie(ginContext)

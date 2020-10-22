@@ -54,8 +54,6 @@ func (deletePlayList DeletePlayList)DeletePlayList(c *gin.Context){
 		return
 	}
 
-	//playListRepository := infra.NewPlayListPersistence()
-	//deletePlayListUsecase := usecase.NewDeletePlayList(playListRepository)
 	deletePlayListDTO := usecase.NewDeletePlayListDTO(userId,playListId)
 	result := deletePlayList.DeletePlayListUsecase.Delete(deletePlayListDTO)
 
