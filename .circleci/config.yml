@@ -24,7 +24,7 @@ jobs:
 
       - run:
           name: handlerTest
-          command: go test -v ./go/src/MyPIPE/Test/handler/...
+          command: cd ./go/src/MyPIPE && go test -v ./Test/handler/...
 
       #      - run:
       #          name: usecaseTest
