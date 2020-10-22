@@ -4,19 +4,19 @@ import "time"
 
 type PlayListMovieOrder int
 
-func NewPlayListMovieOrder(playListOrder int)(PlayListMovieOrder,error){
-	return PlayListMovieOrder(playListOrder),nil
+func NewPlayListMovieOrder(playListOrder int) (PlayListMovieOrder, error) {
+	return PlayListMovieOrder(playListOrder), nil
 }
 
 type PlayListMovie struct {
 	PlayListID PlayListID
 	MovieID    MovieID
-	Order	   PlayListMovieOrder
+	Order      PlayListMovieOrder
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 }
 
-func NewPlayListMovie(playListId PlayListID,movieId MovieID,order PlayListMovieOrder)*PlayListMovie{
+func NewPlayListMovie(playListId PlayListID, movieId MovieID, order PlayListMovieOrder) *PlayListMovie {
 	return &PlayListMovie{
 		PlayListID: playListId,
 		MovieID:    movieId,
@@ -24,6 +24,6 @@ func NewPlayListMovie(playListId PlayListID,movieId MovieID,order PlayListMovieO
 	}
 }
 
-func (p *PlayListMovie)ChangeOrder(order PlayListMovieOrder){
+func (p *PlayListMovie) ChangeOrder(order PlayListMovieOrder) {
 	p.Order = order
 }

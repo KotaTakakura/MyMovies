@@ -6,5 +6,5 @@ import (
 )
 
 type ThumbnailUploadRepository interface {
-	Upload(file multipart.File,movie model.Movie) error
+	Upload(file multipart.File, movie model.Movie) error
 }

@@ -7,5 +7,5 @@ type CommentRepository interface {
 	FindById(commentID model.CommentID) (*model.Comment, error)
 	FindByUserId(userId model.UserID) ([]model.Comment, error)
 	FindByMovieId(movieId model.MovieID) ([]model.Comment, error)
-	Save(*model.Comment)error
+	Save(*model.Comment) error
 }

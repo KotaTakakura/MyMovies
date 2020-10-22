@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"fmt"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
@@ -11,7 +12,6 @@ import (
 	"regexp"
 	"strconv"
 	"time"
-	"errors"
 )
 
 type UserID uint64
@@ -80,20 +80,20 @@ func NewUserToken(userToken string) (UserToken, error) {
 }
 
 type User struct {
-	ID                UserID   `json:"id" gorm:"primaryKey"`
-	Name              UserName `json:"name"`
-	Password          UserPassword
-	Email             UserEmail `json:"email"`
-	Birthday          time.Time `json:"birthday"`
-	ProfileImageName	string	`json:"profile_image_name"`
-	Token             UserToken `json:"token"`
-	CreatedAt         time.Time `json:"created_at"`
-	UpdatedAt         time.Time `json:"updated_at"`
+	ID               UserID   `json:"id" gorm:"primaryKey"`
+	Name             UserName `json:"name"`
+	Password         UserPassword
+	Email            UserEmail `json:"email"`
+	Birthday         time.Time `json:"birthday"`
+	ProfileImageName string    `json:"profile_image_name"`
+	Token            UserToken `json:"token"`
+	CreatedAt        time.Time `json:"created_at"`
+	UpdatedAt        time.Time `json:"updated_at"`
 }
 
-func NewUser(email UserEmail,birthday time.Time) *User {
+func NewUser(email UserEmail, birthday time.Time) *User {
 	return &User{
-		Email: email,
+		Email:    email,
 		Birthday: birthday,
 	}
 }
@@ -143,17 +143,17 @@ func (u User) CheckPassword(pass string) bool {
 	return true
 }
 
-func (u *User)ChangeName(name UserName)error{
+func (u *User) ChangeName(name UserName) error {
 	u.Name = name
 	return nil
 }
 
-func (u *User)ChangeEmail(email UserEmail)error{
+func (u *User) ChangeEmail(email UserEmail) error {
 	u.Email = email
 	return nil
 }
 
-func (u *User)ChangePassword(password UserPassword)error{
+func (u *User) ChangePassword(password UserPassword) error {
 	u.Password = password
 	return nil
 }
@@ -168,32 +168,32 @@ func (u User) TemporaryRegisteredWithinOneHour() bool {
 }
 
 type IEvaluate interface {
-	Evaluate(user *User,movieID MovieID) error
+	Evaluate(user *User, movieID MovieID) error
 }
 
-func (u *User)Evaluate(ievaluate IEvaluate,movieID MovieID)error{
-	err := ievaluate.Evaluate(u,movieID)
-	if err != nil{
+func (u *User) Evaluate(ievaluate IEvaluate, movieID MovieID) error {
+	err := ievaluate.Evaluate(u, movieID)
+	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func(u *User)SetProfileImage(profileImageHeader *multipart.FileHeader)error{
+func (u *User) SetProfileImage(profileImageHeader *multipart.FileHeader) error {
 	extension := filepath.Ext(profileImageHeader.Filename)
-	timestamp := strconv.FormatInt(time.Now().Unix(),10)
+	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
 	u.ProfileImageName = timestamp + extension
 	return nil
 }
 
-func(u *User)SetNewToken()error{
+func (u *User) SetNewToken() error {
 	u.Token = UserToken(uuid.New().String())
 	return nil
 }
 
-func (u *User)Register(name UserName,password UserPassword,birthday time.Time)error{
+func (u *User) Register(name UserName, password UserPassword, birthday time.Time) error {
 	duration := time.Now().Sub(u.UpdatedAt)
-	if int(duration.Minutes()) > 60{
+	if int(duration.Minutes()) > 60 {
 		return errors.New("Invalid Token.")
 	}
 	u.Token = ""

@@ -10,56 +10,56 @@ import (
 	"net/http"
 )
 
-type ChangeOrderOfPlayListMovies struct{
-	PlayListMovieRepository repository.PlayListMovieRepository
+type ChangeOrderOfPlayListMovies struct {
+	PlayListMovieRepository            repository.PlayListMovieRepository
 	ChangeOrderOfPlayListMoviesUsecase usecase.IChangeOrderOfPlayListMovies
 }
 
-func NewChangeOrderOfPlayListMovies(playListMovieRepo repository.PlayListMovieRepository,changeOrderOfPlayListMoviesUsecase usecase.IChangeOrderOfPlayListMovies)*ChangeOrderOfPlayListMovies{
+func NewChangeOrderOfPlayListMovies(playListMovieRepo repository.PlayListMovieRepository, changeOrderOfPlayListMoviesUsecase usecase.IChangeOrderOfPlayListMovies) *ChangeOrderOfPlayListMovies {
 	return &ChangeOrderOfPlayListMovies{
-		PlayListMovieRepository:	playListMovieRepo,
-		ChangeOrderOfPlayListMoviesUsecase:	changeOrderOfPlayListMoviesUsecase,
+		PlayListMovieRepository:            playListMovieRepo,
+		ChangeOrderOfPlayListMoviesUsecase: changeOrderOfPlayListMoviesUsecase,
 	}
 }
 
-func (changeOrderOfPlayListMovies ChangeOrderOfPlayListMovies)ChangeOrderOfPlayListMovies(c *gin.Context){
+func (changeOrderOfPlayListMovies ChangeOrderOfPlayListMovies) ChangeOrderOfPlayListMovies(c *gin.Context) {
 	var changeOrderOfPlayListMoviesJson ChangeOrderOfPlayListMoviesJson
 	c.Bind(&changeOrderOfPlayListMoviesJson)
-	userIdUint :=  uint64(jwt.ExtractClaims(c)["id"].(float64))
+	userIdUint := uint64(jwt.ExtractClaims(c)["id"].(float64))
 
 	validationErrors := make(map[string]string)
 	var movieIdAndOrderForChangeOrderOfPlayListMoviesDTO usecase.MovieIdAndOrderForChangeOrderOfPlayListMoviesDTO
 	var changeOrderOfPlayListMoviesDTO usecase.ChangeOrderOfPlayListMoviesDTO
-	for _,value := range changeOrderOfPlayListMoviesJson.PlayListMovieIdAndOrder{
+	for _, value := range changeOrderOfPlayListMoviesJson.PlayListMovieIdAndOrder {
 		var movieIdErr error
-		movieIdAndOrderForChangeOrderOfPlayListMoviesDTO.MovieID,movieIdErr = model.NewMovieID(value.MovieID)
-		if movieIdErr != nil{
+		movieIdAndOrderForChangeOrderOfPlayListMoviesDTO.MovieID, movieIdErr = model.NewMovieID(value.MovieID)
+		if movieIdErr != nil {
 			validationErrors["movie_id"] = movieIdErr.Error()
 		}
 
 		var OrderErr error
-		movieIdAndOrderForChangeOrderOfPlayListMoviesDTO.Order,OrderErr = model.NewPlayListMovieOrder(value.Order)
-		if OrderErr != nil{
+		movieIdAndOrderForChangeOrderOfPlayListMoviesDTO.Order, OrderErr = model.NewPlayListMovieOrder(value.Order)
+		if OrderErr != nil {
 			validationErrors["order"] = OrderErr.Error()
 		}
 
-		changeOrderOfPlayListMoviesDTO.MovieIDAndOrder = append(changeOrderOfPlayListMoviesDTO.MovieIDAndOrder,movieIdAndOrderForChangeOrderOfPlayListMoviesDTO)
+		changeOrderOfPlayListMoviesDTO.MovieIDAndOrder = append(changeOrderOfPlayListMoviesDTO.MovieIDAndOrder, movieIdAndOrderForChangeOrderOfPlayListMoviesDTO)
 	}
 
-	userId,userIdErr := model.NewUserID(userIdUint)
-	if userIdErr != nil{
+	userId, userIdErr := model.NewUserID(userIdUint)
+	if userIdErr != nil {
 		validationErrors["user_id"] = userIdErr.Error()
 	}
 
-	playListID,playListIDErr := model.NewPlayListID(changeOrderOfPlayListMoviesJson.PlayListID)
-	if playListIDErr != nil{
+	playListID, playListIDErr := model.NewPlayListID(changeOrderOfPlayListMoviesJson.PlayListID)
+	if playListIDErr != nil {
 		validationErrors["play_list_id"] = playListIDErr.Error()
 	}
 
-	if len(validationErrors) != 0{
-		validationErrors,_ :=  json.Marshal(validationErrors)
+	if len(validationErrors) != 0 {
+		validationErrors, _ := json.Marshal(validationErrors)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"result": "Validation Error.",
+			"result":   "Validation Error.",
 			"messages": string(validationErrors),
 		})
 		c.Abort()
@@ -70,9 +70,9 @@ func (changeOrderOfPlayListMovies ChangeOrderOfPlayListMovies)ChangeOrderOfPlayL
 	changeOrderOfPlayListMoviesDTO.PlayListID = playListID
 
 	result := changeOrderOfPlayListMovies.ChangeOrderOfPlayListMoviesUsecase.ChangeOrderOfPlayListMovies(&changeOrderOfPlayListMoviesDTO)
-	if result != nil{
+	if result != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"result": "Validation Error.",
+			"result":   "Validation Error.",
 			"messages": result.Error(),
 		})
 		c.Abort()
@@ -80,16 +80,16 @@ func (changeOrderOfPlayListMovies ChangeOrderOfPlayListMovies)ChangeOrderOfPlayL
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message":"OK",
+		"message": "OK",
 	})
 }
 
-type ChangeOrderOfPlayListMoviesJson struct{
-	PlayListID uint64	`json:"play_list_id"`
-	PlayListMovieIdAndOrder	[]PlayListMovieIdAndOrderForChangeOrderOfPlayListMoviesJson	`json:"play_list_movie_id_and_order"`
+type ChangeOrderOfPlayListMoviesJson struct {
+	PlayListID              uint64                                                      `json:"play_list_id"`
+	PlayListMovieIdAndOrder []PlayListMovieIdAndOrderForChangeOrderOfPlayListMoviesJson `json:"play_list_movie_id_and_order"`
 }
 
-type PlayListMovieIdAndOrderForChangeOrderOfPlayListMoviesJson struct{
-	MovieID uint64	`json:"play_list_movie_id"`
-	Order	int	`json:"play_lise_movie_order"`
+type PlayListMovieIdAndOrderForChangeOrderOfPlayListMoviesJson struct {
+	MovieID uint64 `json:"play_list_movie_id"`
+	Order   int    `json:"play_lise_movie_order"`
 }

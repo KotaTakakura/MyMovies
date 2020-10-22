@@ -5,6 +5,6 @@ import (
 	"mime/multipart"
 )
 
-type FileUpload interface{
-	Upload(file multipart.File,movieFileHeader multipart.FileHeader,movieID model.MovieID) error
+type FileUpload interface {
+	Upload(file multipart.File, movieFileHeader multipart.FileHeader, movieID model.MovieID) error
 }

@@ -5,6 +5,6 @@ import (
 	"mime/multipart"
 )
 
-type UserProfileImageRepository interface{
-	Upload(file multipart.File,user *model.User)error
+type UserProfileImageRepository interface {
+	Upload(file multipart.File, user *model.User) error
 }
