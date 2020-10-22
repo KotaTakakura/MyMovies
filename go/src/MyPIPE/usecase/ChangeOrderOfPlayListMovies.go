@@ -6,6 +6,10 @@ import (
 	"fmt"
 )
 
+type IChangeOrderOfPlayListMovies interface {
+	ChangeOrderOfPlayListMovies(changeOrderOfPlayListMoviesDTO *ChangeOrderOfPlayListMoviesDTO)error
+}
+
 type ChangeOrderOfPlayListMovies struct{
 	PlayListMovieRepository	repository.PlayListMovieRepository
 }
