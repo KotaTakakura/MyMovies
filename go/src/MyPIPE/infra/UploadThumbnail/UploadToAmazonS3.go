@@ -12,14 +12,14 @@ import (
 
 type UploadThumbnailToAmazonS3 struct{}
 
-func NewUploadThumbnailToAmazonS3()*UploadThumbnailToAmazonS3{
+func NewUploadThumbnailToAmazonS3() *UploadThumbnailToAmazonS3 {
 	return &UploadThumbnailToAmazonS3{}
 }
 
-func (u UploadThumbnailToAmazonS3)Upload(file multipart.File,movie model.Movie) error{
+func (u UploadThumbnailToAmazonS3) Upload(file multipart.File, movie model.Movie) error {
 	sess := session.Must(session.NewSession())
 	bucketName := "mypipe-111"
-	movieIdString := strconv.FormatUint(uint64(movie.ID),10)
+	movieIdString := strconv.FormatUint(uint64(movie.ID), 10)
 	objectKey := "thumbnails/" + movieIdString + string(movie.ThumbnailName)
 
 	// Uploaderを作成し、ローカルファイルをアップロード

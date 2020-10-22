@@ -10,19 +10,19 @@ import (
 	"net/http"
 )
 
-type UploadMovieFile struct{
-	MovieRepository	repository.MovieRepository
-	ThumbnailUploadRepository	repository.ThumbnailUploadRepository
-	MovieUploadRepository	repository.FileUpload
-	PostMovieUsecase	usecase.IPostMovie
+type UploadMovieFile struct {
+	MovieRepository           repository.MovieRepository
+	ThumbnailUploadRepository repository.ThumbnailUploadRepository
+	MovieUploadRepository     repository.FileUpload
+	PostMovieUsecase          usecase.IPostMovie
 }
 
 func NewUploadMovieFile(
-	movieRepository	repository.MovieRepository,
-	thumbnailUploadRepository	repository.ThumbnailUploadRepository,
-	movieUploadRepository	repository.FileUpload,
-	postMovieUsecase	usecase.IPostMovie,
-	)*UploadMovieFile{
+	movieRepository repository.MovieRepository,
+	thumbnailUploadRepository repository.ThumbnailUploadRepository,
+	movieUploadRepository repository.FileUpload,
+	postMovieUsecase usecase.IPostMovie,
+) *UploadMovieFile {
 	return &UploadMovieFile{
 		MovieRepository:           movieRepository,
 		ThumbnailUploadRepository: thumbnailUploadRepository,
@@ -31,24 +31,23 @@ func NewUploadMovieFile(
 	}
 }
 
-func (uploadMovieFile UploadMovieFile)UploadMovieFile(c *gin.Context){
+func (uploadMovieFile UploadMovieFile) UploadMovieFile(c *gin.Context) {
 
 	//バリデーションエラー格納
 	validationErrors := make(map[string]string)
 	//ユーザーID取得
 	iuserId := uint64(jwt.ExtractClaims(c)["id"].(float64))
-	userId,userIdErr := model.NewUserID(iuserId)
+	userId, userIdErr := model.NewUserID(iuserId)
 	//ユーザーID valid
-	if userIdErr != nil{
+	if userIdErr != nil {
 		validationErrors["user_id"] = userIdErr.Error()
 	}
 
-
 	//バリデーションチェック
-	if len(validationErrors) != 0{
-		validationErrors,_ := json.Marshal(validationErrors)
+	if len(validationErrors) != 0 {
+		validationErrors, _ := json.Marshal(validationErrors)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"result": "Validation Error.",
+			"result":   "Validation Error.",
 			"messages": string(validationErrors),
 		})
 		c.Abort()
@@ -56,10 +55,10 @@ func (uploadMovieFile UploadMovieFile)UploadMovieFile(c *gin.Context){
 	}
 
 	//動画ファイル取得&バリデーション
-	file,header, fileErr :=  c.Request.FormFile("uploadMovie")
-	if fileErr != nil{
+	file, header, fileErr := c.Request.FormFile("uploadMovie")
+	if fileErr != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"result": "MovieFileUpload Error.",
+			"result":   "MovieFileUpload Error.",
 			"messages": fileErr.Error(),
 		})
 		c.Abort()
@@ -67,10 +66,10 @@ func (uploadMovieFile UploadMovieFile)UploadMovieFile(c *gin.Context){
 	}
 
 	//動画サムネイル取得&バリデーション
-	thumbnail,thumbnailHeader, thumbnailErr :=  c.Request.FormFile("uploadThumbnail")
-	if thumbnailErr != nil{
+	thumbnail, thumbnailHeader, thumbnailErr := c.Request.FormFile("uploadThumbnail")
+	if thumbnailErr != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"result": "MovieThumbnailUpload Error.",
+			"result":   "MovieThumbnailUpload Error.",
 			"messages": thumbnailErr.Error(),
 		})
 		c.Abort()
@@ -78,18 +77,18 @@ func (uploadMovieFile UploadMovieFile)UploadMovieFile(c *gin.Context){
 	}
 
 	//動画投稿用のDTO
-	postMovieDTO := usecase.NewPostMovieDTO(file,*header,thumbnail,*thumbnailHeader,userId)
+	postMovieDTO := usecase.NewPostMovieDTO(file, *header, thumbnail, *thumbnailHeader, userId)
 
-	newMovieModel,err := uploadMovieFile.PostMovieUsecase.PostMovie(postMovieDTO)
-	if err != nil{
+	newMovieModel, err := uploadMovieFile.PostMovieUsecase.PostMovie(postMovieDTO)
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"result": "PostMovie Error.",
+			"result":   "PostMovie Error.",
 			"messages": err.Error(),
 		})
 		c.Abort()
 		return
 	}
 
-	jsonNewMovieModel,_ := json.Marshal(newMovieModel)
+	jsonNewMovieModel, _ := json.Marshal(newMovieModel)
 	c.JSON(http.StatusOK, string(jsonNewMovieModel))
 }

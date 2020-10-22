@@ -6,18 +6,18 @@ import (
 	"MyPIPE/domain/model"
 	"MyPIPE/handler"
 	"MyPIPE/usecase"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
 	"net/http/httptest"
+	"reflect"
 	"strings"
 	"testing"
-	"fmt"
-	"reflect"
 )
 
-func TestCheckUserAlreadyLikedMovie(t *testing.T){
+func TestCheckUserAlreadyLikedMovie(t *testing.T) {
 	trueCases := []struct {
-		userId uint64
+		userId  uint64
 		movieId uint64
 	}{
 		{userId: 10, movieId: 100},
@@ -29,31 +29,30 @@ func TestCheckUserAlreadyLikedMovie(t *testing.T){
 
 	movieEvaluationRepository := mock_repository.NewMockMovieEvaluationRepository(ctrl)
 	checkAlreadyLikeDMovieUsecase := mock_usecase.NewMockICheckUserAlreadyLikedMovie(ctrl)
-	checkUserAlreadyLikedMovieHandler := handler.NewCheckUserAlreadyLikedMovie(movieEvaluationRepository,checkAlreadyLikeDMovieUsecase)
+	checkUserAlreadyLikedMovieHandler := handler.NewCheckUserAlreadyLikedMovie(movieEvaluationRepository, checkAlreadyLikeDMovieUsecase)
 
-	for _,trueCase := range trueCases{
+	for _, trueCase := range trueCases {
 		// ポストデータ
 		bodyReader := strings.NewReader("")
 
 		// リクエスト生成
-		req := httptest.NewRequest("GET", "/?user_id=" + fmt.Sprint(trueCase.userId) + "&movie_id=" + fmt.Sprint(trueCase.movieId), bodyReader)
+		req := httptest.NewRequest("GET", "/?user_id="+fmt.Sprint(trueCase.userId)+"&movie_id="+fmt.Sprint(trueCase.movieId), bodyReader)
 
 		// Content-Type 設定
 		req.Header.Set("Content-Type", "application/json")
-
 
 		// Contextセット
 		ginContext, _ := gin.CreateTestContext(httptest.NewRecorder())
 		ginContext.Request = req
 
-		checkAlreadyLikeDMovieUsecase.EXPECT().Find(gomock.Any()).DoAndReturn(func(data interface{})bool{
-			if reflect.TypeOf(data) != reflect.TypeOf(&(usecase.CheckUserAlreadyLikedMovieFindDTO{})){
+		checkAlreadyLikeDMovieUsecase.EXPECT().Find(gomock.Any()).DoAndReturn(func(data interface{}) bool {
+			if reflect.TypeOf(data) != reflect.TypeOf(&(usecase.CheckUserAlreadyLikedMovieFindDTO{})) {
 				t.Fatal("Type Not Match.")
 			}
-			if data.(*usecase.CheckUserAlreadyLikedMovieFindDTO).UserID != model.UserID(trueCase.userId){
+			if data.(*usecase.CheckUserAlreadyLikedMovieFindDTO).UserID != model.UserID(trueCase.userId) {
 				t.Fatal("UserID Not Match,")
 			}
-			if data.(*usecase.CheckUserAlreadyLikedMovieFindDTO).MovieID != model.MovieID(trueCase.movieId){
+			if data.(*usecase.CheckUserAlreadyLikedMovieFindDTO).MovieID != model.MovieID(trueCase.movieId) {
 				t.Fatal("MovieID Not Match,")
 			}
 			return true

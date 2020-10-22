@@ -5,15 +5,15 @@ import (
 	domain_service "MyPIPE/domain/service/User"
 	"MyPIPE/handler"
 	"MyPIPE/infra"
+	uploadMovieRepository_infra "MyPIPE/infra/UploadMovieFile"
 	support "MyPIPE/infra/UploadThumbnail"
+	uploadThumbnailRepository_infra "MyPIPE/infra/UploadThumbnail"
 	"MyPIPE/infra/factory"
 	queryService_infra "MyPIPE/infra/queryService"
-	uploadThumbnailRepository_infra "MyPIPE/infra/UploadThumbnail"
-	uploadMovieRepository_infra "MyPIPE/infra/UploadMovieFile"
 	"MyPIPE/usecase"
 	"github.com/appleboy/gin-jwt/v2"
-	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"log"
 	"net/http"
@@ -31,7 +31,7 @@ func init() {
 }
 
 type login struct {
-	Email string `json:"email" binding:"required"`
+	Email    string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
@@ -40,8 +40,8 @@ var identityKey = "id"
 func helloHandler(c *gin.Context) {
 	claims := jwt.ExtractClaims(c)
 	c.JSON(200, gin.H{
-		"userID":   claims[identityKey],
-		"text":     "Hello World.",
+		"userID": claims[identityKey],
+		"text":   "Hello World.",
 	})
 }
 
@@ -74,8 +74,8 @@ func main() {
 
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"POST","PUT", "PATCH","DELETE"},
-		AllowHeaders:     []string{"Origin","Access-Control-Allow-Origin","Content-type","Authorization"},
+		AllowMethods:     []string{"POST", "PUT", "PATCH", "DELETE"},
+		AllowHeaders:     []string{"Origin", "Access-Control-Allow-Origin", "Content-type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 	}))
@@ -85,61 +85,61 @@ func main() {
 
 	userTemporaryRegistrationUsecase := usecase.NewUserTemporaryRegistration(userRepository)
 	userService := domain_service.NewUserService(userRepository)
-	userRegisterUsecase := usecase.NewUserRegister(userRepository,userService)
-	authorizationHandler := handler.NewAuthorization(userRepository,userTemporaryRegistrationUsecase,userRegisterUsecase)
+	userRegisterUsecase := usecase.NewUserRegister(userRepository, userService)
+	authorizationHandler := handler.NewAuthorization(userRepository, userTemporaryRegistrationUsecase, userRegisterUsecase)
 	router.POST("/new", authorizationHandler.TemporaryRegisterUser)
 	router.POST("/register", authorizationHandler.RegisterUser)
 
 	checkUserAlreadyLikedMovieUsecase := usecase.NewCheckUserAlreadyLikedMovie(movieEvaluationRepository)
-	checkUserAlreadyLikedMovieHandler := handler.NewCheckUserAlreadyLikedMovie(movieEvaluationRepository,checkUserAlreadyLikedMovieUsecase)
-	router.GET("/evaluated",checkUserAlreadyLikedMovieHandler.CheckUserAlreadyLikedMovie)
+	checkUserAlreadyLikedMovieHandler := handler.NewCheckUserAlreadyLikedMovie(movieEvaluationRepository, checkUserAlreadyLikedMovieUsecase)
+	router.GET("/evaluated", checkUserAlreadyLikedMovieHandler.CheckUserAlreadyLikedMovie)
 
 	api := router.Group("/api/v1")
 
 	commentQueryService := queryService_infra.NewCommentQueryService()
 	getCommentsUsecase := usecase.NewGetMovieAndComments(commentQueryService)
-	getMovieAndCommentsHandler := handler.NewGetMovieAndComments(commentQueryService,getCommentsUsecase)
-	api.GET("/movie-and-comments",getMovieAndCommentsHandler.GetMovieAndComments)
+	getMovieAndCommentsHandler := handler.NewGetMovieAndComments(commentQueryService, getCommentsUsecase)
+	api.GET("/movie-and-comments", getMovieAndCommentsHandler.GetMovieAndComments)
 
 	indexMovieQueryService := queryService_infra.NewIndexMovie()
 	indexMovieUsecase := usecase.NewIndexMovie(indexMovieQueryService)
-	indexMovieHandler := handler.NewIndexMovie(indexMovieQueryService,indexMovieUsecase)
-	api.GET("/index-movies",indexMovieHandler.IndexMovie)
+	indexMovieHandler := handler.NewIndexMovie(indexMovieQueryService, indexMovieUsecase)
+	api.GET("/index-movies", indexMovieHandler.IndexMovie)
 
 	auth := router.Group("/auth/api/v1")
 	auth.Use(authMiddleware.MiddlewareFunc())
 	{
 		getLoggedInUserDataQueryService := queryService_infra.NewGetLoggedInUserData()
 		getLoggedInUserDataUsecase := usecase.NewGetLoggedInUserData(getLoggedInUserDataQueryService)
-		getLoggedInUserDataHandler := handler.NewGetLoggedInUserData(getLoggedInUserDataQueryService,getLoggedInUserDataUsecase)
+		getLoggedInUserDataHandler := handler.NewGetLoggedInUserData(getLoggedInUserDataQueryService, getLoggedInUserDataUsecase)
 		auth.GET("/user", getLoggedInUserDataHandler.GetLoggedInUserData)
 
 		changeUserNameUsecase := usecase.NewChangeUserName(userRepository)
-		changeUserNameHandler := handler.NewChangeUserName(userRepository,changeUserNameUsecase)
+		changeUserNameHandler := handler.NewChangeUserName(userRepository, changeUserNameUsecase)
 		auth.PUT("/user-name", changeUserNameHandler.ChangeUserName)
 
 		changePasswordUsecase := usecase.NewChangePassword(userRepository)
-		changePasswordHandler := handler.NewChangePassword(userRepository,*changePasswordUsecase)
+		changePasswordHandler := handler.NewChangePassword(userRepository, *changePasswordUsecase)
 		auth.PUT("/password", changePasswordHandler.ChangePassword)
 
-		changeUserProfileImageUsecase := usecase.NewChangeUserProfileImage(userRepository,userProfileImageRepository)
-		changeUserProfileImageHandler := handler.NewChangeUserProfileImage(userRepository,userProfileImageRepository,changeUserProfileImageUsecase)
+		changeUserProfileImageUsecase := usecase.NewChangeUserProfileImage(userRepository, userProfileImageRepository)
+		changeUserProfileImageHandler := handler.NewChangeUserProfileImage(userRepository, userProfileImageRepository, changeUserProfileImageUsecase)
 		auth.PUT("/profile-image", changeUserProfileImageHandler.ChangeUserProfileImage)
 
-		postCommentUsecase := usecase.NewPostComment(commentRepository,movieRepository)
-		postCommentHandler := handler.NewPostComment(commentRepository,movieRepository,postCommentUsecase)
+		postCommentUsecase := usecase.NewPostComment(commentRepository, movieRepository)
+		postCommentHandler := handler.NewPostComment(commentRepository, movieRepository, postCommentUsecase)
 		auth.POST("/comments", postCommentHandler.PostComment)
 
 		movieFactory := factory.NewMovieModelFactory()
-		postMovieUsecase := usecase.NewPostMovie(movieUploadRepository,thumbnailUploadRepository,movieRepository,movieFactory)
-		uploadMovieHandler := handler.NewUploadMovieFile(movieRepository,thumbnailUploadRepository,movieUploadRepository,postMovieUsecase)
+		postMovieUsecase := usecase.NewPostMovie(movieUploadRepository, thumbnailUploadRepository, movieRepository, movieFactory)
+		uploadMovieHandler := handler.NewUploadMovieFile(movieRepository, thumbnailUploadRepository, movieUploadRepository, postMovieUsecase)
 		auth.POST("/movie", uploadMovieHandler.UploadMovieFile)
 
 		uploadedMoviesQueryService := queryService_infra.NewUploadedMovies()
 		uploadedMoviesUsecase := usecase.NewUploadedMovies(uploadedMoviesQueryService)
 		updateMovieUsecase := usecase.NewUpdateMovie(movieRepository)
 		thumbnailUploadRepository := support.NewUploadThumbnailToAmazonS3()
-		changeThumbnailUsecase := usecase.NewChangeThumbnail(movieRepository,thumbnailUploadRepository)
+		changeThumbnailUsecase := usecase.NewChangeThumbnail(movieRepository, thumbnailUploadRepository)
 		movieHandler := handler.NewMovie(
 			uploadedMoviesQueryService,
 			uploadedMoviesUsecase,
@@ -147,53 +147,53 @@ func main() {
 			updateMovieUsecase,
 			thumbnailUploadRepository,
 			changeThumbnailUsecase,
-			)
-		auth.PUT("/movie",movieHandler.UpdateMovie)
-		auth.PUT("/thumbnail",movieHandler.ChangeThumbnail)
-		auth.GET("/movies",movieHandler.GetUploadedMovies)
+		)
+		auth.PUT("/movie", movieHandler.UpdateMovie)
+		auth.PUT("/thumbnail", movieHandler.ChangeThumbnail)
+		auth.GET("/movies", movieHandler.GetUploadedMovies)
 
-		evaluateMovieUsecase := usecase.NewEvaluateUsecase(movieRepository,movieEvaluationRepository)
-		evaluateMovieHandler := handler.NewEvaluateMovie(movieRepository,movieEvaluationRepository,evaluateMovieUsecase)
+		evaluateMovieUsecase := usecase.NewEvaluateUsecase(movieRepository, movieEvaluationRepository)
+		evaluateMovieHandler := handler.NewEvaluateMovie(movieRepository, movieEvaluationRepository, evaluateMovieUsecase)
 		auth.POST("/evaluates", evaluateMovieHandler.EvaluateMovie)
 
-		createPlayListUsecase := usecase.NewCreatePlayList(userRepository,playListRepository)
-		createPlayListHandler := handler.NewCreatePlayList(userRepository,playListRepository,createPlayListUsecase)
-		auth.POST("/play-lists",createPlayListHandler.CreatePlayList)
+		createPlayListUsecase := usecase.NewCreatePlayList(userRepository, playListRepository)
+		createPlayListHandler := handler.NewCreatePlayList(userRepository, playListRepository, createPlayListUsecase)
+		auth.POST("/play-lists", createPlayListHandler.CreatePlayList)
 
 		playListMovieFactory := factory.NewPlayListMovieFactory()
-		addPlayListItemUsecase := usecase.NewAddPlayListItem(playListRepository,playListMovieRepository,playListMovieFactory)
-		deletePlayListMovieUsecase := usecase.NewDeletePlayListMovie(playListRepository,playListMovieRepository)
-		addPlayListMovieHandler := handler.NewPlayList(playListRepository,playListMovieRepository,playListMovieFactory,addPlayListItemUsecase,deletePlayListMovieUsecase)
-		auth.POST("/play-list-items",addPlayListMovieHandler.AddPlayListMovie)
-		auth.DELETE("/play-list-items",addPlayListMovieHandler.DeletePlayListMovie)
+		addPlayListItemUsecase := usecase.NewAddPlayListItem(playListRepository, playListMovieRepository, playListMovieFactory)
+		deletePlayListMovieUsecase := usecase.NewDeletePlayListMovie(playListRepository, playListMovieRepository)
+		addPlayListMovieHandler := handler.NewPlayList(playListRepository, playListMovieRepository, playListMovieFactory, addPlayListItemUsecase, deletePlayListMovieUsecase)
+		auth.POST("/play-list-items", addPlayListMovieHandler.AddPlayListMovie)
+		auth.DELETE("/play-list-items", addPlayListMovieHandler.DeletePlayListMovie)
 
 		changeOrderOfPlayListMoviesUsecase := usecase.NewChangeOrderOfPlayListMovies(playListMovieRepository)
-		changeOrderOfPlayListMoviesHandler := handler.NewChangeOrderOfPlayListMovies(playListMovieRepository,changeOrderOfPlayListMoviesUsecase)
-		auth.PUT("/play-list-items",changeOrderOfPlayListMoviesHandler.ChangeOrderOfPlayListMovies)
+		changeOrderOfPlayListMoviesHandler := handler.NewChangeOrderOfPlayListMovies(playListMovieRepository, changeOrderOfPlayListMoviesUsecase)
+		auth.PUT("/play-list-items", changeOrderOfPlayListMoviesHandler.ChangeOrderOfPlayListMovies)
 
-		auth.POST("/follows",handler.FollowUser)
+		auth.POST("/follows", handler.FollowUser)
 
 		indexPlayListsInMyPageQueryService := queryService_infra.NewIndexPlayListsInMyPage()
 		indexPlayListsInMyPageUsecase := usecase.NewIndexPlayListsInMyPage(indexPlayListsInMyPageQueryService)
-		indexPlayListsInMyPageHandler := handler.NewIndexPlayListsInMyPage(indexPlayListsInMyPageQueryService,indexPlayListsInMyPageUsecase)
-		auth.GET("/play-lists",indexPlayListsInMyPageHandler.IndexPlayListsInMyPage)
+		indexPlayListsInMyPageHandler := handler.NewIndexPlayListsInMyPage(indexPlayListsInMyPageQueryService, indexPlayListsInMyPageUsecase)
+		auth.GET("/play-lists", indexPlayListsInMyPageHandler.IndexPlayListsInMyPage)
 
 		indexPlaylistMoviesQueryService := queryService_infra.NewIndexPlayListMovieInMyPage()
 		indexPlaylistMoviesUsecase := usecase.NewIndexPlayListItemInMyPage(indexPlaylistMoviesQueryService)
-		indexPlayListMoviesHandler := handler.NewIndexPlaylistMovies(indexPlaylistMoviesQueryService,indexPlaylistMoviesUsecase)
-		auth.GET("/play-list-items/:play_list_id",indexPlayListMoviesHandler.IndexPlaylistMovies)
+		indexPlayListMoviesHandler := handler.NewIndexPlaylistMovies(indexPlaylistMoviesQueryService, indexPlaylistMoviesUsecase)
+		auth.GET("/play-list-items/:play_list_id", indexPlayListMoviesHandler.IndexPlaylistMovies)
 
 		indexPlayListInMovieListPageQueryService := queryService_infra.NewIndexPlayListInMovieListPage()
 		indexPlayListInMovieListPageUsecase := usecase.NewIndexPlayListInMovieListPage(indexPlayListInMovieListPageQueryService)
-		indexPlayListInMovieListPageHandler := handler.NewIndexPlayListInMovieListPage(indexPlayListInMovieListPageQueryService,indexPlayListInMovieListPageUsecase)
-		auth.GET("play-lists/:movie_id",indexPlayListInMovieListPageHandler.IndexPlayListInMovieListPage)
+		indexPlayListInMovieListPageHandler := handler.NewIndexPlayListInMovieListPage(indexPlayListInMovieListPageQueryService, indexPlayListInMovieListPageUsecase)
+		auth.GET("play-lists/:movie_id", indexPlayListInMovieListPageHandler.IndexPlayListInMovieListPage)
 
 		deletePlayListUsecase := usecase.NewDeletePlayList(playListRepository)
-		deletePlayListHandler := handler.NewDeletePlayList(playListRepository,deletePlayListUsecase)
-		auth.DELETE("/play-lists",deletePlayListHandler.DeletePlayList)
+		deletePlayListHandler := handler.NewDeletePlayList(playListRepository, deletePlayListUsecase)
+		auth.DELETE("/play-lists", deletePlayListHandler.DeletePlayList)
 	}
 
-	router.GET("/health",func(c *gin.Context) {
+	router.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "Healthy."})
 	})
@@ -201,7 +201,7 @@ func main() {
 	router.Run()
 }
 
-func authMiddlewareByJWT() (*jwt.GinJWTMiddleware, error){
+func authMiddlewareByJWT() (*jwt.GinJWTMiddleware, error) {
 	return jwt.New(&jwt.GinJWTMiddleware{
 		Realm:       os.Getenv("Realm"),
 		Key:         []byte(os.Getenv("JWT_SECRET_KEY")),

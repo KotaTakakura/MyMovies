@@ -13,11 +13,11 @@ import (
 
 type UploadThumbnailToAmazonS3 struct{}
 
-func NewUploadThumbnailToAmazonS3()*UploadThumbnailToAmazonS3{
+func NewUploadThumbnailToAmazonS3() *UploadThumbnailToAmazonS3 {
 	return &UploadThumbnailToAmazonS3{}
 }
 
-func (u UploadThumbnailToAmazonS3)Upload(file multipart.File,movieFileHeader multipart.FileHeader,movieID model.MovieID) error{
+func (u UploadThumbnailToAmazonS3) Upload(file multipart.File, movieFileHeader multipart.FileHeader, movieID model.MovieID) error {
 	sess := session.Must(session.NewSession())
 	extension := filepath.Ext(movieFileHeader.Filename)
 	bucketName := "mypipe-111"

@@ -7,16 +7,16 @@ import (
 	"MyPIPE/domain/queryService"
 	"MyPIPE/handler"
 	"MyPIPE/usecase"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
 	"net/http/httptest"
+	"reflect"
 	"strings"
 	"testing"
-	"fmt"
-	"reflect"
 )
 
-func TestGetMovieAndComments(t *testing.T){
+func TestGetMovieAndComments(t *testing.T) {
 	trueCases := []struct {
 		movieId uint64
 	}{
@@ -28,31 +28,30 @@ func TestGetMovieAndComments(t *testing.T){
 
 	getCommentQueryService := mock_queryService.NewMockCommentQueryService(ctrl)
 	getCommentUsecase := mock_usecase.NewMockIGetMovieAndComments(ctrl)
-	getMovieAndCommentsHandler := handler.NewGetMovieAndComments(getCommentQueryService,getCommentUsecase)
+	getMovieAndCommentsHandler := handler.NewGetMovieAndComments(getCommentQueryService, getCommentUsecase)
 
-	for _,trueCase := range trueCases{
+	for _, trueCase := range trueCases {
 		// ポストデータ
 		bodyReader := strings.NewReader("")
 
 		// リクエスト生成
-		req := httptest.NewRequest("GET", "/?movie_id=" + fmt.Sprint(trueCase.movieId), bodyReader)
+		req := httptest.NewRequest("GET", "/?movie_id="+fmt.Sprint(trueCase.movieId), bodyReader)
 
 		// Content-Type 設定
 		req.Header.Set("Content-Type", "application/json")
 
-
 		// Contextセット
 		ginContext, _ := gin.CreateTestContext(httptest.NewRecorder())
 		ginContext.Request = req
-		
+
 		result := &(queryService.FindByMovieIdDTO{})
 
-		getCommentUsecase.EXPECT().Get(gomock.Any()).DoAndReturn(func(data interface{})*queryService.FindByMovieIdDTO{
-			if reflect.TypeOf(data) != reflect.TypeOf(&(usecase.MovieAndGetCommentsDTO{})){
+		getCommentUsecase.EXPECT().Get(gomock.Any()).DoAndReturn(func(data interface{}) *queryService.FindByMovieIdDTO {
+			if reflect.TypeOf(data) != reflect.TypeOf(&(usecase.MovieAndGetCommentsDTO{})) {
 				fmt.Println(reflect.TypeOf(data))
 				t.Fatal("Type Not Match.")
 			}
-			if data.(*usecase.MovieAndGetCommentsDTO).MovieID != model.MovieID(trueCase.movieId){
+			if data.(*usecase.MovieAndGetCommentsDTO).MovieID != model.MovieID(trueCase.movieId) {
 				t.Fatal("MovieID Not Match,")
 			}
 			return result

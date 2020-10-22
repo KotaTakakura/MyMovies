@@ -6,28 +6,28 @@ import (
 )
 
 type IGetMovieAndComments interface {
-	Get(getDTO *MovieAndGetCommentsDTO)queryService.FindByMovieIdDTO
+	Get(getDTO *MovieAndGetCommentsDTO) queryService.FindByMovieIdDTO
 }
 
-type GetMovieAndComments struct{
+type GetMovieAndComments struct {
 	CommentQueryService queryService.CommentQueryService
 }
 
-func NewGetMovieAndComments(cqs queryService.CommentQueryService)*GetMovieAndComments{
+func NewGetMovieAndComments(cqs queryService.CommentQueryService) *GetMovieAndComments {
 	return &GetMovieAndComments{
 		CommentQueryService: cqs,
 	}
 }
 
-func (g GetMovieAndComments)Get(getDTO *MovieAndGetCommentsDTO)queryService.FindByMovieIdDTO{
+func (g GetMovieAndComments) Get(getDTO *MovieAndGetCommentsDTO) queryService.FindByMovieIdDTO {
 	return g.CommentQueryService.FindByMovieId(getDTO.MovieID)
 }
 
-type MovieAndGetCommentsDTO struct{
+type MovieAndGetCommentsDTO struct {
 	MovieID model.MovieID
 }
 
-func NewGetMovieAndCommentsDTO(movieId model.MovieID)*MovieAndGetCommentsDTO{
+func NewGetMovieAndCommentsDTO(movieId model.MovieID) *MovieAndGetCommentsDTO {
 	return &MovieAndGetCommentsDTO{
 		MovieID: movieId,
 	}

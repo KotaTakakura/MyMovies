@@ -5,47 +5,47 @@ import (
 	"MyPIPE/domain/repository"
 )
 
-type IChangePassword interface{
-	ChangePassword(changePasswordDTO *ChangePasswordDTO)error
+type IChangePassword interface {
+	ChangePassword(changePasswordDTO *ChangePasswordDTO) error
 }
 
-type ChangePassword struct{
+type ChangePassword struct {
 	UserRepository repository.UserRepository
 }
 
-func NewChangePassword(u repository.UserRepository)*ChangePassword{
+func NewChangePassword(u repository.UserRepository) *ChangePassword {
 	return &ChangePassword{
 		UserRepository: u,
 	}
 }
 
-func (c ChangePassword)ChangePassword(changePasswordDTO *ChangePasswordDTO)error{
-	user,findUserErr := c.UserRepository.FindById(changePasswordDTO.UserID)
-	if findUserErr != nil{
+func (c ChangePassword) ChangePassword(changePasswordDTO *ChangePasswordDTO) error {
+	user, findUserErr := c.UserRepository.FindById(changePasswordDTO.UserID)
+	if findUserErr != nil {
 		return findUserErr
 	}
 
 	changePasswordErr := user.ChangePassword(changePasswordDTO.Password)
-	if changePasswordErr != nil{
+	if changePasswordErr != nil {
 		return changePasswordErr
 	}
 
 	updateUserErr := c.UserRepository.UpdateUser(user)
-	if updateUserErr != nil{
+	if updateUserErr != nil {
 		return updateUserErr
 	}
 
 	return nil
 }
 
-type ChangePasswordDTO struct{
-	UserID model.UserID
+type ChangePasswordDTO struct {
+	UserID   model.UserID
 	Password model.UserPassword
 }
 
-func NewChangePasswordDTO(userId model.UserID,password model.UserPassword)*ChangePasswordDTO{
+func NewChangePasswordDTO(userId model.UserID, password model.UserPassword) *ChangePasswordDTO {
 	return &ChangePasswordDTO{
-		UserID: userId,
+		UserID:   userId,
 		Password: password,
 	}
 }

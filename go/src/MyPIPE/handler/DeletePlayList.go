@@ -11,55 +11,55 @@ import (
 	"strconv"
 )
 
-type DeletePlayList struct{
-	PlayListRepository repository.PlayListRepository
+type DeletePlayList struct {
+	PlayListRepository    repository.PlayListRepository
 	DeletePlayListUsecase usecase.IDeletePlayList
 }
 
-func NewDeletePlayList(playListRepo repository.PlayListRepository,deletePlayListUsecase usecase.IDeletePlayList)*DeletePlayList{
+func NewDeletePlayList(playListRepo repository.PlayListRepository, deletePlayListUsecase usecase.IDeletePlayList) *DeletePlayList {
 	return &DeletePlayList{
-		PlayListRepository: playListRepo,
+		PlayListRepository:    playListRepo,
 		DeletePlayListUsecase: deletePlayListUsecase,
 	}
 }
 
-func (deletePlayList DeletePlayList)DeletePlayList(c *gin.Context){
+func (deletePlayList DeletePlayList) DeletePlayList(c *gin.Context) {
 	validationErrors := make(map[string]string)
 	userIdUint := uint64((jwt.ExtractClaims(c)["id"]).(float64))
-	userId,userIdErr := model.NewUserID(userIdUint)
-	if userIdErr != nil{
+	userId, userIdErr := model.NewUserID(userIdUint)
+	if userIdErr != nil {
 		validationErrors["user_id"] = userIdErr.Error()
 	}
 
 	var playListId model.PlayListID
 	var playListIdErr error
 	playListIdString := c.Query("play_list_id")
-	playListIdUint,playListIdUintErr := strconv.ParseUint(playListIdString, 10, 64)
-	if playListIdUintErr != nil{
+	playListIdUint, playListIdUintErr := strconv.ParseUint(playListIdString, 10, 64)
+	if playListIdUintErr != nil {
 		validationErrors["play_list_id"] = playListIdUintErr.Error()
-	}else{
-		playListId,playListIdErr = model.NewPlayListID(playListIdUint)
-		if playListIdErr != nil{
+	} else {
+		playListId, playListIdErr = model.NewPlayListID(playListIdUint)
+		if playListIdErr != nil {
 			validationErrors["play_list_id"] = playListIdErr.Error()
 		}
 	}
 
-	if len(validationErrors) != 0{
-		validationErrors,_ :=  json.Marshal(validationErrors)
+	if len(validationErrors) != 0 {
+		validationErrors, _ := json.Marshal(validationErrors)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"result": "Validation Error.",
+			"result":   "Validation Error.",
 			"messages": string(validationErrors),
 		})
 		c.Abort()
 		return
 	}
 
-	deletePlayListDTO := usecase.NewDeletePlayListDTO(userId,playListId)
+	deletePlayListDTO := usecase.NewDeletePlayListDTO(userId, playListId)
 	result := deletePlayList.DeletePlayListUsecase.Delete(deletePlayListDTO)
 
-	if result != nil{
+	if result != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"result": "Error.",
+			"result":   "Error.",
 			"messages": result.Error(),
 		})
 		c.Abort()
@@ -67,7 +67,7 @@ func (deletePlayList DeletePlayList)DeletePlayList(c *gin.Context){
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"result": "Success.",
+		"result":   "Success.",
 		"messages": "OK",
 	})
 }

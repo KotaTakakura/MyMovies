@@ -3,23 +3,23 @@ package test
 import (
 	"MyPIPE/domain/model"
 	"MyPIPE/infra"
-	"testing"
 	"fmt"
+	"testing"
 )
 
-func TestNewEvaluate(t *testing.T){
-	user,_ := infra.NewUserPersistence().FindById(model.UserID(1012))
+func TestNewEvaluate(t *testing.T) {
+	user, _ := infra.NewUserPersistence().FindById(model.UserID(1012))
 	//fmt.Println(user.GoodMovies)
 	//fmt.Println(user.BadMovies)
-	evaluate,err :=model.NewEvaluate("good")
-	if err != nil{
+	evaluate, err := model.NewEvaluate("good")
+	if err != nil {
 		fmt.Println(err.Error())
 		fmt.Println("~~~~~")
 		return
 	}
 	//user.Evaluate(evaluate,user,model.MovieID(7))
-	errr := user.Evaluate(evaluate,model.MovieID(6))
-	if errr != nil{
+	errr := user.Evaluate(evaluate, model.MovieID(6))
+	if errr != nil {
 		fmt.Println(errr.Error())
 		fmt.Println("|||||")
 		return
@@ -48,12 +48,12 @@ func TestNewEvaluate(t *testing.T){
 //func TestSetGoodMovie(t *testing.T){
 //	user,_ := infra.NewUserPersistence().FindById(model.UserID(1012))
 //	_ = user.SetGoodMovie(model.MovieID(20))
-	//fmt.Println("||||||||||||||")
-	//fmt.Println(user.GoodMovies)
-	//fmt.Println("||||||||||||||")
-	//fmt.Println(user.BadMovies)
-	//fmt.Println("||||||||||||||")
-	//_ = infra.NewUserPersistence().UpdateUser(user)
+//fmt.Println("||||||||||||||")
+//fmt.Println(user.GoodMovies)
+//fmt.Println("||||||||||||||")
+//fmt.Println(user.BadMovies)
+//fmt.Println("||||||||||||||")
+//_ = infra.NewUserPersistence().UpdateUser(user)
 //}
 //
 //func TestSetBadMovie(t *testing.T){
@@ -75,9 +75,8 @@ func TestNewEvaluate(t *testing.T){
 //	fmt.Println("||||||||||||||")
 //	fmt.Println(user.BadMovies)
 //	fmt.Println("||||||||||||||")
-	//_ = infra.NewUserPersistence().UpdateUser(user)
+//_ = infra.NewUserPersistence().UpdateUser(user)
 //}
-
 
 //func TestUnsetBadMovie(t *testing.T){
 //	user,_ := infra.NewUserPersistence().FindById(model.UserID(1012))
@@ -89,4 +88,3 @@ func TestNewEvaluate(t *testing.T){
 //	fmt.Println("||||||||||||||")
 //	//_ = infra.NewUserPersistence().UpdateUser(user)
 //}
-

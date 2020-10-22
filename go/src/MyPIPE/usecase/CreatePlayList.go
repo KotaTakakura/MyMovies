@@ -9,43 +9,43 @@ import (
 )
 
 type ICreatePlayList interface {
-	CreatePlayList(createPlayList CreatePlayListDTO)error
+	CreatePlayList(createPlayList CreatePlayListDTO) error
 }
 
-type CreatePlayList struct{
-	UserRepository repository.UserRepository
+type CreatePlayList struct {
+	UserRepository     repository.UserRepository
 	PlayListRepository repository.PlayListRepository
 }
 
-func NewCreatePlayList(u repository.UserRepository,p repository.PlayListRepository)*CreatePlayList{
+func NewCreatePlayList(u repository.UserRepository, p repository.PlayListRepository) *CreatePlayList {
 	return &CreatePlayList{
-		UserRepository: u,
+		UserRepository:     u,
 		PlayListRepository: p,
 	}
 }
 
-func (c CreatePlayList)CreatePlayList(createPlayList CreatePlayListDTO)error{
-	playList := model.NewPlayList(createPlayList.UserID,createPlayList.PlayListName,createPlayList.PlayListDescription)
+func (c CreatePlayList) CreatePlayList(createPlayList CreatePlayListDTO) error {
+	playList := model.NewPlayList(createPlayList.UserID, createPlayList.PlayListName, createPlayList.PlayListDescription)
 
 	playListRepository := infra.NewPlayListPersistence()
 	checkSameUserIDAndNameExistsService := domain_service.NewCheckSameUserIDAndNameExists(playListRepository)
-	checkResult,checkResultErr := checkSameUserIDAndNameExistsService.CheckSameUserIDAndNameExists(playList.UserID,playList.Name)
+	checkResult, checkResultErr := checkSameUserIDAndNameExistsService.CheckSameUserIDAndNameExists(playList.UserID, playList.Name)
 	if checkResult {
 		return errors.New("Duplicate PlayList Name.")
 	}
-	if checkResultErr != nil{
+	if checkResultErr != nil {
 		return checkResultErr
 	}
 
 	saveErr := c.PlayListRepository.Save(playList)
-	if saveErr != nil{
+	if saveErr != nil {
 		return saveErr
 	}
 	return nil
 }
 
-type CreatePlayListDTO struct{
-	UserID model.UserID
-	PlayListName model.PlayListName
-	PlayListDescription	model.PlayListDescription
+type CreatePlayListDTO struct {
+	UserID              model.UserID
+	PlayListName        model.PlayListName
+	PlayListDescription model.PlayListDescription
 }

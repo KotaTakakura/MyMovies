@@ -6,39 +6,39 @@ import (
 	"errors"
 )
 
-type IDeletePlayListMovie interface{
-	DeletePlayListItem(playListItemDeleteJson *DeletePlayListMovieDTO)error
+type IDeletePlayListMovie interface {
+	DeletePlayListItem(playListItemDeleteJson *DeletePlayListMovieDTO) error
 }
 
-type DeletePlayListMovie struct{
-	PlayListRepository	repository.PlayListRepository
+type DeletePlayListMovie struct {
+	PlayListRepository      repository.PlayListRepository
 	PlayListMovieRepository repository.PlayListMovieRepository
 }
 
-func NewDeletePlayListMovie(p repository.PlayListRepository,plmr repository.PlayListMovieRepository)*DeletePlayListMovie{
+func NewDeletePlayListMovie(p repository.PlayListRepository, plmr repository.PlayListMovieRepository) *DeletePlayListMovie {
 	return &DeletePlayListMovie{
-		PlayListRepository: p,
+		PlayListRepository:      p,
 		PlayListMovieRepository: plmr,
 	}
 }
 
-func (a DeletePlayListMovie)DeletePlayListItem(playListItemDeleteJson *DeletePlayListMovieDTO)error{
+func (a DeletePlayListMovie) DeletePlayListItem(playListItemDeleteJson *DeletePlayListMovieDTO) error {
 
-	playList,playListFindErr := a.PlayListRepository.FindByID(playListItemDeleteJson.PlayListID)
-	if playList == nil || playList.UserID != playListItemDeleteJson.UserID{
+	playList, playListFindErr := a.PlayListRepository.FindByID(playListItemDeleteJson.PlayListID)
+	if playList == nil || playList.UserID != playListItemDeleteJson.UserID {
 		return errors.New("No Such PlayList.")
 	}
-	if playListFindErr != nil{
+	if playListFindErr != nil {
 		return playListFindErr
 	}
 
-	playListMovie := a.PlayListMovieRepository.Find(playListItemDeleteJson.UserID,playListItemDeleteJson.PlayListID,playListItemDeleteJson.MovieID)
-	if playListMovie == nil{
+	playListMovie := a.PlayListMovieRepository.Find(playListItemDeleteJson.UserID, playListItemDeleteJson.PlayListID, playListItemDeleteJson.MovieID)
+	if playListMovie == nil {
 		return errors.New("No Such PlayListMovie.")
 	}
 
 	removePlayListMovieErr := a.PlayListMovieRepository.Remove(playListMovie)
-	if removePlayListMovieErr != nil{
+	if removePlayListMovieErr != nil {
 		return removePlayListMovieErr
 	}
 
@@ -46,13 +46,13 @@ func (a DeletePlayListMovie)DeletePlayListItem(playListItemDeleteJson *DeletePla
 
 }
 
-type DeletePlayListMovieDTO struct{
+type DeletePlayListMovieDTO struct {
 	PlayListID model.PlayListID
-	UserID model.UserID
-	MovieID model.MovieID
+	UserID     model.UserID
+	MovieID    model.MovieID
 }
 
-func NewDeletePlayListItemAddJson(playListID model.PlayListID,userId model.UserID, movieId model.MovieID)*DeletePlayListMovieDTO{
+func NewDeletePlayListItemAddJson(playListID model.PlayListID, userId model.UserID, movieId model.MovieID) *DeletePlayListMovieDTO {
 	return &DeletePlayListMovieDTO{
 		PlayListID: playListID,
 		UserID:     userId,

@@ -4,7 +4,7 @@ import (
 	"MyPIPE/domain/model"
 )
 
-type CommentPersistence struct {}
+type CommentPersistence struct{}
 
 func NewCommentPersistence() *CommentPersistence {
 	return &CommentPersistence{}
@@ -54,18 +54,18 @@ func (c *CommentPersistence) FindByMovieId(movieId model.MovieID) ([]model.Comme
 	return comments, nil
 }
 
-func (c *CommentPersistence)Save(comment *model.Comment)error{
+func (c *CommentPersistence) Save(comment *model.Comment) error {
 	db := ConnectGorm()
 	defer db.Close()
-	if comment.ID == 0{
+	if comment.ID == 0 {
 		createResult := db.Create(&comment)
-		if createResult != nil{
+		if createResult != nil {
 			return createResult.Error
 		}
 		return nil
 	}
 	updateResult := db.Update(&comment)
-	if updateResult.Error != nil{
+	if updateResult.Error != nil {
 		return updateResult.Error
 	}
 	return nil

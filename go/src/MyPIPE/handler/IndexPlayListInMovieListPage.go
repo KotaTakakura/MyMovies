@@ -11,50 +11,50 @@ import (
 	"strconv"
 )
 
-type IndexPlayListInMovieListPage struct{
+type IndexPlayListInMovieListPage struct {
 	IndexPlayListInMovieListPageQueryService queryService.IndexPlayListInMovieListPageQueryService
-	IndexPlayListInMovieListPageUsecase usecase.IIndexPlayListInMovieListPage
+	IndexPlayListInMovieListPageUsecase      usecase.IIndexPlayListInMovieListPage
 }
 
-func NewIndexPlayListInMovieListPage(indexPlayListInMovieListPageQueryService queryService.IndexPlayListInMovieListPageQueryService,indexPlayListInMovieListPageUsecase usecase.IIndexPlayListInMovieListPage)*IndexPlayListInMovieListPage{
+func NewIndexPlayListInMovieListPage(indexPlayListInMovieListPageQueryService queryService.IndexPlayListInMovieListPageQueryService, indexPlayListInMovieListPageUsecase usecase.IIndexPlayListInMovieListPage) *IndexPlayListInMovieListPage {
 	return &IndexPlayListInMovieListPage{
 		IndexPlayListInMovieListPageQueryService: indexPlayListInMovieListPageQueryService,
-		IndexPlayListInMovieListPageUsecase: indexPlayListInMovieListPageUsecase,
+		IndexPlayListInMovieListPageUsecase:      indexPlayListInMovieListPageUsecase,
 	}
 }
 
-func (indexPlayListInMovieListPage IndexPlayListInMovieListPage)IndexPlayListInMovieListPage(c *gin.Context){
-	userId,userIdErr :=  model.NewUserID(uint64(jwt.ExtractClaims(c)["id"].(float64)))
+func (indexPlayListInMovieListPage IndexPlayListInMovieListPage) IndexPlayListInMovieListPage(c *gin.Context) {
+	userId, userIdErr := model.NewUserID(uint64(jwt.ExtractClaims(c)["id"].(float64)))
 
 	validationErrors := make(map[string]string)
 
-	if userIdErr != nil{
+	if userIdErr != nil {
 		validationErrors["user_id"] = userIdErr.Error()
 	}
 
-	movieIdUint64,_ := strconv.ParseUint(c.Param("movie_id"), 10, 64)
-	movieId,movieIdErr := model.NewMovieID(movieIdUint64)
+	movieIdUint64, _ := strconv.ParseUint(c.Param("movie_id"), 10, 64)
+	movieId, movieIdErr := model.NewMovieID(movieIdUint64)
 
-	if movieIdErr != nil{
+	if movieIdErr != nil {
 		validationErrors["movie_id"] = movieIdErr.Error()
 	}
 
-	if len(validationErrors) != 0{
-		validationErrors,_ := json.Marshal(validationErrors)
+	if len(validationErrors) != 0 {
+		validationErrors, _ := json.Marshal(validationErrors)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"result": "Validation Error.",
+			"result":   "Validation Error.",
 			"messages": string(validationErrors),
 		})
 		c.Abort()
 		return
 	}
-	findDTO := usecase.NewFindDTO(userId,movieId)
+	findDTO := usecase.NewFindDTO(userId, movieId)
 	result := indexPlayListInMovieListPage.IndexPlayListInMovieListPageUsecase.Find(*findDTO)
 
 	jsonResult, jsonMarshalErr := json.Marshal(result)
-	if jsonMarshalErr != nil{
+	if jsonMarshalErr != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"result": "Server Error.",
+			"result":   "Server Error.",
 			"messages": jsonMarshalErr.Error(),
 		})
 		c.Abort()

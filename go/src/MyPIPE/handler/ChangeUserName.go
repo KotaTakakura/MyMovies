@@ -10,50 +10,50 @@ import (
 	"net/http"
 )
 
-type ChangeUserName struct{
-	UserRepository repository.UserRepository
+type ChangeUserName struct {
+	UserRepository        repository.UserRepository
 	ChangeUserNameUsecase usecase.IChangeUserName
 }
 
-func NewChangeUserName(u repository.UserRepository,c usecase.IChangeUserName)*ChangeUserName{
+func NewChangeUserName(u repository.UserRepository, c usecase.IChangeUserName) *ChangeUserName {
 	return &ChangeUserName{
-		UserRepository: u,
+		UserRepository:        u,
 		ChangeUserNameUsecase: c,
 	}
 }
 
-func (changeUserName ChangeUserName)ChangeUserName(c *gin.Context){
+func (changeUserName ChangeUserName) ChangeUserName(c *gin.Context) {
 	userIdUint := uint64(jwt.ExtractClaims(c)["id"].(float64))
 	validationErrors := make(map[string]string)
 
-	userId,userIdErr := model.NewUserID(userIdUint)
-	if userIdErr != nil{
+	userId, userIdErr := model.NewUserID(userIdUint)
+	if userIdErr != nil {
 		validationErrors["user_id"] = userIdErr.Error()
 	}
 
 	var changeUserNameJson ChangeUserNameJson
 	c.Bind(&changeUserNameJson)
-	userName,userNameErr := model.NewUserName(changeUserNameJson.UserName)
-	if userNameErr != nil{
+	userName, userNameErr := model.NewUserName(changeUserNameJson.UserName)
+	if userNameErr != nil {
 		validationErrors["user_name"] = userNameErr.Error()
 	}
-	
-	if len(validationErrors) != 0{
-		validationErrors,_ :=  json.Marshal(validationErrors)
+
+	if len(validationErrors) != 0 {
+		validationErrors, _ := json.Marshal(validationErrors)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"result": "Validation Error.",
+			"result":   "Validation Error.",
 			"messages": string(validationErrors),
 		})
 		c.Abort()
 		return
 	}
 
-	changeUserNameDTO := usecase.NewChangeUserNameDTO(userId,userName)
+	changeUserNameDTO := usecase.NewChangeUserNameDTO(userId, userName)
 	err := changeUserName.ChangeUserNameUsecase.ChangeUserName(changeUserNameDTO)
 
-	if err != nil{
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"result": "Error.",
+			"result":   "Error.",
 			"messages": err.Error(),
 		})
 		c.Abort()
@@ -61,12 +61,12 @@ func (changeUserName ChangeUserName)ChangeUserName(c *gin.Context){
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"result": "Success.",
+		"result":   "Success.",
 		"messages": "OK",
 	})
 
 }
 
-type ChangeUserNameJson struct{
-	UserName string	`json:"user_name"`
+type ChangeUserNameJson struct {
+	UserName string `json:"user_name"`
 }

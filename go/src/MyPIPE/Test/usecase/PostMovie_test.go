@@ -9,12 +9,12 @@ import (
 	"testing"
 )
 
-func TestPostMovie(t *testing.T){
+func TestPostMovie(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	postMovieDTO := usecase.PostMovieDTO{
-		UserID:	model.UserID(10),
+		UserID: model.UserID(10),
 	}
 
 	MovieRepository := mock_repository.NewMockMovieRepository(ctrl)
@@ -30,25 +30,25 @@ func TestPostMovie(t *testing.T){
 	//mockgen -source domain/factory/IMovieModel.go -destination Test/mock/factory/mock_movieFactory.go
 
 	MovieFactory.EXPECT().
-		CreateMovieModel(postMovieDTO.UserID,postMovieDTO.FileHeader,postMovieDTO.ThumbnailHeader).
+		CreateMovieModel(postMovieDTO.UserID, postMovieDTO.FileHeader, postMovieDTO.ThumbnailHeader).
 		Return(&model.Movie{
 			UserID: postMovieDTO.UserID,
-	},nil)
+		}, nil)
 
-	MovieRepository.EXPECT().Save(gomock.Any()).DoAndReturn(func(movie model.Movie)(*model.Movie,error){
-		if movie.UserID != postMovieDTO.UserID{
+	MovieRepository.EXPECT().Save(gomock.Any()).DoAndReturn(func(movie model.Movie) (*model.Movie, error) {
+		if movie.UserID != postMovieDTO.UserID {
 			t.Error("Invalid UserID Name.")
-			return nil,nil
+			return nil, nil
 		}
-			return &model.Movie{},nil
+		return &model.Movie{}, nil
 	})
 
-	FileRepository.EXPECT().Upload(postMovieDTO.File,postMovieDTO.FileHeader,model.Movie{}.ID).Return(nil)
-	ThumbnailUploadRepository.EXPECT().Upload(postMovieDTO.Thumbnail,model.Movie{}).Return(nil)
+	FileRepository.EXPECT().Upload(postMovieDTO.File, postMovieDTO.FileHeader, model.Movie{}.ID).Return(nil)
+	ThumbnailUploadRepository.EXPECT().Upload(postMovieDTO.Thumbnail, model.Movie{}).Return(nil)
 
-	postMovieUsecase := usecase.NewPostMovie(FileRepository,ThumbnailUploadRepository,MovieRepository,MovieFactory)
-	_,result := postMovieUsecase.PostMovie(&postMovieDTO)
-	if result != nil{
+	postMovieUsecase := usecase.NewPostMovie(FileRepository, ThumbnailUploadRepository, MovieRepository, MovieFactory)
+	_, result := postMovieUsecase.PostMovie(&postMovieDTO)
+	if result != nil {
 		t.Error("PostMovie Usecase Error.")
 	}
 }

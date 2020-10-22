@@ -6,5 +6,5 @@ import (
 )
 
 type IMovieModelFactory interface {
-	CreateMovieModel(uploaderID model.UserID,fileHeader multipart.FileHeader,thumbnailHeader multipart.FileHeader)(*model.Movie,error)
+	CreateMovieModel(uploaderID model.UserID, fileHeader multipart.FileHeader, thumbnailHeader multipart.FileHeader) (*model.Movie, error)
 }

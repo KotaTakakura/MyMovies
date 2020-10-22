@@ -10,29 +10,29 @@ import (
 	"strconv"
 )
 
-type IndexPlaylistMovies struct{
+type IndexPlaylistMovies struct {
 	IndexPlaylistMoviesQueryService queryService.IndexPlayListMovieQueryService
-	IndexPlaylistMoviesUsecase usecase.IIndexPlaylistItemInMyPage
+	IndexPlaylistMoviesUsecase      usecase.IIndexPlaylistItemInMyPage
 }
 
-func NewIndexPlaylistMovies(indexPlaylistMoviesQueryService queryService.IndexPlayListMovieQueryService,indexPlaylistMoviesUsecase usecase.IIndexPlaylistItemInMyPage)*IndexPlaylistMovies{
+func NewIndexPlaylistMovies(indexPlaylistMoviesQueryService queryService.IndexPlayListMovieQueryService, indexPlaylistMoviesUsecase usecase.IIndexPlaylistItemInMyPage) *IndexPlaylistMovies {
 	return &IndexPlaylistMovies{
 		IndexPlaylistMoviesQueryService: indexPlaylistMoviesQueryService,
-		IndexPlaylistMoviesUsecase: indexPlaylistMoviesUsecase,
+		IndexPlaylistMoviesUsecase:      indexPlaylistMoviesUsecase,
 	}
 }
 
-func (indexPlaylistMovies IndexPlaylistMovies)IndexPlaylistMovies(c *gin.Context){
-	userId :=  uint64(jwt.ExtractClaims(c)["id"].(float64))
-	playListId,_ := strconv.ParseUint(c.Param("play_list_id"), 10, 64)
+func (indexPlaylistMovies IndexPlaylistMovies) IndexPlaylistMovies(c *gin.Context) {
+	userId := uint64(jwt.ExtractClaims(c)["id"].(float64))
+	playListId, _ := strconv.ParseUint(c.Param("play_list_id"), 10, 64)
 
-	indexPlayListItemUsecaseDTO := usecase.NewIndexPlayListItemInMyPageDTO(userId,playListId)
+	indexPlayListItemUsecaseDTO := usecase.NewIndexPlayListItemInMyPageDTO(userId, playListId)
 	result := indexPlaylistMovies.IndexPlaylistMoviesUsecase.Find(*indexPlayListItemUsecaseDTO)
 
 	jsonResult, jsonMarshalErr := json.Marshal(result)
-	if jsonMarshalErr != nil{
+	if jsonMarshalErr != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"result": "Server Error.",
+			"result":   "Server Error.",
 			"messages": jsonMarshalErr.Error(),
 		})
 		c.Abort()
@@ -42,6 +42,6 @@ func (indexPlaylistMovies IndexPlaylistMovies)IndexPlaylistMovies(c *gin.Context
 	c.JSON(http.StatusOK, string(jsonResult))
 }
 
-type IndexPlayListMoviesJson struct{
+type IndexPlayListMoviesJson struct {
 	PlayListID uint64
 }

@@ -8,21 +8,21 @@ import (
 	"net/http"
 )
 
-type Authorization struct{
-	UserRepository	repository.UserRepository
-	UserTemporaryRegistrationUsecase	usecase.IUserTemporaryRegistration
-	UserRegisterUsecase 	usecase.IUserRegister
+type Authorization struct {
+	UserRepository                   repository.UserRepository
+	UserTemporaryRegistrationUsecase usecase.IUserTemporaryRegistration
+	UserRegisterUsecase              usecase.IUserRegister
 }
 
-func NewAuthorization(userRep repository.UserRepository,userTemporaryRegistrationUsecase usecase.IUserTemporaryRegistration,userRegisterUsecase usecase.IUserRegister)*Authorization{
+func NewAuthorization(userRep repository.UserRepository, userTemporaryRegistrationUsecase usecase.IUserTemporaryRegistration, userRegisterUsecase usecase.IUserRegister) *Authorization {
 	return &Authorization{
-		UserRepository: userRep,
+		UserRepository:                   userRep,
 		UserTemporaryRegistrationUsecase: userTemporaryRegistrationUsecase,
-		UserRegisterUsecase:	userRegisterUsecase,
+		UserRegisterUsecase:              userRegisterUsecase,
 	}
 }
 
-func (authorization Authorization)TemporaryRegisterUser(c *gin.Context) {
+func (authorization Authorization) TemporaryRegisterUser(c *gin.Context) {
 
 	var newUserInfo TemporaryRegisterUserJson
 	var newUser model.User
@@ -35,7 +35,7 @@ func (authorization Authorization)TemporaryRegisterUser(c *gin.Context) {
 	if validationError["user_email"] != nil {
 		validationErrorMessages["user_email"] = validationError["user_email"].Error()
 		c.JSON(http.StatusBadRequest, gin.H{
-			"result": "Validation Error",
+			"result":  "Validation Error",
 			"message": validationErrorMessages,
 		})
 		c.Abort()
@@ -43,7 +43,7 @@ func (authorization Authorization)TemporaryRegisterUser(c *gin.Context) {
 	}
 
 	err := authorization.UserTemporaryRegistrationUsecase.TemporaryRegister(&newUser)
-	if err != nil{
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Temporary Registered!",
 		})
@@ -55,11 +55,11 @@ func (authorization Authorization)TemporaryRegisterUser(c *gin.Context) {
 	})
 }
 
-type TemporaryRegisterUserJson struct{
-	Email	string	`json:"user_email"`
+type TemporaryRegisterUserJson struct {
+	Email string `json:"user_email"`
 }
 
-func (authorization Authorization)RegisterUser(c *gin.Context) {
+func (authorization Authorization) RegisterUser(c *gin.Context) {
 
 	var newUserInfo RegisterUserJson
 	c.Bind(&newUserInfo)
@@ -71,16 +71,16 @@ func (authorization Authorization)RegisterUser(c *gin.Context) {
 	token := c.Query("token")
 
 	var newUser model.User
-	newUser.Name,validationErrors["user_name"] = model.NewUserName(newUserInfo.Name)
+	newUser.Name, validationErrors["user_name"] = model.NewUserName(newUserInfo.Name)
 
-	newUser.Password,validationErrors["user_password"] = model.NewUserPassword(newUserInfo.Password)
+	newUser.Password, validationErrors["user_password"] = model.NewUserPassword(newUserInfo.Password)
 
-	newUser.Token,validationErrors["user_token"] = model.NewUserToken(token)
+	newUser.Token, validationErrors["user_token"] = model.NewUserToken(token)
 
 	validationErrors["user_birthday"] = newUser.SetBirthday(newUserInfo.Birthday)
 
 	for errorKey, errorContent := range validationErrors {
-		if errorContent != nil{
+		if errorContent != nil {
 			validationErrorFlag = true
 			errorMessages[errorKey] = errorContent.Error()
 		}
@@ -88,7 +88,7 @@ func (authorization Authorization)RegisterUser(c *gin.Context) {
 
 	if validationErrorFlag {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"result": "Validation Error",
+			"result":   "Validation Error",
 			"messages": errorMessages,
 		})
 		c.Abort()
@@ -99,7 +99,7 @@ func (authorization Authorization)RegisterUser(c *gin.Context) {
 
 	if registerUserError != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"result": "Registration Error",
+			"result":   "Registration Error",
 			"messages": registerUserError.Error(),
 		})
 		c.Abort()
@@ -111,8 +111,8 @@ func (authorization Authorization)RegisterUser(c *gin.Context) {
 	})
 }
 
-type RegisterUserJson struct{
-	Name string	`json:"user_name"`
-	Password string	`json:"user_password"`
-	Birthday	string	`json:"user_birthday"`
+type RegisterUserJson struct {
+	Name     string `json:"user_name"`
+	Password string `json:"user_password"`
+	Birthday string `json:"user_birthday"`
 }

@@ -13,7 +13,7 @@ import (
 //	//fmt.Println(q.GoodUsers)
 //}
 
-func TestMoviePublic(t *testing.T){
+func TestMoviePublic(t *testing.T) {
 	movie := &model.Movie{
 		ID:          model.MovieID(10),
 		StoreName:   model.MovieStoreName("test1"),
@@ -27,7 +27,7 @@ func TestMoviePublic(t *testing.T){
 	}
 
 	err := movie.ChangePublic(model.MoviePublic(1))
-	if err != nil{
+	if err != nil {
 		fmt.Println(err.Error())
 	}
 }
