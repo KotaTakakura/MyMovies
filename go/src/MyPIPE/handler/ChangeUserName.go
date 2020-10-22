@@ -49,8 +49,6 @@ func (changeUserName ChangeUserName)ChangeUserName(c *gin.Context){
 	}
 
 	changeUserNameDTO := usecase.NewChangeUserNameDTO(userId,userName)
-	//userRepository := infra.NewUserPersistence()
-	//changeUserNameUsecase := usecase.NewChangeUserName(userRepository)
 	err := changeUserName.ChangeUserNameUsecase.ChangeUserName(changeUserNameDTO)
 
 	if err != nil{
