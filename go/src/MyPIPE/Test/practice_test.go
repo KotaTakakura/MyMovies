@@ -1,12 +1,12 @@
 package test
 
 import (
+	"fmt"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"net/http/httptest"
 	"strings"
 	"testing"
-	"fmt"
 )
 
 func TestHoge(t *testing.T) {
@@ -21,17 +21,17 @@ func TestHoge(t *testing.T) {
 	// Contextセット
 	var context *gin.Context
 	context = &gin.Context{Request: req}
-	context.Set("JWT_PAYLOAD",jwt.MapClaims{
-		"id":float64(10),
+	context.Set("JWT_PAYLOAD", jwt.MapClaims{
+		"id": float64(10),
 	})
 
 	huga(context)
 }
 
 func huga(c *gin.Context) {
-	userIdUint :=  uint64(jwt.ExtractClaims(c)["id"].(float64))
-	type SSS struct{
-		Password string	`json:"password"`
+	userIdUint := uint64(jwt.ExtractClaims(c)["id"].(float64))
+	type SSS struct {
+		Password string `json:"password"`
 	}
 	var sss SSS
 	c.Bind(&sss)

@@ -15,12 +15,12 @@ import (
 	"reflect"
 	//"fmt"
 	//"strings"
+	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
-	"github.com/stretchr/testify/assert"
 )
 
-func TestGetLoggedInUserData(t *testing.T){
+func TestGetLoggedInUserData(t *testing.T) {
 
 	trueCases := []struct {
 		userId uint64
@@ -33,9 +33,9 @@ func TestGetLoggedInUserData(t *testing.T){
 
 	getLoggedInUserDataQueryService := mock_queryService.NewMockGetLoggedInUserDataQueryService(ctrl)
 	getLoggedInUserDataUsecase := mock_usecase.NewMockIGetLoggedInUserData(ctrl)
-	getLoggedInUserDataHandler := handler.NewGetLoggedInUserData(getLoggedInUserDataQueryService,getLoggedInUserDataUsecase)
+	getLoggedInUserDataHandler := handler.NewGetLoggedInUserData(getLoggedInUserDataQueryService, getLoggedInUserDataUsecase)
 
-	for _,trueCase := range trueCases{
+	for _, trueCase := range trueCases {
 		// リクエスト生成
 		req := httptest.NewRequest("GET", "/", nil)
 
@@ -46,8 +46,8 @@ func TestGetLoggedInUserData(t *testing.T){
 		// Contextセット
 		ginContext, _ := gin.CreateTestContext(w)
 		ginContext.Request = req
-		ginContext.Set("JWT_PAYLOAD",jwt.MapClaims{
-			"id":float64(trueCase.userId),
+		ginContext.Set("JWT_PAYLOAD", jwt.MapClaims{
+			"id": float64(trueCase.userId),
 		})
 
 		timeTest := time.Now()
@@ -61,17 +61,17 @@ func TestGetLoggedInUserData(t *testing.T){
 			AvatarName:       "TesetAvatarName",
 		})
 
-		getLoggedInUserDataUsecase.EXPECT().Find(gomock.Any()).DoAndReturn(func(data interface{})*queryService.GetLoggedInUserDataDTO{
-			if reflect.TypeOf(data) != reflect.TypeOf(&(usecase.GetLoggedInUserDataDTO{})){
+		getLoggedInUserDataUsecase.EXPECT().Find(gomock.Any()).DoAndReturn(func(data interface{}) *queryService.GetLoggedInUserDataDTO {
+			if reflect.TypeOf(data) != reflect.TypeOf(&(usecase.GetLoggedInUserDataDTO{})) {
 				t.Fatal("Type Not Match.")
 			}
-			if data.(*usecase.GetLoggedInUserDataDTO).UserID != model.UserID(trueCase.userId){
+			if data.(*usecase.GetLoggedInUserDataDTO).UserID != model.UserID(trueCase.userId) {
 				t.Fatal("UserID Not Match,")
 			}
 			return getLoggedInUserDataDTO
 		})
 
-		assert.Equal(t,http.StatusOK,ginContext.Writer.Status())
+		assert.Equal(t, http.StatusOK, ginContext.Writer.Status())
 
 		getLoggedInUserDataHandler.GetLoggedInUserData(ginContext)
 	}

@@ -7,24 +7,24 @@ import (
 )
 
 type IChangeOrderOfPlayListMovies interface {
-	ChangeOrderOfPlayListMovies(changeOrderOfPlayListMoviesDTO *ChangeOrderOfPlayListMoviesDTO)error
+	ChangeOrderOfPlayListMovies(changeOrderOfPlayListMoviesDTO *ChangeOrderOfPlayListMoviesDTO) error
 }
 
-type ChangeOrderOfPlayListMovies struct{
-	PlayListMovieRepository	repository.PlayListMovieRepository
+type ChangeOrderOfPlayListMovies struct {
+	PlayListMovieRepository repository.PlayListMovieRepository
 }
 
-func NewChangeOrderOfPlayListMovies(p repository.PlayListMovieRepository)*ChangeOrderOfPlayListMovies{
+func NewChangeOrderOfPlayListMovies(p repository.PlayListMovieRepository) *ChangeOrderOfPlayListMovies {
 	return &ChangeOrderOfPlayListMovies{
 		PlayListMovieRepository: p,
 	}
 }
 
-func (c ChangeOrderOfPlayListMovies)ChangeOrderOfPlayListMovies(changeOrderOfPlayListMoviesDTO *ChangeOrderOfPlayListMoviesDTO)error{
-	playListMovies := c.PlayListMovieRepository.FindAll(changeOrderOfPlayListMoviesDTO.UserID,changeOrderOfPlayListMoviesDTO.PlayListID)
+func (c ChangeOrderOfPlayListMovies) ChangeOrderOfPlayListMovies(changeOrderOfPlayListMoviesDTO *ChangeOrderOfPlayListMoviesDTO) error {
+	playListMovies := c.PlayListMovieRepository.FindAll(changeOrderOfPlayListMoviesDTO.UserID, changeOrderOfPlayListMoviesDTO.PlayListID)
 	movieIdAndOrderMap := make(map[model.MovieID]model.PlayListMovieOrder)
 
-	for _,movieAndOrder := range changeOrderOfPlayListMoviesDTO.MovieIDAndOrder{
+	for _, movieAndOrder := range changeOrderOfPlayListMoviesDTO.MovieIDAndOrder {
 		movieIdAndOrderMap[movieAndOrder.MovieID] = movieAndOrder.Order
 	}
 
@@ -41,13 +41,13 @@ func (c ChangeOrderOfPlayListMovies)ChangeOrderOfPlayListMovies(changeOrderOfPla
 	return nil
 }
 
-type ChangeOrderOfPlayListMoviesDTO struct{
-	UserID model.UserID
-	PlayListID model.PlayListID
+type ChangeOrderOfPlayListMoviesDTO struct {
+	UserID          model.UserID
+	PlayListID      model.PlayListID
 	MovieIDAndOrder []MovieIdAndOrderForChangeOrderOfPlayListMoviesDTO
 }
 
-type MovieIdAndOrderForChangeOrderOfPlayListMoviesDTO struct{
+type MovieIdAndOrderForChangeOrderOfPlayListMoviesDTO struct {
 	MovieID model.MovieID
-	Order	model.PlayListMovieOrder
+	Order   model.PlayListMovieOrder
 }

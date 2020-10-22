@@ -9,20 +9,20 @@ import (
 	"time"
 )
 
-func TestPostComment(t *testing.T){
+func TestPostComment(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	cases := []model.Comment{
 		model.Comment{
-			Body:	model.CommentBody("こんにちは！！！"),
+			Body:    model.CommentBody("こんにちは！！！"),
 			MovieID: model.MovieID(100),
-			UserID: model.UserID(1010),
+			UserID:  model.UserID(1010),
 		},
 		model.Comment{
-			Body:	model.CommentBody("Good Morning！！！"),
+			Body:    model.CommentBody("Good Morning！！！"),
 			MovieID: model.MovieID(11),
-			UserID: model.UserID(1200),
+			UserID:  model.UserID(1200),
 		},
 	}
 
@@ -38,11 +38,11 @@ func TestPostComment(t *testing.T){
 			UserID:      c.UserID,
 			CreatedAt:   time.Now(),
 			UpdatedAt:   time.Now(),
-		},nil)
+		}, nil)
 
-		postCommentUsecase := usecase.NewPostComment(CommentRepository,MovieRepository)
+		postCommentUsecase := usecase.NewPostComment(CommentRepository, MovieRepository)
 		err := postCommentUsecase.PostComment(c)
-		if err != nil{
+		if err != nil {
 			t.Error("PostComment Usecase Test Failed.")
 		}
 	}

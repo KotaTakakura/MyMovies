@@ -8,39 +8,39 @@ import (
 )
 
 type IAddPlayListItem interface {
-	AddPlayListItem(playListItemAddJson AddPlayListItemAddJson)error
+	AddPlayListItem(playListItemAddJson AddPlayListItemAddJson) error
 }
 
-type AddPlayListItem struct{
-	PlayListRepository	repository.PlayListRepository
+type AddPlayListItem struct {
+	PlayListRepository      repository.PlayListRepository
 	PlayListMovieRepository repository.PlayListMovieRepository
-	PlaylistMovieFactory factory.IPlayListMovie
+	PlaylistMovieFactory    factory.IPlayListMovie
 }
 
-func NewAddPlayListItem(p repository.PlayListRepository,plmr repository.PlayListMovieRepository,plmf factory.IPlayListMovie)*AddPlayListItem{
+func NewAddPlayListItem(p repository.PlayListRepository, plmr repository.PlayListMovieRepository, plmf factory.IPlayListMovie) *AddPlayListItem {
 	return &AddPlayListItem{
-		PlayListRepository: p,
+		PlayListRepository:      p,
 		PlayListMovieRepository: plmr,
-		PlaylistMovieFactory: plmf,
+		PlaylistMovieFactory:    plmf,
 	}
 }
 
-func (a AddPlayListItem)AddPlayListItem(playListItemAddJson AddPlayListItemAddJson)error{
+func (a AddPlayListItem) AddPlayListItem(playListItemAddJson AddPlayListItemAddJson) error {
 
-	playList,playListFindErr := a.PlayListRepository.FindByID(playListItemAddJson.PlayListID)
-	if playList == nil || playList.UserID != playListItemAddJson.UserID{
+	playList, playListFindErr := a.PlayListRepository.FindByID(playListItemAddJson.PlayListID)
+	if playList == nil || playList.UserID != playListItemAddJson.UserID {
 		return errors.New("No Such PlayList.")
 	}
-	if playListFindErr != nil{
+	if playListFindErr != nil {
 		return playListFindErr
 	}
 
-	playListMovie,err := a.PlaylistMovieFactory.CreatePlayListMovie(playListItemAddJson.PlayListID,playListItemAddJson.MovieID)
-	if err != nil{
+	playListMovie, err := a.PlaylistMovieFactory.CreatePlayListMovie(playListItemAddJson.PlayListID, playListItemAddJson.MovieID)
+	if err != nil {
 		return err
 	}
 	savePlayListMovieErr := a.PlayListMovieRepository.Save(playListMovie)
-	if savePlayListMovieErr != nil{
+	if savePlayListMovieErr != nil {
 		return savePlayListMovieErr
 	}
 
@@ -48,8 +48,8 @@ func (a AddPlayListItem)AddPlayListItem(playListItemAddJson AddPlayListItemAddJs
 
 }
 
-type AddPlayListItemAddJson struct{
+type AddPlayListItemAddJson struct {
 	PlayListID model.PlayListID
-	UserID model.UserID
-	MovieID model.MovieID
+	UserID     model.UserID
+	MovieID    model.MovieID
 }

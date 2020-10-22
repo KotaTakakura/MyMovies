@@ -17,7 +17,7 @@ func (a AnyTime) Match(v driver.Value) bool {
 	return ok
 }
 
-func TestUserRepository(t *testing.T){
+func TestUserRepository(t *testing.T) {
 	db, mock, err := getDBMock()
 	if err != nil {
 		t.Fatal(err)
@@ -37,10 +37,10 @@ func TestUserRepository(t *testing.T){
 	mock.ExpectBegin()
 	// Mock設定
 	mock.ExpectExec(regexp.QuoteMeta(
-		"INSERT INTO `users` " +
-			"(`id`,`name`,`password`,`email`,`birthday`,`token`,`created_at`,`updated_at`) " +
+		"INSERT INTO `users` "+
+			"(`id`,`name`,`password`,`email`,`birthday`,`token`,`created_at`,`updated_at`) "+
 			"VALUES (?,?,?,?,?,?,?,?)")).
-		WithArgs(user.ID,user.Name,user.Password,user.Email,user.Birthday,user.Token,AnyTime{},AnyTime{}).
+		WithArgs(user.ID, user.Name, user.Password, user.Email, user.Birthday, user.Token, AnyTime{}, AnyTime{}).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 

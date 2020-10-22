@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestEvaluateMovie(t *testing.T){
+func TestEvaluateMovie(t *testing.T) {
 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -27,31 +27,31 @@ func TestEvaluateMovie(t *testing.T){
 		StoreName:   "TestStoreName",
 		DisplayName: "TestDisplayName",
 		UserID:      cases.UserID,
-	},nil)
+	}, nil)
 
-	movieEvaluationRepository.EXPECT().FindByUserIdAndMovieId(cases.UserID,cases.MovieID).Return(&model.MovieEvaluation{
+	movieEvaluationRepository.EXPECT().FindByUserIdAndMovieId(cases.UserID, cases.MovieID).Return(&model.MovieEvaluation{
 		UserID:     cases.UserID,
 		MovieID:    cases.MovieID,
 		Evaluation: cases.Evaluation,
 	})
 
 	movieEvaluationRepository.EXPECT().Save(gomock.Any()).DoAndReturn(
-		func(movieEvaluation *model.MovieEvaluation)error{
-			if movieEvaluation.UserID != cases.UserID{
+		func(movieEvaluation *model.MovieEvaluation) error {
+			if movieEvaluation.UserID != cases.UserID {
 				t.Error("Invalid UserID.")
 			}
-			if movieEvaluation.MovieID != cases.MovieID{
+			if movieEvaluation.MovieID != cases.MovieID {
 				t.Error("Invalid MovieID.")
 			}
-			if movieEvaluation.Evaluation != cases.Evaluation{
+			if movieEvaluation.Evaluation != cases.Evaluation {
 				t.Error("Invalid Evaluation.")
 			}
 			return nil
 		})
 
-	movieEvaluationUsecase := usecase.NewEvaluateUsecase(movieRepository,movieEvaluationRepository)
+	movieEvaluationUsecase := usecase.NewEvaluateUsecase(movieRepository, movieEvaluationRepository)
 	err := movieEvaluationUsecase.EvaluateMovie(cases)
-	if err != nil{
+	if err != nil {
 		t.Error("Usecase Error.")
 	}
 }

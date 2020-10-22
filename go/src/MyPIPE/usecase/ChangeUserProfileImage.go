@@ -6,25 +6,25 @@ import (
 	"mime/multipart"
 )
 
-type IChangeUserProfilieImage interface{
-	ChangeUserProfileImage(changeUserProfileImageDTO *ChangeUserProfileImageDTO)error
+type IChangeUserProfilieImage interface {
+	ChangeUserProfileImage(changeUserProfileImageDTO *ChangeUserProfileImageDTO) error
 }
 
-type ChangeUserProfileImage struct{
-	UserRepository	repository.UserRepository
+type ChangeUserProfileImage struct {
+	UserRepository             repository.UserRepository
 	UserProfileImageRepository repository.UserProfileImageRepository
 }
 
-func NewChangeUserProfileImage(userRepo repository.UserRepository,userProfileImageRepo repository.UserProfileImageRepository)*ChangeUserProfileImage{
+func NewChangeUserProfileImage(userRepo repository.UserRepository, userProfileImageRepo repository.UserProfileImageRepository) *ChangeUserProfileImage {
 	return &ChangeUserProfileImage{
-		UserRepository: userRepo,
+		UserRepository:             userRepo,
 		UserProfileImageRepository: userProfileImageRepo,
 	}
 }
 
-func (c ChangeUserProfileImage)ChangeUserProfileImage(changeUserProfileImageDTO *ChangeUserProfileImageDTO)error{
-	user,findUserErr := c.UserRepository.FindById(changeUserProfileImageDTO.UserID)
-	if findUserErr != nil{
+func (c ChangeUserProfileImage) ChangeUserProfileImage(changeUserProfileImageDTO *ChangeUserProfileImageDTO) error {
+	user, findUserErr := c.UserRepository.FindById(changeUserProfileImageDTO.UserID)
+	if findUserErr != nil {
 		return findUserErr
 	}
 
@@ -33,8 +33,8 @@ func (c ChangeUserProfileImage)ChangeUserProfileImage(changeUserProfileImageDTO 
 		return setProfileImageErr
 	}
 
-	uploadErr := c.UserProfileImageRepository.Upload(changeUserProfileImageDTO.ProfileImage,user)
-	if uploadErr != nil{
+	uploadErr := c.UserProfileImageRepository.Upload(changeUserProfileImageDTO.ProfileImage, user)
+	if uploadErr != nil {
 		return uploadErr
 	}
 
@@ -46,15 +46,15 @@ func (c ChangeUserProfileImage)ChangeUserProfileImage(changeUserProfileImageDTO 
 	return nil
 }
 
-type ChangeUserProfileImageDTO struct{
-	UserID model.UserID
-	ProfileImage multipart.File
+type ChangeUserProfileImageDTO struct {
+	UserID             model.UserID
+	ProfileImage       multipart.File
 	ProfileImageHeader *multipart.FileHeader
 }
 
-func NewChangeUserProfileImageDTO(userId model.UserID, profileImage multipart.File,profileImageHeader *multipart.FileHeader)*ChangeUserProfileImageDTO{
+func NewChangeUserProfileImageDTO(userId model.UserID, profileImage multipart.File, profileImageHeader *multipart.FileHeader) *ChangeUserProfileImageDTO {
 	return &ChangeUserProfileImageDTO{
-		UserID:          userId,
+		UserID:             userId,
 		ProfileImage:       profileImage,
 		ProfileImageHeader: profileImageHeader,
 	}

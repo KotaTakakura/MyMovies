@@ -13,11 +13,11 @@ import (
 
 type UploadToAmazonS3 struct{}
 
-func NewUploadToAmazonS3()*UploadToAmazonS3{
+func NewUploadToAmazonS3() *UploadToAmazonS3 {
 	return &UploadToAmazonS3{}
 }
 
-func (u UploadToAmazonS3)Upload(movieFile multipart.File,movieFileHeader multipart.FileHeader,movieID model.MovieID)error{
+func (u UploadToAmazonS3) Upload(movieFile multipart.File, movieFileHeader multipart.FileHeader, movieID model.MovieID) error {
 	sess := session.Must(session.NewSession())
 	extension := filepath.Ext(movieFileHeader.Filename)
 	bucketName := "mypipe-before-encoded"
