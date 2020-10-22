@@ -167,7 +167,9 @@ func main() {
 		auth.POST("/play-list-items",addPlayListMovieHandler.AddPlayListMovie)
 		auth.DELETE("/play-list-items",addPlayListMovieHandler.DeletePlayListMovie)
 
-		auth.PUT("/play-list-items",handler.ChangeOrderOfPlayListMovies)
+		changeOrderOfPlayListMoviesUsecase := usecase.NewChangeOrderOfPlayListMovies(playListMovieRepository)
+		changeOrderOfPlayListMoviesHandler := handler.NewChangeOrderOfPlayListMovies(playListMovieRepository,changeOrderOfPlayListMoviesUsecase)
+		auth.PUT("/play-list-items",changeOrderOfPlayListMoviesHandler.ChangeOrderOfPlayListMovies)
 
 		auth.POST("/follows",handler.FollowUser)
 

@@ -2,21 +2,31 @@ package handler
 
 import (
 	"MyPIPE/domain/model"
-	"MyPIPE/infra"
+	"MyPIPE/domain/repository"
 	"MyPIPE/usecase"
 	"encoding/json"
-	"fmt"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-func ChangeOrderOfPlayListMovies(c *gin.Context){
+type ChangeOrderOfPlayListMovies struct{
+	PlayListMovieRepository repository.PlayListMovieRepository
+	ChangeOrderOfPlayListMoviesUsecase usecase.IChangeOrderOfPlayListMovies
+}
+
+func NewChangeOrderOfPlayListMovies(playListMovieRepo repository.PlayListMovieRepository,changeOrderOfPlayListMoviesUsecase usecase.IChangeOrderOfPlayListMovies)*ChangeOrderOfPlayListMovies{
+	return &ChangeOrderOfPlayListMovies{
+		PlayListMovieRepository:	playListMovieRepo,
+		ChangeOrderOfPlayListMoviesUsecase:	changeOrderOfPlayListMoviesUsecase,
+	}
+}
+
+func (changeOrderOfPlayListMovies ChangeOrderOfPlayListMovies)ChangeOrderOfPlayListMovies(c *gin.Context){
 	var changeOrderOfPlayListMoviesJson ChangeOrderOfPlayListMoviesJson
 	c.Bind(&changeOrderOfPlayListMoviesJson)
 	userIdUint :=  uint64(jwt.ExtractClaims(c)["id"].(float64))
 
-	fmt.Println(changeOrderOfPlayListMoviesJson)
 	validationErrors := make(map[string]string)
 	var movieIdAndOrderForChangeOrderOfPlayListMoviesDTO usecase.MovieIdAndOrderForChangeOrderOfPlayListMoviesDTO
 	var changeOrderOfPlayListMoviesDTO usecase.ChangeOrderOfPlayListMoviesDTO
@@ -59,9 +69,9 @@ func ChangeOrderOfPlayListMovies(c *gin.Context){
 	changeOrderOfPlayListMoviesDTO.UserID = userId
 	changeOrderOfPlayListMoviesDTO.PlayListID = playListID
 
-	playListMovieRepository := infra.NewPlayListMoviePersistence()
-	changeOrderOfPlayListMovies := usecase.NewChangeOrderOfPlayListMovies(playListMovieRepository)
-	result := changeOrderOfPlayListMovies.ChangeOrderOfPlayListMovies(&changeOrderOfPlayListMoviesDTO)
+	//playListMovieRepository := infra.NewPlayListMoviePersistence()
+	//changeOrderOfPlayListMovies := usecase.NewChangeOrderOfPlayListMovies(playListMovieRepository)
+	result := changeOrderOfPlayListMovies.ChangeOrderOfPlayListMoviesUsecase.ChangeOrderOfPlayListMovies(&changeOrderOfPlayListMoviesDTO)
 	if result != nil{
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"result": "Validation Error.",
