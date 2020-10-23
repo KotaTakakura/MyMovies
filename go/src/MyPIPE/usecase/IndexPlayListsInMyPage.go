@@ -1,9 +1,12 @@
 package usecase
 
-import "MyPIPE/domain/queryService"
+import (
+	"MyPIPE/domain/model"
+	"MyPIPE/domain/queryService"
+)
 
 type IIndexPlayListsInMyPage interface {
-	All(userId uint64) *queryService.IndexPlayListsInMyPageDTO
+	All(indexPlayListsInMyPageDTO *IndexPlayListsInMyPageDTO) *queryService.IndexPlayListsInMyPageDTO
 }
 
 type IndexPlayListsInMyPage struct {
@@ -16,6 +19,16 @@ func NewIndexPlayListsInMyPage(ipq queryService.IndexPlayListsInMyPageQueryServi
 	}
 }
 
-func (i IndexPlayListsInMyPage) All(userId uint64) *queryService.IndexPlayListsInMyPageDTO {
-	return i.IndexPlayListsInMyPageQueryService.All(userId)
+func (i IndexPlayListsInMyPage) All(indexPlayListsInMyPageDTO *IndexPlayListsInMyPageDTO) *queryService.IndexPlayListsInMyPageDTO {
+	return i.IndexPlayListsInMyPageQueryService.All(indexPlayListsInMyPageDTO.UserID)
+}
+
+type IndexPlayListsInMyPageDTO struct{
+	UserID model.UserID
+}
+
+func NewIndexPlayListsInMyPageDTO(userId model.UserID)*IndexPlayListsInMyPageDTO{
+	return &IndexPlayListsInMyPageDTO{
+		UserID: userId,
+	}
 }
