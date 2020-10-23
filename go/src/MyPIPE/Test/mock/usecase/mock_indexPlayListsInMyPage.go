@@ -6,6 +6,7 @@ package mock_usecase
 
 import (
 	queryService "MyPIPE/domain/queryService"
+	usecase "MyPIPE/usecase"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
 )
@@ -34,15 +35,15 @@ func (m *MockIIndexPlayListsInMyPage) EXPECT() *MockIIndexPlayListsInMyPageMockR
 }
 
 // All mocks base method
-func (m *MockIIndexPlayListsInMyPage) All(userId uint64) *queryService.IndexPlayListsInMyPageDTO {
+func (m *MockIIndexPlayListsInMyPage) All(indexPlayListsInMyPageDTO *usecase.IndexPlayListsInMyPageDTO) *queryService.IndexPlayListsInMyPageDTO {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "All", userId)
+	ret := m.ctrl.Call(m, "All", indexPlayListsInMyPageDTO)
 	ret0, _ := ret[0].(*queryService.IndexPlayListsInMyPageDTO)
 	return ret0
 }
 
 // All indicates an expected call of All
-func (mr *MockIIndexPlayListsInMyPageMockRecorder) All(userId interface{}) *gomock.Call {
+func (mr *MockIIndexPlayListsInMyPageMockRecorder) All(indexPlayListsInMyPageDTO interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "All", reflect.TypeOf((*MockIIndexPlayListsInMyPage)(nil).All), userId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "All", reflect.TypeOf((*MockIIndexPlayListsInMyPage)(nil).All), indexPlayListsInMyPageDTO)
 }

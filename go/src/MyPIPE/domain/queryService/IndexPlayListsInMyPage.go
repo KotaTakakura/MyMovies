@@ -1,5 +1,7 @@
 package queryService
 
+import "MyPIPE/domain/model"
+
 type IndexPlayListsInMyPageDTO struct {
 	PlayLists      []PlayListForIndexPlayListsInMyPageDTO `json:"play_lists"`
 	PlayListsCount uint64                                 `json:"play_lists_count"`
@@ -14,5 +16,5 @@ type PlayListForIndexPlayListsInMyPageDTO struct {
 }
 
 type IndexPlayListsInMyPageQueryService interface {
-	All(userId uint64) *IndexPlayListsInMyPageDTO
+	All(userId model.UserID) *IndexPlayListsInMyPageDTO
 }

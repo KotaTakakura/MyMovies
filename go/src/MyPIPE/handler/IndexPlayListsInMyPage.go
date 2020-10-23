@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"MyPIPE/domain/model"
 	"MyPIPE/domain/queryService"
 	"MyPIPE/usecase"
 	"encoding/json"
@@ -22,8 +23,27 @@ func NewIndexPlayListsInMyPage(indexPlayListsInMyPageQueryService queryService.I
 }
 
 func (indexPlayListsInMyPage IndexPlayListsInMyPage) IndexPlayListsInMyPage(c *gin.Context) {
-	userId := uint64(jwt.ExtractClaims(c)["id"].(float64))
-	playLists := indexPlayListsInMyPage.IndexPlayListsInMyPageUsecase.All(userId)
+	userIdInt := uint64(jwt.ExtractClaims(c)["id"].(float64))
+
+	validationErrors := make(map[string]string)
+
+	userId, userIdErr := model.NewUserID(userIdInt)
+	if userIdErr != nil {
+		validationErrors["user_id"] = userIdErr.Error()
+	}
+
+	if len(validationErrors) != 0 {
+		validationErrors, _ := json.Marshal(validationErrors)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"result":   "Validation Error.",
+			"messages": string(validationErrors),
+		})
+		c.Abort()
+		return
+	}
+
+	indexPlayListsInMyPageDTO := usecase.NewIndexPlayListsInMyPageDTO(userId)
+	playLists := indexPlayListsInMyPage.IndexPlayListsInMyPageUsecase.All(indexPlayListsInMyPageDTO)
 
 	jsonResult, jsonMarshalErr := json.Marshal(playLists)
 	if jsonMarshalErr != nil {
