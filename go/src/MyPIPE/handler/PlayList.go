@@ -72,7 +72,7 @@ func (createPlayList CreatePlayList) CreatePlayList(c *gin.Context) {
 		return
 	}
 
-	createPlayListUsecaseErr := createPlayList.CreatePlayListUsecase.CreatePlayList(CreatePlayListDTO)
+	createPlayListUsecaseErr := createPlayList.CreatePlayListUsecase.CreatePlayList(&CreatePlayListDTO)
 	if createPlayListUsecaseErr != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"result":   "Error.",

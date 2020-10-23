@@ -34,7 +34,7 @@ func (m *MockICreatePlayList) EXPECT() *MockICreatePlayListMockRecorder {
 }
 
 // CreatePlayList mocks base method
-func (m *MockICreatePlayList) CreatePlayList(createPlayList usecase.CreatePlayListDTO) error {
+func (m *MockICreatePlayList) CreatePlayList(createPlayList *usecase.CreatePlayListDTO) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreatePlayList", createPlayList)
 	ret0, _ := ret[0].(error)
