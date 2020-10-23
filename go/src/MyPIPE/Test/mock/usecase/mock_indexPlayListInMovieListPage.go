@@ -35,7 +35,7 @@ func (m *MockIIndexPlayListInMovieListPage) EXPECT() *MockIIndexPlayListInMovieL
 }
 
 // Find mocks base method
-func (m *MockIIndexPlayListInMovieListPage) Find(findDTO usecase.FindDTO) *queryService.IndexPlayListInMovieListPageDTO {
+func (m *MockIIndexPlayListInMovieListPage) Find(findDTO *usecase.FindDTO) *queryService.IndexPlayListInMovieListPageDTO {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Find", findDTO)
 	ret0, _ := ret[0].(*queryService.IndexPlayListInMovieListPageDTO)
