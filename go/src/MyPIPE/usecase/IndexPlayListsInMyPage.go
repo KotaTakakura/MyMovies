@@ -23,11 +23,11 @@ func (i IndexPlayListsInMyPage) All(indexPlayListsInMyPageDTO *IndexPlayListsInM
 	return i.IndexPlayListsInMyPageQueryService.All(indexPlayListsInMyPageDTO.UserID)
 }
 
-type IndexPlayListsInMyPageDTO struct{
+type IndexPlayListsInMyPageDTO struct {
 	UserID model.UserID
 }
 
-func NewIndexPlayListsInMyPageDTO(userId model.UserID)*IndexPlayListsInMyPageDTO{
+func NewIndexPlayListsInMyPageDTO(userId model.UserID) *IndexPlayListsInMyPageDTO {
 	return &IndexPlayListsInMyPageDTO{
 		UserID: userId,
 	}

@@ -109,7 +109,7 @@ func (movie Movie) UpdateMovie(c *gin.Context) {
 		Status:      status,
 	}
 
-	result, updateMovieUsecaseErr := movie.UpdateMovieUsecase.Update(updateDTO)
+	result, updateMovieUsecaseErr := movie.UpdateMovieUsecase.Update(&updateDTO)
 	if updateMovieUsecaseErr != nil {
 		jsonUpdateMovieUsecaseErr, _ := json.Marshal(updateMovieUsecaseErr.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{
