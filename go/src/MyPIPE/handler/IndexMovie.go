@@ -29,11 +29,11 @@ func (indexMovie IndexMovie) IndexMovie(c *gin.Context) {
 	var page queryService.IndexMovieQueryServicePage
 	pageInt, err := strconv.ParseUint(c.Query("page"), 10, 64)
 	if err != nil {
-		page,_ = queryService.NewIndexMovieQueryServicePage(1)
-	}else{
+		page, _ = queryService.NewIndexMovieQueryServicePage(1)
+	} else {
 		var pageErr error
-		page,pageErr = queryService.NewIndexMovieQueryServicePage(uint(pageInt))
-		if pageErr != nil{
+		page, pageErr = queryService.NewIndexMovieQueryServicePage(uint(pageInt))
+		if pageErr != nil {
 			validationErrors["page"] = pageErr.Error()
 		}
 	}

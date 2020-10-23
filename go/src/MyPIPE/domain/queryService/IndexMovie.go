@@ -29,6 +29,6 @@ func NewIndexMovieQueryServiceOrder(order string) (IndexMovieQueryServiceOrder, 
 
 type IndexMovieQueryServicePage uint
 
-func NewIndexMovieQueryServicePage(page uint)(IndexMovieQueryServicePage,error){
-	return IndexMovieQueryServicePage(page),nil
+func NewIndexMovieQueryServicePage(page uint) (IndexMovieQueryServicePage, error) {
+	return IndexMovieQueryServicePage(page), nil
 }
