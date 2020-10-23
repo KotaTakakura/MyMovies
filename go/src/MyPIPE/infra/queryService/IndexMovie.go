@@ -11,7 +11,7 @@ func NewIndexMovie() *IndexMovie {
 	return &IndexMovie{}
 }
 
-func (i IndexMovie) Search(page int, keyWord string, order queryService.IndexMovieQueryServiceOrder) queryService.IndexMovieDTO {
+func (i IndexMovie) Search(page queryService.IndexMovieQueryServicePage, keyWord string, order queryService.IndexMovieQueryServiceOrder) queryService.IndexMovieDTO {
 	db := infra.ConnectGorm()
 	defer db.Close()
 	var movies []queryService.MoviesForIndexMovieDTO
@@ -39,7 +39,7 @@ func (i IndexMovie) Search(page int, keyWord string, order queryService.IndexMov
 	return result
 }
 
-func (i IndexMovie) All(page int, order queryService.IndexMovieQueryServiceOrder) queryService.IndexMovieDTO {
+func (i IndexMovie) All(page queryService.IndexMovieQueryServicePage, order queryService.IndexMovieQueryServiceOrder) queryService.IndexMovieDTO {
 	db := infra.ConnectGorm()
 	defer db.Close()
 	var movies []queryService.MoviesForIndexMovieDTO

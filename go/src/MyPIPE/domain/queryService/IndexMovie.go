@@ -14,8 +14,8 @@ type MoviesForIndexMovieDTO struct {
 }
 
 type IndexMovieQueryService interface {
-	Search(page int, keyWord string, order IndexMovieQueryServiceOrder) IndexMovieDTO
-	All(page int, order IndexMovieQueryServiceOrder) IndexMovieDTO
+	Search(page IndexMovieQueryServicePage, keyWord string, order IndexMovieQueryServiceOrder) IndexMovieDTO
+	All(page IndexMovieQueryServicePage, order IndexMovieQueryServiceOrder) IndexMovieDTO
 }
 
 type IndexMovieQueryServiceOrder string
@@ -25,4 +25,10 @@ func NewIndexMovieQueryServiceOrder(order string) (IndexMovieQueryServiceOrder, 
 		return IndexMovieQueryServiceOrder(order), nil
 	}
 	return IndexMovieQueryServiceOrder("asc"), nil
+}
+
+type IndexMovieQueryServicePage uint
+
+func NewIndexMovieQueryServicePage(page uint)(IndexMovieQueryServicePage,error){
+	return IndexMovieQueryServicePage(page),nil
 }
