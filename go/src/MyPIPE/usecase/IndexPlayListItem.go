@@ -1,9 +1,12 @@
 package usecase
 
-import "MyPIPE/domain/queryService"
+import (
+	"MyPIPE/domain/model"
+	"MyPIPE/domain/queryService"
+)
 
 type IIndexPlaylistItemInMyPage interface {
-	Find(indexPlayListMoviesInMyPageDTO IndexPlayListItemInMyPageDTO) *queryService.IndexPlayListMovieInMyPageDTO
+	Find(indexPlayListMoviesInMyPageDTO *IndexPlayListItemInMyPageDTO) *queryService.IndexPlayListMovieInMyPageDTO
 }
 
 type IndexPlayListItemInMyPage struct {
@@ -16,16 +19,16 @@ func NewIndexPlayListItemInMyPage(i queryService.IndexPlayListMovieQueryService)
 	}
 }
 
-func (i IndexPlayListItemInMyPage) Find(indexPlayListMoviesInMyPageDTO IndexPlayListItemInMyPageDTO) *queryService.IndexPlayListMovieInMyPageDTO {
+func (i IndexPlayListItemInMyPage) Find(indexPlayListMoviesInMyPageDTO *IndexPlayListItemInMyPageDTO) *queryService.IndexPlayListMovieInMyPageDTO {
 	return i.IndexPlayListMovieInMyPage.Find(indexPlayListMoviesInMyPageDTO.UserID, indexPlayListMoviesInMyPageDTO.PlayListID)
 }
 
 type IndexPlayListItemInMyPageDTO struct {
-	UserID     uint64
-	PlayListID uint64
+	UserID     model.UserID
+	PlayListID model.PlayListID
 }
 
-func NewIndexPlayListItemInMyPageDTO(userId uint64, playListId uint64) *IndexPlayListItemInMyPageDTO {
+func NewIndexPlayListItemInMyPageDTO(userId model.UserID, playListId model.PlayListID) *IndexPlayListItemInMyPageDTO {
 	return &IndexPlayListItemInMyPageDTO{
 		UserID:     userId,
 		PlayListID: playListId,

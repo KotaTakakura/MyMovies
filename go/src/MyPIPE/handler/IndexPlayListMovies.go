@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"MyPIPE/domain/model"
 	"MyPIPE/domain/queryService"
 	"MyPIPE/usecase"
 	"encoding/json"
@@ -23,11 +24,33 @@ func NewIndexPlaylistMovies(indexPlaylistMoviesQueryService queryService.IndexPl
 }
 
 func (indexPlaylistMovies IndexPlaylistMovies) IndexPlaylistMovies(c *gin.Context) {
-	userId := uint64(jwt.ExtractClaims(c)["id"].(float64))
-	playListId, _ := strconv.ParseUint(c.Param("play_list_id"), 10, 64)
+	userIdInt := uint64(jwt.ExtractClaims(c)["id"].(float64))
+	playListIdInt, _ := strconv.ParseUint(c.Param("play_list_id"), 10, 64)
+
+	validationErrors := make(map[string]string)
+
+	userId, userIdErr := model.NewUserID(userIdInt)
+	if userIdErr != nil {
+		validationErrors["user_id"] = userIdErr.Error()
+	}
+
+	playListId, playListIdErr := model.NewPlayListID(playListIdInt)
+	if playListIdErr != nil {
+		validationErrors["play_list_id"] = playListIdErr.Error()
+	}
+
+	if len(validationErrors) != 0 {
+		validationErrors, _ := json.Marshal(validationErrors)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"result":   "Validation Error.",
+			"messages": string(validationErrors),
+		})
+		c.Abort()
+		return
+	}
 
 	indexPlayListItemUsecaseDTO := usecase.NewIndexPlayListItemInMyPageDTO(userId, playListId)
-	result := indexPlaylistMovies.IndexPlaylistMoviesUsecase.Find(*indexPlayListItemUsecaseDTO)
+	result := indexPlaylistMovies.IndexPlaylistMoviesUsecase.Find(indexPlayListItemUsecaseDTO)
 
 	jsonResult, jsonMarshalErr := json.Marshal(result)
 	if jsonMarshalErr != nil {

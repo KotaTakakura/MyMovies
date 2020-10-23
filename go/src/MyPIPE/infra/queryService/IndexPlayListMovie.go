@@ -1,6 +1,7 @@
 package queryService_infra
 
 import (
+	"MyPIPE/domain/model"
 	"MyPIPE/domain/queryService"
 	"MyPIPE/infra"
 )
@@ -11,7 +12,7 @@ func NewIndexPlayListMovieInMyPage() *IndexPlayListMovieInMyPage {
 	return &IndexPlayListMovieInMyPage{}
 }
 
-func (i IndexPlayListMovieInMyPage) Find(userId uint64, playListId uint64) *queryService.IndexPlayListMovieInMyPageDTO {
+func (i IndexPlayListMovieInMyPage) Find(userId model.UserID, playListId model.PlayListID) *queryService.IndexPlayListMovieInMyPageDTO {
 	db := infra.ConnectGorm()
 	defer db.Close()
 	var result queryService.IndexPlayListMovieInMyPageDTO
