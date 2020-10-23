@@ -20,7 +20,7 @@ type PlayList struct {
 	DeletePlayListMovieUsecase usecase.IDeletePlayListMovie
 }
 
-func NewPlayList(
+func NewPlayListItem(
 	playListRepository repository.PlayListRepository,
 	playListMovieRepository repository.PlayListMovieRepository,
 	playListMovieFactory factory.IPlayListMovie,
@@ -72,7 +72,7 @@ func (playList PlayList) AddPlayListMovie(c *gin.Context) {
 		return
 	}
 
-	err := playList.AddPlayListItemUsecase.AddPlayListItem(playListItemAddDTO)
+	err := playList.AddPlayListItemUsecase.AddPlayListItem(&playListItemAddDTO)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"result":   "Error.",
@@ -125,7 +125,7 @@ func (playList PlayList) DeletePlayListMovie(c *gin.Context) {
 		return
 	}
 
-	playListMovieDeleteDTO := usecase.NewDeletePlayListItemAddJson(playListID, userId, movieId)
+	playListMovieDeleteDTO := usecase.NewDeletePlayListMovieJson(playListID, userId, movieId)
 
 	err := playList.DeletePlayListMovieUsecase.DeletePlayListItem(playListMovieDeleteDTO)
 	if err != nil {

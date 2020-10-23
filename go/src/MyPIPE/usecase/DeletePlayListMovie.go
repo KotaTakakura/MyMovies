@@ -52,7 +52,7 @@ type DeletePlayListMovieDTO struct {
 	MovieID    model.MovieID
 }
 
-func NewDeletePlayListItemAddJson(playListID model.PlayListID, userId model.UserID, movieId model.MovieID) *DeletePlayListMovieDTO {
+func NewDeletePlayListMovieJson(playListID model.PlayListID, userId model.UserID, movieId model.MovieID) *DeletePlayListMovieDTO {
 	return &DeletePlayListMovieDTO{
 		PlayListID: playListID,
 		UserID:     userId,

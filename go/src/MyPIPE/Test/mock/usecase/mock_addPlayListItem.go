@@ -34,7 +34,7 @@ func (m *MockIAddPlayListItem) EXPECT() *MockIAddPlayListItemMockRecorder {
 }
 
 // AddPlayListItem mocks base method
-func (m *MockIAddPlayListItem) AddPlayListItem(playListItemAddJson usecase.AddPlayListItemAddJson) error {
+func (m *MockIAddPlayListItem) AddPlayListItem(playListItemAddJson *usecase.AddPlayListItemAddJson) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddPlayListItem", playListItemAddJson)
 	ret0, _ := ret[0].(error)
