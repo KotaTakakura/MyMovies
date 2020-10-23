@@ -49,7 +49,7 @@ func (indexPlayListInMovieListPage IndexPlayListInMovieListPage) IndexPlayListIn
 		return
 	}
 	findDTO := usecase.NewFindDTO(userId, movieId)
-	result := indexPlayListInMovieListPage.IndexPlayListInMovieListPageUsecase.Find(*findDTO)
+	result := indexPlayListInMovieListPage.IndexPlayListInMovieListPageUsecase.Find(findDTO)
 
 	jsonResult, jsonMarshalErr := json.Marshal(result)
 	if jsonMarshalErr != nil {

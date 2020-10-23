@@ -6,7 +6,7 @@ import (
 )
 
 type IIndexPlayListInMovieListPage interface {
-	Find(findDTO FindDTO) *queryService.IndexPlayListInMovieListPageDTO
+	Find(findDTO *FindDTO) *queryService.IndexPlayListInMovieListPageDTO
 }
 
 type IndexPlayListInMovieListPage struct {
@@ -19,7 +19,7 @@ func NewIndexPlayListInMovieListPage(indexPlayListInMovieListPage queryService.I
 	}
 }
 
-func (i IndexPlayListInMovieListPage) Find(findDTO FindDTO) *queryService.IndexPlayListInMovieListPageDTO {
+func (i IndexPlayListInMovieListPage) Find(findDTO *FindDTO) *queryService.IndexPlayListInMovieListPageDTO {
 	return i.IndexPlayListInMovieListPageQueryService.Find(findDTO.UserID, findDTO.MovieID)
 }
 
