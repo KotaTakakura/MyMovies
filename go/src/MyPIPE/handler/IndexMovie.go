@@ -24,12 +24,19 @@ func NewIndexMovie(indexMovieQueryService queryService.IndexMovieQueryService, i
 func (indexMovie IndexMovie) IndexMovie(c *gin.Context) {
 	keyWord := c.Query("keyWord")
 
-	page, err := strconv.Atoi(c.Query("page"))
-	if err != nil {
-		page = 1
-	}
-
 	validationErrors := make(map[string]string)
+
+	var page queryService.IndexMovieQueryServicePage
+	pageInt, err := strconv.ParseUint(c.Query("page"), 10, 64)
+	if err != nil {
+		page, _ = queryService.NewIndexMovieQueryServicePage(1)
+	} else {
+		var pageErr error
+		page, pageErr = queryService.NewIndexMovieQueryServicePage(uint(pageInt))
+		if pageErr != nil {
+			validationErrors["page"] = pageErr.Error()
+		}
+	}
 
 	order, orderErr := queryService.NewIndexMovieQueryServiceOrder(c.Query("order"))
 	if orderErr != nil {

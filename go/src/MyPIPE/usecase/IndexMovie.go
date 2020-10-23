@@ -24,12 +24,12 @@ func (i IndexMovie) Search(indexMovieSearchDTO *IndexMovieSearchDTO) queryServic
 }
 
 type IndexMovieSearchDTO struct {
-	Page    int
+	Page    queryService.IndexMovieQueryServicePage
 	KeyWord string
 	Order   queryService.IndexMovieQueryServiceOrder
 }
 
-func NewIndexMovieSearchDTO(page int, keyWord string, order queryService.IndexMovieQueryServiceOrder) *IndexMovieSearchDTO {
+func NewIndexMovieSearchDTO(page queryService.IndexMovieQueryServicePage, keyWord string, order queryService.IndexMovieQueryServiceOrder) *IndexMovieSearchDTO {
 	return &IndexMovieSearchDTO{
 		Page:    page,
 		KeyWord: keyWord,
