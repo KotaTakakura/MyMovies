@@ -35,7 +35,7 @@ func (m *MockIUpdateMovie) EXPECT() *MockIUpdateMovieMockRecorder {
 }
 
 // Update mocks base method
-func (m *MockIUpdateMovie) Update(updateDTO usecase.UpdateDTO) (*model.Movie, error) {
+func (m *MockIUpdateMovie) Update(updateDTO *usecase.UpdateDTO) (*model.Movie, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", updateDTO)
 	ret0, _ := ret[0].(*model.Movie)

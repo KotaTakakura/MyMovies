@@ -6,7 +6,7 @@ import (
 )
 
 type IUpdateMovie interface {
-	Update(updateDTO UpdateDTO) (*model.Movie, error)
+	Update(updateDTO *UpdateDTO) (*model.Movie, error)
 	UpdateStatus(updateStatusDTO UpdateStatusDTO) (*model.Movie, error)
 }
 
@@ -20,7 +20,7 @@ func NewUpdateMovie(m repository.MovieRepository) *UpdateMovie {
 	}
 }
 
-func (u UpdateMovie) Update(updateDTO UpdateDTO) (*model.Movie, error) {
+func (u UpdateMovie) Update(updateDTO *UpdateDTO) (*model.Movie, error) {
 	movie, findMovieErr := u.MovieRepository.FindByUserIdAndMovieId(updateDTO.UserID, updateDTO.MovieID)
 	if findMovieErr != nil {
 		return nil, findMovieErr

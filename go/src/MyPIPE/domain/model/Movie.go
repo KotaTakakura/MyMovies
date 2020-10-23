@@ -44,12 +44,18 @@ func NewMovieThumbnailName(thumbnailHeader multipart.FileHeader) (MovieThumbnail
 type MoviePublic uint
 
 func NewMoviePublic(public uint) (MoviePublic, error) {
+	if public != 0 && public != 1 && public != 2 && public != 3 {
+		return MoviePublic(100), errors.New("Invalid Public Status.")
+	}
 	return MoviePublic(public), nil
 }
 
 type MovieStatus uint
 
 func NewMovieStatus(status uint) (MovieStatus, error) {
+	if status != 0 && status != 1 && status != 2 && status != 3 {
+		return MovieStatus(100), errors.New("Invalid Status.")
+	}
 	return MovieStatus(status), nil
 }
 
