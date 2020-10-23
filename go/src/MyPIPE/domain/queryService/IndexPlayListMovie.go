@@ -1,5 +1,7 @@
 package queryService
 
+import "MyPIPE/domain/model"
+
 type IndexPlayListMovieInMyPageDTO struct {
 	PlayList       PlayListForIndexPlayListMovieInMyPageDTO        `json:"play_list"`
 	PlayListMovies []PlayListMovieForIndexPlayListMovieInMyPageDTO `json:"play_list_movies"`
@@ -20,5 +22,5 @@ type PlayListMovieForIndexPlayListMovieInMyPageDTO struct {
 }
 
 type IndexPlayListMovieQueryService interface {
-	Find(userId uint64, playListId uint64) *IndexPlayListMovieInMyPageDTO
+	Find(userId model.UserID, playListId model.PlayListID) *IndexPlayListMovieInMyPageDTO
 }

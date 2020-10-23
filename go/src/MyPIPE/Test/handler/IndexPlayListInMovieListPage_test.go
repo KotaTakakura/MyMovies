@@ -58,7 +58,7 @@ func TestIndexPlayListInMovieListPage(t *testing.T) {
 				t.Fatal("UserID Not Match,")
 			}
 			if data.(*usecase.FindDTO).MovieID != model.MovieID(trueCase.movieId) {
-				t.Fatal("UserID Not Match,")
+				t.Fatal("MovieID Not Match,")
 			}
 			return nil
 		})
