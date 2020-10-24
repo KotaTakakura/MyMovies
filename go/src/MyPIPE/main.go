@@ -163,7 +163,7 @@ func main() {
 		playListMovieFactory := factory.NewPlayListMovieFactory()
 		addPlayListItemUsecase := usecase.NewAddPlayListItem(playListRepository, playListMovieRepository, playListMovieFactory)
 		deletePlayListMovieUsecase := usecase.NewDeletePlayListMovie(playListRepository, playListMovieRepository)
-		addPlayListMovieHandler := handler.NewPlayList(playListRepository, playListMovieRepository, playListMovieFactory, addPlayListItemUsecase, deletePlayListMovieUsecase)
+		addPlayListMovieHandler := handler.NewPlayListItem(playListRepository, playListMovieRepository, playListMovieFactory, addPlayListItemUsecase, deletePlayListMovieUsecase)
 		auth.POST("/play-list-items", addPlayListMovieHandler.AddPlayListMovie)
 		auth.DELETE("/play-list-items", addPlayListMovieHandler.DeletePlayListMovie)
 

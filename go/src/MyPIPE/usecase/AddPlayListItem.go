@@ -8,7 +8,7 @@ import (
 )
 
 type IAddPlayListItem interface {
-	AddPlayListItem(playListItemAddJson AddPlayListItemAddJson) error
+	AddPlayListItem(playListItemAddJson *AddPlayListItemAddJson) error
 }
 
 type AddPlayListItem struct {
@@ -25,7 +25,7 @@ func NewAddPlayListItem(p repository.PlayListRepository, plmr repository.PlayLis
 	}
 }
 
-func (a AddPlayListItem) AddPlayListItem(playListItemAddJson AddPlayListItemAddJson) error {
+func (a AddPlayListItem) AddPlayListItem(playListItemAddJson *AddPlayListItemAddJson) error {
 
 	playList, playListFindErr := a.PlayListRepository.FindByID(playListItemAddJson.PlayListID)
 	if playList == nil || playList.UserID != playListItemAddJson.UserID {
