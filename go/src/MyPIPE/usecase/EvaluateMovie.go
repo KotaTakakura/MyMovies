@@ -60,3 +60,11 @@ type EvaluateMovieDTO struct {
 	MovieID    model.MovieID
 	Evaluation model.Evaluation
 }
+
+func NewEvaluateMovieDTO(userId model.UserID, movieId model.MovieID, evaluation model.Evaluation) *EvaluateMovieDTO {
+	return &EvaluateMovieDTO{
+		UserID:     userId,
+		MovieID:    movieId,
+		Evaluation: evaluation,
+	}
+}
