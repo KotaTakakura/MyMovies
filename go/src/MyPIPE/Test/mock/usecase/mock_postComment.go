@@ -5,7 +5,7 @@
 package mock_usecase
 
 import (
-	model "MyPIPE/domain/model"
+	usecase "MyPIPE/usecase"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
 )
@@ -34,15 +34,15 @@ func (m *MockIPostComment) EXPECT() *MockIPostCommentMockRecorder {
 }
 
 // PostComment mocks base method
-func (m *MockIPostComment) PostComment(comment model.Comment) error {
+func (m *MockIPostComment) PostComment(postCommentDTO *usecase.PostCommentDTO) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "PostComment", comment)
+	ret := m.ctrl.Call(m, "PostComment", postCommentDTO)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // PostComment indicates an expected call of PostComment
-func (mr *MockIPostCommentMockRecorder) PostComment(comment interface{}) *gomock.Call {
+func (mr *MockIPostCommentMockRecorder) PostComment(postCommentDTO interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PostComment", reflect.TypeOf((*MockIPostComment)(nil).PostComment), comment)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PostComment", reflect.TypeOf((*MockIPostComment)(nil).PostComment), postCommentDTO)
 }

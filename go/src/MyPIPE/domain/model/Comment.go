@@ -41,3 +41,11 @@ type Comment struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
+
+func NewComment(userId UserID, movieId MovieID, body CommentBody) *Comment {
+	return &Comment{
+		UserID:  userId,
+		MovieID: movieId,
+		Body:    body,
+	}
+}

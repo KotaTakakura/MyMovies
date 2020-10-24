@@ -5,19 +5,19 @@ import (
 	mock_repository "MyPIPE/Test/mock/repository"
 	mock_usecase "MyPIPE/Test/mock/usecase"
 	"MyPIPE/domain/model"
-	"MyPIPE/usecase"
-	jwt "github.com/appleboy/gin-jwt/v2"
 	"MyPIPE/handler"
+	"MyPIPE/usecase"
+	"fmt"
+	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
 	"net/http/httptest"
+	"reflect"
 	"strings"
 	"testing"
-	"fmt"
-	"reflect"
 )
 
-func TestPlayListItemAddPlayListMovie(t *testing.T){
+func TestPlayListItemAddPlayListMovie(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -26,19 +26,19 @@ func TestPlayListItemAddPlayListMovie(t *testing.T){
 	playListMovieFactory := mock_factory.NewMockIPlayListMovie(ctrl)
 	addPlayListItemAddUsecase := mock_usecase.NewMockIAddPlayListItem(ctrl)
 	deletePlayListMovieUsecase := mock_usecase.NewMockIDeletePlayListMovie(ctrl)
-	playListItemHandler := handler.NewPlayListItem(playListRepsitory,playListMovieRepository,playListMovieFactory,addPlayListItemAddUsecase,deletePlayListMovieUsecase)
+	playListItemHandler := handler.NewPlayListItem(playListRepsitory, playListMovieRepository, playListMovieFactory, addPlayListItemAddUsecase, deletePlayListMovieUsecase)
 
 	trueCases := []struct {
-		userId uint64
-		movieId uint64
+		userId     uint64
+		movieId    uint64
 		playListId uint64
 	}{
-		{userId: 10,movieId: 100,playListId: 200},
+		{userId: 10, movieId: 100, playListId: 200},
 	}
 
-	for _,trueCase := range trueCases {
+	for _, trueCase := range trueCases {
 		// ポストデータ
-		bodyReader := strings.NewReader(`{"movie_id":` + fmt.Sprint(trueCase.movieId) + `,"play_list_id":` + fmt.Sprint(trueCase.playListId) +`}`)
+		bodyReader := strings.NewReader(`{"movie_id":` + fmt.Sprint(trueCase.movieId) + `,"play_list_id":` + fmt.Sprint(trueCase.playListId) + `}`)
 
 		// リクエスト生成
 		req := httptest.NewRequest("POST", "/", bodyReader)
@@ -53,7 +53,7 @@ func TestPlayListItemAddPlayListMovie(t *testing.T){
 			"id": float64(trueCase.userId),
 		})
 
-		addPlayListItemAddUsecase.EXPECT().AddPlayListItem(gomock.Any()).DoAndReturn(func(data interface{})error{
+		addPlayListItemAddUsecase.EXPECT().AddPlayListItem(gomock.Any()).DoAndReturn(func(data interface{}) error {
 			if reflect.TypeOf(data) != reflect.TypeOf(&(usecase.AddPlayListItemAddJson{})) {
 				t.Fatal("Type Not Match.")
 			}
@@ -73,7 +73,7 @@ func TestPlayListItemAddPlayListMovie(t *testing.T){
 	}
 }
 
-func TestPlayListItemDeletePlayListMovie(t *testing.T){
+func TestPlayListItemDeletePlayListMovie(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -82,22 +82,22 @@ func TestPlayListItemDeletePlayListMovie(t *testing.T){
 	playListMovieFactory := mock_factory.NewMockIPlayListMovie(ctrl)
 	addPlayListItemAddUsecase := mock_usecase.NewMockIAddPlayListItem(ctrl)
 	deletePlayListMovieUsecase := mock_usecase.NewMockIDeletePlayListMovie(ctrl)
-	playListItemHandler := handler.NewPlayListItem(playListRepsitory,playListMovieRepository,playListMovieFactory,addPlayListItemAddUsecase,deletePlayListMovieUsecase)
+	playListItemHandler := handler.NewPlayListItem(playListRepsitory, playListMovieRepository, playListMovieFactory, addPlayListItemAddUsecase, deletePlayListMovieUsecase)
 
 	trueCases := []struct {
-		userId uint64
-		movieId uint64
+		userId     uint64
+		movieId    uint64
 		playListId uint64
 	}{
-		{userId: 10,movieId: 100,playListId: 200},
+		{userId: 10, movieId: 100, playListId: 200},
 	}
 
-	for _,trueCase := range trueCases {
+	for _, trueCase := range trueCases {
 		// ポストデータ
 		bodyReader := strings.NewReader(``)
 
 		// リクエスト生成
-		req := httptest.NewRequest("DELETE", `/?movie_id=` + fmt.Sprint(trueCase.movieId) + `&play_list_id=` + fmt.Sprint(trueCase.playListId), bodyReader)
+		req := httptest.NewRequest("DELETE", `/?movie_id=`+fmt.Sprint(trueCase.movieId)+`&play_list_id=`+fmt.Sprint(trueCase.playListId), bodyReader)
 
 		// Content-Type 設定
 		req.Header.Set("Content-Type", "application/json")
@@ -109,7 +109,7 @@ func TestPlayListItemDeletePlayListMovie(t *testing.T){
 			"id": float64(trueCase.userId),
 		})
 
-		deletePlayListMovieUsecase.EXPECT().DeletePlayListItem(gomock.Any()).DoAndReturn(func(data interface{})error{
+		deletePlayListMovieUsecase.EXPECT().DeletePlayListItem(gomock.Any()).DoAndReturn(func(data interface{}) error {
 			if reflect.TypeOf(data) != reflect.TypeOf(&(usecase.DeletePlayListMovieDTO{})) {
 				t.Fatal("Type Not Match.")
 			}
