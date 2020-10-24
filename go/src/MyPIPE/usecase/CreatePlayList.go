@@ -24,16 +24,6 @@ func NewCreatePlayList(u repository.UserRepository, p repository.PlayListReposit
 func (c CreatePlayList) CreatePlayList(createPlayList *CreatePlayListDTO) error {
 	playList := model.NewPlayList(createPlayList.UserID, createPlayList.PlayListName, createPlayList.PlayListDescription)
 
-	//playListRepository := infra.NewPlayListPersistence()
-	//checkSameUserIDAndNameExistsService := domain_service.NewCheckSameUserIDAndNameExists(playListRepository)
-	//checkResult, checkResultErr := checkSameUserIDAndNameExistsService.CheckSameUserIDAndNameExists(playList.UserID, playList.Name)
-	//if checkResult {
-	//	return errors.New("Duplicate PlayList Name.")
-	//}
-	//if checkResultErr != nil {
-	//	return checkResultErr
-	//}
-
 	saveErr := c.PlayListRepository.Save(playList)
 	if saveErr != nil {
 		return saveErr
@@ -45,4 +35,12 @@ type CreatePlayListDTO struct {
 	UserID              model.UserID
 	PlayListName        model.PlayListName
 	PlayListDescription model.PlayListDescription
+}
+
+func NewCreatePlayListDTO(userId model.UserID, playListName model.PlayListName, playListDescription model.PlayListDescription) *CreatePlayListDTO {
+	return &CreatePlayListDTO{
+		UserID:              userId,
+		PlayListName:        playListName,
+		PlayListDescription: playListDescription,
+	}
 }
