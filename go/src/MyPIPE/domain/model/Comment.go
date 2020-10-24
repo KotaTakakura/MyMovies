@@ -42,10 +42,10 @@ type Comment struct {
 	UpdatedAt time.Time
 }
 
-func NewComment(userId UserID, movieId MovieID, body CommentBody)*Comment{
+func NewComment(userId UserID, movieId MovieID, body CommentBody) *Comment {
 	return &Comment{
-		UserID: userId,
+		UserID:  userId,
 		MovieID: movieId,
-		Body: body,
+		Body:    body,
 	}
 }

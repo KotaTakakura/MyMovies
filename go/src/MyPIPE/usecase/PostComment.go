@@ -32,7 +32,7 @@ func (p PostComment) PostComment(postCommentDTO *PostCommentDTO) error {
 		return errors.New("No Such Movie.")
 	}
 
-	newComment := model.NewComment(postCommentDTO.UserID,postCommentDTO.MovieID,postCommentDTO.Body)
+	newComment := model.NewComment(postCommentDTO.UserID, postCommentDTO.MovieID, postCommentDTO.Body)
 
 	err := p.CommentRepository.Save(newComment)
 	if err != nil {
@@ -41,16 +41,16 @@ func (p PostComment) PostComment(postCommentDTO *PostCommentDTO) error {
 	return nil
 }
 
-type PostCommentDTO struct{
-	UserID model.UserID
+type PostCommentDTO struct {
+	UserID  model.UserID
 	MovieID model.MovieID
-	Body model.CommentBody
+	Body    model.CommentBody
 }
 
-func NewPostCommentDTO(userId model.UserID, movieId model.MovieID, body model.CommentBody)*PostCommentDTO{
+func NewPostCommentDTO(userId model.UserID, movieId model.MovieID, body model.CommentBody) *PostCommentDTO {
 	return &PostCommentDTO{
-		UserID: userId,
+		UserID:  userId,
 		MovieID: movieId,
-		Body: body,
+		Body:    body,
 	}
 }

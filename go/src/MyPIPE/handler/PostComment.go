@@ -67,7 +67,7 @@ func (postComment PostComment) PostComment(c *gin.Context) {
 		return
 	}
 
-	postCommentDTO := usecase.NewPostCommentDTO(userId,movieId,body)
+	postCommentDTO := usecase.NewPostCommentDTO(userId, movieId, body)
 
 	postCommentErr := postComment.PostCommentUsecase.PostComment(postCommentDTO)
 	if postCommentErr != nil {

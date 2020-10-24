@@ -4,41 +4,41 @@ import (
 	mock_repository "MyPIPE/Test/mock/repository"
 	mock_usecase "MyPIPE/Test/mock/usecase"
 	"MyPIPE/domain/model"
-	"MyPIPE/usecase"
-	jwt "github.com/appleboy/gin-jwt/v2"
 	"MyPIPE/handler"
+	"MyPIPE/usecase"
+	"fmt"
+	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
 	"net/http/httptest"
+	"reflect"
 	"strings"
 	"testing"
-	"fmt"
-	"reflect"
 )
 
-func TestPlayList(t *testing.T){
+func TestPlayList(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	userRepository := mock_repository.NewMockUserRepository(ctrl)
 	playListRepository := mock_repository.NewMockPlayListRepository(ctrl)
 	createPlayListUsecase := mock_usecase.NewMockICreatePlayList(ctrl)
-	createPlayListHandler := handler.NewCreatePlayList(userRepository,playListRepository,createPlayListUsecase)
+	createPlayListHandler := handler.NewCreatePlayList(userRepository, playListRepository, createPlayListUsecase)
 
 	trueCases := []struct {
-		userId uint64
-		playListName string
-		playListDescription	string
+		userId              uint64
+		playListName        string
+		playListDescription string
 	}{
-		{userId:10,playListName: "TestPlaylistName",playListDescription: "TestPlayListDescription"},
+		{userId: 10, playListName: "TestPlaylistName", playListDescription: "TestPlayListDescription"},
 	}
 
 	falseCases := []struct {
-		userId uint64
-		playListName string
-		playListDescription	string
+		userId              uint64
+		playListName        string
+		playListDescription string
 	}{
-		{userId:10,playListName: "",playListDescription: "TestPlayListDescription"},
+		{userId: 10, playListName: "", playListDescription: "TestPlayListDescription"},
 	}
 
 	for _, trueCase := range trueCases {
@@ -63,7 +63,7 @@ func TestPlayList(t *testing.T){
 			"id": float64(trueCase.userId),
 		})
 
-		createPlayListUsecase.EXPECT().CreatePlayList(gomock.Any()).DoAndReturn(func(data interface{})error{
+		createPlayListUsecase.EXPECT().CreatePlayList(gomock.Any()).DoAndReturn(func(data interface{}) error {
 			if reflect.TypeOf(data) != reflect.TypeOf(&(usecase.CreatePlayListDTO{})) {
 				t.Fatal("Type Not Match.")
 			}
