@@ -24,8 +24,7 @@ func NewPostComment(commentRepo repository.CommentRepository, movieRepo reposito
 }
 
 func (postComment PostComment) PostComment(c *gin.Context) {
-	userId := jwt.ExtractClaims(c)["id"]
-	iuserId := uint64(userId.(float64))
+	iuserId := uint64(jwt.ExtractClaims(c)["id"].(float64))
 
 	var comment PostCommentJson
 	bindErr := c.Bind(&comment)
@@ -38,27 +37,25 @@ func (postComment PostComment) PostComment(c *gin.Context) {
 		return
 	}
 
-	var newComment model.Comment
-	validationErrors := map[string]error{}
 	errorMessages := map[string]string{}
 	validationErrorFlag := false
 
-	newComment.Body, validationErrors["comment_body"] = model.NewCommentBody(comment.CommentBody)
-	if validationErrors["comment_body"] != nil {
+	body, bodyErr := model.NewCommentBody(comment.CommentBody)
+	if bodyErr != nil {
 		validationErrorFlag = true
-		errorMessages["comment_body"] = validationErrors["comment_body"].Error()
+		errorMessages["comment_body"] = bodyErr.Error()
 	}
 
-	newComment.UserID, validationErrors["user_id"] = model.NewUserID(iuserId)
-	if validationErrors["user_id"] != nil {
+	userId, userIdErr := model.NewUserID(iuserId)
+	if userIdErr != nil {
 		validationErrorFlag = true
-		errorMessages["user_id"] = validationErrors["user_id"].Error()
+		errorMessages["user_id"] = bodyErr.Error()
 	}
 
-	newComment.MovieID, validationErrors["movie_id"] = model.NewMovieID(comment.MovieID)
-	if validationErrors["movie_id"] != nil {
+	movieId, movieIdErr := model.NewMovieID(comment.MovieID)
+	if movieIdErr != nil {
 		validationErrorFlag = true
-		errorMessages["movie_id"] = validationErrors["movie_id"].Error()
+		errorMessages["movie_id"] = bodyErr.Error()
 	}
 
 	if validationErrorFlag {
@@ -70,7 +67,9 @@ func (postComment PostComment) PostComment(c *gin.Context) {
 		return
 	}
 
-	postCommentErr := postComment.PostCommentUsecase.PostComment(newComment)
+	postCommentDTO := usecase.NewPostCommentDTO(userId,movieId,body)
+
+	postCommentErr := postComment.PostCommentUsecase.PostComment(postCommentDTO)
 	if postCommentErr != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"result":   "Comment Post Failed.",

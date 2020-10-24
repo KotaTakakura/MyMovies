@@ -7,7 +7,7 @@ import (
 )
 
 type IPostComment interface {
-	PostComment(comment model.Comment) error
+	PostComment(postCommentDTO *PostCommentDTO) error
 }
 
 type PostComment struct {
@@ -22,9 +22,9 @@ func NewPostComment(c repository.CommentRepository, m repository.MovieRepository
 	}
 }
 
-func (p PostComment) PostComment(comment model.Comment) error {
+func (p PostComment) PostComment(postCommentDTO *PostCommentDTO) error {
 
-	movie, movieFindErr := p.MovieRepository.FindById(comment.MovieID)
+	movie, movieFindErr := p.MovieRepository.FindById(postCommentDTO.MovieID)
 	if movieFindErr != nil {
 		return movieFindErr
 	}
@@ -32,9 +32,25 @@ func (p PostComment) PostComment(comment model.Comment) error {
 		return errors.New("No Such Movie.")
 	}
 
-	err := p.CommentRepository.Save(&comment)
+	newComment := model.NewComment(postCommentDTO.UserID,postCommentDTO.MovieID,postCommentDTO.Body)
+
+	err := p.CommentRepository.Save(newComment)
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+type PostCommentDTO struct{
+	UserID model.UserID
+	MovieID model.MovieID
+	Body model.CommentBody
+}
+
+func NewPostCommentDTO(userId model.UserID, movieId model.MovieID, body model.CommentBody)*PostCommentDTO{
+	return &PostCommentDTO{
+		UserID: userId,
+		MovieID: movieId,
+		Body: body,
+	}
 }
