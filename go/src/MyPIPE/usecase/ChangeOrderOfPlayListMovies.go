@@ -3,7 +3,6 @@ package usecase
 import (
 	"MyPIPE/domain/model"
 	"MyPIPE/domain/repository"
-	"fmt"
 )
 
 type IChangeOrderOfPlayListMovies interface {
@@ -31,8 +30,6 @@ func (c ChangeOrderOfPlayListMovies) ChangeOrderOfPlayListMovies(changeOrderOfPl
 	for i := 0; i < len(playListMovies); i++ {
 		playListMovies[i].ChangeOrder(movieIdAndOrderMap[playListMovies[i].MovieID])
 	}
-
-	fmt.Println(playListMovies)
 
 	saveErr := c.PlayListMovieRepository.SaveAll(playListMovies)
 	if saveErr != nil {
