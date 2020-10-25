@@ -97,7 +97,7 @@
 				
 				<option value="file20">MyPIPE/usecase/UpdateMovie.go (46.7%)</option>
 				
-				<option value="file21">MyPIPE/usecase/UploadedMovies.go (0.0%)</option>
+				<option value="file21">MyPIPE/usecase/UploadedMovies.go (100.0%)</option>
 				
 				<option value="file22">MyPIPE/usecase/UserExistsForAuth.go (80.0%)</option>
 				
@@ -1249,13 +1249,13 @@ type UploadedMovies struct {
         UploadedMoviesQueryService queryService.UploadedMovies
 }
 
-func NewUploadedMovies(umq queryService.UploadedMovies) *UploadedMovies <span class="cov0" title="0">{
+func NewUploadedMovies(umq queryService.UploadedMovies) *UploadedMovies <span class="cov8" title="1">{
         return &amp;UploadedMovies{
                 UploadedMoviesQueryService: umq,
         }
 }</span>
 
-func (u UploadedMovies) Get(userId model.UserID) []queryService.UploadedMoviesDTO <span class="cov0" title="0">{
+func (u UploadedMovies) Get(userId model.UserID) []queryService.UploadedMoviesDTO <span class="cov8" title="1">{
         result := u.UploadedMoviesQueryService.Get(userId)
         return result
 }</span>
