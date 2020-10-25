@@ -2,7 +2,6 @@ package main
 
 import (
 	"MyPIPE/domain/model"
-	domain_service "MyPIPE/domain/service/User"
 	"MyPIPE/handler"
 	"MyPIPE/infra"
 	uploadMovieRepository_infra "MyPIPE/infra/UploadMovieFile"
@@ -84,8 +83,8 @@ func main() {
 	router.GET("/refresh_token", authMiddleware.RefreshHandler)
 
 	userTemporaryRegistrationUsecase := usecase.NewUserTemporaryRegistration(userRepository)
-	userService := domain_service.NewUserService(userRepository)
-	userRegisterUsecase := usecase.NewUserRegister(userRepository, userService)
+	//userService := domain_service.NewUserService(userRepository)
+	userRegisterUsecase := usecase.NewUserRegister(userRepository)
 	authorizationHandler := handler.NewAuthorization(userRepository, userTemporaryRegistrationUsecase, userRegisterUsecase)
 	router.POST("/new", authorizationHandler.TemporaryRegisterUser)
 	router.POST("/register", authorizationHandler.RegisterUser)

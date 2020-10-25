@@ -101,7 +101,7 @@
 				
 				<option value="file22">MyPIPE/usecase/UserExistsForAuth.go (80.0%)</option>
 				
-				<option value="file23">MyPIPE/usecase/UserRegister.go (0.0%)</option>
+				<option value="file23">MyPIPE/usecase/UserRegister.go (72.7%)</option>
 				
 				<option value="file24">MyPIPE/usecase/UserTemporaryRegistration.go (0.0%)</option>
 				
@@ -1295,7 +1295,6 @@ func (u UserExists) CheckUserExistsForAuth(email model.UserEmail, password strin
 import (
         "MyPIPE/domain/model"
         "MyPIPE/domain/repository"
-        domain_service "MyPIPE/domain/service/User"
         "errors"
 )
 
@@ -1305,35 +1304,32 @@ type IUserRegister interface {
 
 type UserRegister struct {
         UserRepository repository.UserRepository
-        UserService    domain_service.IUserService
 }
 
-func NewUserRegister(u repository.UserRepository, us domain_service.IUserService) *UserRegister <span class="cov0" title="0">{
+func NewUserRegister(u repository.UserRepository) *UserRegister <span class="cov8" title="1">{
         return &amp;UserRegister{
                 UserRepository: u,
-                UserService:    us,
         }
 }</span>
 
-//
-func (u UserRegister) RegisterUser(newUser *model.User) error <span class="cov0" title="0">{
+func (u UserRegister) RegisterUser(newUser *model.User) error <span class="cov8" title="1">{
         registeredUserWithToken, _ := u.UserRepository.FindByToken(newUser.Token)
 
         if registeredUserWithToken == nil </span><span class="cov0" title="0">{
                 return errors.New("Invalid Token.")
         }</span>
 
-        <span class="cov0" title="0">registerErr := registeredUserWithToken.Register(newUser.Name, newUser.Password, newUser.Birthday)
+        <span class="cov8" title="1">registerErr := registeredUserWithToken.Register(newUser.Name, newUser.Password, newUser.Birthday)
         if registerErr != nil </span><span class="cov0" title="0">{
                 return registerErr
         }</span>
-        <span class="cov0" title="0">e := u.UserRepository.UpdateUser(registeredUserWithToken)
+        <span class="cov8" title="1">e := u.UserRepository.UpdateUser(registeredUserWithToken)
 
         if e != nil </span><span class="cov0" title="0">{
                 return e
         }</span>
 
-        <span class="cov0" title="0">return nil</span>
+        <span class="cov8" title="1">return nil</span>
 }
 </pre>
 		
