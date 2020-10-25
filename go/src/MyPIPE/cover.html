@@ -89,7 +89,7 @@
 				
 				<option value="file16">MyPIPE/usecase/IndexPlayListItem.go (66.7%)</option>
 				
-				<option value="file17">MyPIPE/usecase/IndexPlayListsInMyPage.go (0.0%)</option>
+				<option value="file17">MyPIPE/usecase/IndexPlayListsInMyPage.go (66.7%)</option>
 				
 				<option value="file18">MyPIPE/usecase/PostComment.go (66.7%)</option>
 				
@@ -993,13 +993,13 @@ type IndexPlayListsInMyPage struct {
         IndexPlayListsInMyPageQueryService queryService.IndexPlayListsInMyPageQueryService
 }
 
-func NewIndexPlayListsInMyPage(ipq queryService.IndexPlayListsInMyPageQueryService) *IndexPlayListsInMyPage <span class="cov0" title="0">{
+func NewIndexPlayListsInMyPage(ipq queryService.IndexPlayListsInMyPageQueryService) *IndexPlayListsInMyPage <span class="cov8" title="1">{
         return &amp;IndexPlayListsInMyPage{
                 IndexPlayListsInMyPageQueryService: ipq,
         }
 }</span>
 
-func (i IndexPlayListsInMyPage) All(indexPlayListsInMyPageDTO *IndexPlayListsInMyPageDTO) *queryService.IndexPlayListsInMyPageDTO <span class="cov0" title="0">{
+func (i IndexPlayListsInMyPage) All(indexPlayListsInMyPageDTO *IndexPlayListsInMyPageDTO) *queryService.IndexPlayListsInMyPageDTO <span class="cov8" title="1">{
         return i.IndexPlayListsInMyPageQueryService.All(indexPlayListsInMyPageDTO.UserID)
 }</span>
 
