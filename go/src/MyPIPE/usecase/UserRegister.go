@@ -23,6 +23,7 @@ func NewUserRegister(u repository.UserRepository, us domain_service.IUserService
 	}
 }
 
+//
 func (u UserRegister) RegisterUser(newUser *model.User) error {
 	registeredUserWithToken, _ := u.UserRepository.FindByToken(newUser.Token)
 
