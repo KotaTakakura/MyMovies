@@ -103,7 +103,7 @@
 				
 				<option value="file23">MyPIPE/usecase/UserRegister.go (72.7%)</option>
 				
-				<option value="file24">MyPIPE/usecase/UserTemporaryRegistration.go (0.0%)</option>
+				<option value="file24">MyPIPE/usecase/UserTemporaryRegistration.go (50.0%)</option>
 				
 				</select>
 			</div>
@@ -1350,13 +1350,13 @@ type UserTemporaryRegistration struct {
         UserRepository repository.UserRepository
 }
 
-func NewUserTemporaryRegistration(userRepository repository.UserRepository) *UserTemporaryRegistration <span class="cov0" title="0">{
+func NewUserTemporaryRegistration(userRepository repository.UserRepository) *UserTemporaryRegistration <span class="cov8" title="1">{
         return &amp;UserTemporaryRegistration{
                 UserRepository: userRepository,
         }
 }</span>
 
-func (u *UserTemporaryRegistration) TemporaryRegister(user *model.User) error <span class="cov0" title="0">{
+func (u *UserTemporaryRegistration) TemporaryRegister(user *model.User) error <span class="cov8" title="1">{
         registeredUser, _ := u.UserRepository.FindByEmail(user.Email)
         //本登録済み
         if registeredUser != nil &amp;&amp; registeredUser.Token == "" </span><span class="cov0" title="0">{
@@ -1364,7 +1364,7 @@ func (u *UserTemporaryRegistration) TemporaryRegister(user *model.User) error <s
         }</span>
 
         //仮登録済み・本登録前
-        <span class="cov0" title="0">if registeredUser != nil &amp;&amp; registeredUser.Token != "" </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if registeredUser != nil &amp;&amp; registeredUser.Token != "" </span><span class="cov0" title="0">{
                 setTokenErr := registeredUser.SetNewToken()
                 if setTokenErr != nil </span><span class="cov0" title="0">{
                         return setTokenErr
@@ -1375,16 +1375,16 @@ func (u *UserTemporaryRegistration) TemporaryRegister(user *model.User) error <s
                 }</span>
                 <span class="cov0" title="0">return nil</span>
         }
-        <span class="cov0" title="0">newUser := model.NewUser(user.Email, time.Date(1000, 1, 1, 0, 0, 0, 0, time.Local))
+        <span class="cov8" title="1">newUser := model.NewUser(user.Email, time.Date(1000, 1, 1, 0, 0, 0, 0, time.Local))
         setTokenErr := newUser.SetNewToken()
         if setTokenErr != nil </span><span class="cov0" title="0">{
                 return setTokenErr
         }</span>
-        <span class="cov0" title="0">err2 := u.UserRepository.SetUser(newUser)
+        <span class="cov8" title="1">err2 := u.UserRepository.SetUser(newUser)
         if err2 != nil </span><span class="cov0" title="0">{
                 return err2
         }</span>
-        <span class="cov0" title="0">return nil</span>
+        <span class="cov8" title="1">return nil</span>
 }
 </pre>
 		
