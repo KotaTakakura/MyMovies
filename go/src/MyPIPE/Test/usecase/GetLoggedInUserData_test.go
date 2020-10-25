@@ -34,7 +34,7 @@ func TestGetLoggedInUserData(t *testing.T) {
 			CreatedAt:        time.Now(),
 			AvatarName:       "TestAvatarName",
 		}
-
+		//
 		getLoggedInUserDataQueryService.EXPECT().FindByUserId(trueCase.UserID).Return(usecaseReturn)
 
 		result := getLoggedInUserData.Find(&trueCase)
