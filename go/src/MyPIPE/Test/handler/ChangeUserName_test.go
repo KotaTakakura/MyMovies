@@ -6,9 +6,11 @@ import (
 	"MyPIPE/domain/model"
 	"MyPIPE/handler"
 	"MyPIPE/usecase"
+	"errors"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
+	"net/http"
 	"net/http/httptest"
 	"reflect"
 	"strings"
@@ -22,13 +24,6 @@ func TestChangeUseName(t *testing.T) {
 		name string
 	}{
 		{id: 10, name: "myname"},
-	}
-
-	falseCases := []struct {
-		id   uint64
-		name string
-	}{
-		{id: 20, name: ""},
 	}
 
 	ctrl := gomock.NewController(t)
@@ -71,6 +66,13 @@ func TestChangeUseName(t *testing.T) {
 		changeUserNameHandler.ChangeUserName(ginContext)
 	}
 
+	falseCases := []struct {
+		id   uint64
+		name string
+	}{
+		{id: 20, name: ""},
+	}
+
 	for _, falseCase := range falseCases {
 		// ポストデータ
 		bodyReader := strings.NewReader(`{"user_name": "` + falseCase.name + `"}`)
@@ -89,5 +91,48 @@ func TestChangeUseName(t *testing.T) {
 		})
 
 		changeUserNameHandler.ChangeUserName(ginContext)
+	}
+}
+
+func TestChangeUseName_UsecaseError(t *testing.T) {
+	trueCases := []struct {
+		id   uint64
+		name string
+	}{
+		{id: 10, name: "myname"},
+	}
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	userRepository := mock_repository.NewMockUserRepository(ctrl)
+	changeUserNameUsecase := mock_usecase.NewMockIChangeUserName(ctrl)
+	changeUserNameHandler := handler.NewChangeUserName(userRepository, changeUserNameUsecase)
+
+	for _, trueCase := range trueCases {
+		// ポストデータ
+		bodyReader := strings.NewReader(`{"user_name": "` + trueCase.name + `"}`)
+
+		// リクエスト生成
+		req := httptest.NewRequest("POST", "/", bodyReader)
+
+		// Content-Type 設定
+		req.Header.Set("Content-Type", "application/json")
+
+		// Contextセット
+		w := httptest.NewRecorder()
+		ginContext, _ := gin.CreateTestContext(w)
+		ginContext.Request = req
+		ginContext.Set("JWT_PAYLOAD", jwt.MapClaims{
+			"id": float64(trueCase.id),
+		})
+
+		changeUserNameUsecase.EXPECT().ChangeUserName(gomock.Any()).Return(errors.New("ChangeUserNameUsecase Error."))
+
+		changeUserNameHandler.ChangeUserName(ginContext)
+
+		if w.Code != http.StatusInternalServerError {
+			t.Fatal("Error.")
+		}
 	}
 }

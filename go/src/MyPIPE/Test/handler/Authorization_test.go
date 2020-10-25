@@ -5,9 +5,11 @@ import (
 	mock_usecase "MyPIPE/Test/mock/usecase"
 	"MyPIPE/domain/model"
 	"MyPIPE/handler"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
 	"golang.org/x/crypto/bcrypt"
+	"net/http"
 	"net/http/httptest"
 	"reflect"
 	"strings"
@@ -21,14 +23,6 @@ func TestTemporaryRegistration(t *testing.T) {
 	}{
 		{email: "trueUsecase1@mail.com"},
 		{email: "trueUsecase2@amaammama.jp"},
-	}
-
-	falseCases := []struct {
-		email string
-	}{
-		{email: ""},
-		{email: "trueUsecaseamaammama.jp"},
-		{email: "trueUsecaseamaammama.jp"},
 	}
 
 	ctrl := gomock.NewController(t)
@@ -65,7 +59,15 @@ func TestTemporaryRegistration(t *testing.T) {
 		authorizationHandler.TemporaryRegisterUser(ginContext)
 	}
 
-	for _, value := range falseCases {
+	falseEmailCases := []struct {
+		email string
+	}{
+		{email: ""},
+		{email: "trueUsecaseamaammama.jp"},
+		{email: "trueUsecaseamaammama.jp"},
+	}
+
+	for _, value := range falseEmailCases {
 		// ポストデータ
 		bodyReader := strings.NewReader(`{"user_email": "` + value.email + `"}`)
 
@@ -80,6 +82,35 @@ func TestTemporaryRegistration(t *testing.T) {
 		ginContext.Request = req
 
 		authorizationHandler.TemporaryRegisterUser(ginContext)
+	}
+
+	//UserTemporaryRegistrationUsecaseでエラー
+	falseUserTemporaryRegistrationUsecaseCases := trueCases
+
+	for _, value := range falseUserTemporaryRegistrationUsecaseCases {
+		// ポストデータ
+		bodyReader := strings.NewReader(`{"user_email": "` + value.email + `"}`)
+
+		// リクエスト生成
+		req := httptest.NewRequest("POST", "/", bodyReader)
+
+		// Content-Type 設定
+		req.Header.Set("Content-Type", "application/json")
+
+		// Contextセット
+		w := httptest.NewRecorder()
+		ginContext, _ := gin.CreateTestContext(w)
+		ginContext.Request = req
+
+		userTemporaryRegistrationUsecase.EXPECT().TemporaryRegister(gomock.Any()).DoAndReturn(func(data interface{}) error {
+			return errors.New("Usecase Error.")
+		})
+
+		authorizationHandler.TemporaryRegisterUser(ginContext)
+
+		if w.Code != http.StatusInternalServerError {
+			t.Fatal("Error")
+		}
 	}
 }
 
@@ -97,6 +128,50 @@ func TestRegisterUser(t *testing.T) {
 			userPassword: "iekapcr92248",
 			userBirthday: "2000-01-11",
 		},
+	}
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	userRepository := mock_repository.NewMockUserRepository(ctrl)
+	userTemporaryRegistrationUsecase := mock_usecase.NewMockIUserTemporaryRegistration(ctrl)
+	userRegisterUsecase := mock_usecase.NewMockIUserRegister(ctrl)
+	authorizationHandler := handler.NewAuthorization(userRepository, userTemporaryRegistrationUsecase, userRegisterUsecase)
+
+	for _, value := range trueCases {
+		// ポストデータ
+		bodyReader := strings.NewReader(`{"user_name": "` + value.userName + `","user_password": "` + value.userPassword + `","user_birthday": "` + value.userBirthday + `"}`)
+
+		// リクエスト生成
+		req := httptest.NewRequest("POST", "/?token="+value.token, bodyReader)
+
+		// Content-Type 設定
+		req.Header.Set("Content-Type", "application/json")
+
+		// Contextセット
+		ginContext, _ := gin.CreateTestContext(httptest.NewRecorder())
+		ginContext.Request = req
+
+		userRegisterUsecase.EXPECT().RegisterUser(gomock.Any()).DoAndReturn(func(data interface{}) error {
+			if reflect.TypeOf(data) != reflect.TypeOf(&(model.User{})) {
+				t.Fatal("Type Not Match.")
+			}
+
+			if data.(*model.User).Name != model.UserName(value.userName) {
+				t.Fatal("Name Not Match,")
+			}
+
+			err := bcrypt.CompareHashAndPassword(([]byte)(data.(*model.User).Password), ([]byte)(value.userPassword))
+			if err != nil {
+				t.Fatal("Password Not Match,")
+			}
+
+			if data.(*model.User).Token != model.UserToken(value.token) {
+				t.Fatal("Token Not Match,")
+			}
+			return nil
+		})
+
+		authorizationHandler.RegisterUser(ginContext)
 	}
 
 	falseCases := []struct {
@@ -157,50 +232,6 @@ func TestRegisterUser(t *testing.T) {
 		},
 	}
 
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-	userRepository := mock_repository.NewMockUserRepository(ctrl)
-	userTemporaryRegistrationUsecase := mock_usecase.NewMockIUserTemporaryRegistration(ctrl)
-	userRegisterUsecase := mock_usecase.NewMockIUserRegister(ctrl)
-	authorizationHandler := handler.NewAuthorization(userRepository, userTemporaryRegistrationUsecase, userRegisterUsecase)
-
-	for _, value := range trueCases {
-		// ポストデータ
-		bodyReader := strings.NewReader(`{"user_name": "` + value.userName + `","user_password": "` + value.userPassword + `","user_birthday": "` + value.userBirthday + `"}`)
-
-		// リクエスト生成
-		req := httptest.NewRequest("POST", "/?token="+value.token, bodyReader)
-
-		// Content-Type 設定
-		req.Header.Set("Content-Type", "application/json")
-
-		// Contextセット
-		ginContext, _ := gin.CreateTestContext(httptest.NewRecorder())
-		ginContext.Request = req
-
-		userRegisterUsecase.EXPECT().RegisterUser(gomock.Any()).DoAndReturn(func(data interface{}) error {
-			if reflect.TypeOf(data) != reflect.TypeOf(&(model.User{})) {
-				t.Fatal("Type Not Match.")
-			}
-
-			if data.(*model.User).Name != model.UserName(value.userName) {
-				t.Fatal("Name Not Match,")
-			}
-
-			err := bcrypt.CompareHashAndPassword(([]byte)(data.(*model.User).Password), ([]byte)(value.userPassword))
-			if err != nil {
-				t.Fatal("Password Not Match,")
-			}
-
-			if data.(*model.User).Token != model.UserToken(value.token) {
-				t.Fatal("Token Not Match,")
-			}
-			return nil
-		})
-
-		authorizationHandler.RegisterUser(ginContext)
-	}
-
 	for _, value := range falseCases {
 		// ポストデータ
 		bodyReader := strings.NewReader(`{"user_name": "` + value.userName + `","user_password": "` + value.userPassword + `","user_birthday": "` + value.userBirthday + `"}`)
@@ -216,5 +247,34 @@ func TestRegisterUser(t *testing.T) {
 		ginContext.Request = req
 
 		authorizationHandler.RegisterUser(ginContext)
+	}
+
+	//UserRegisterUsecaseのエラー
+	falseUserRegisterUsecaseCases := trueCases
+
+	for _, value := range falseUserRegisterUsecaseCases {
+		// ポストデータ
+		bodyReader := strings.NewReader(`{"user_name": "` + value.userName + `","user_password": "` + value.userPassword + `","user_birthday": "` + value.userBirthday + `"}`)
+
+		// リクエスト生成
+		req := httptest.NewRequest("POST", "/?token="+value.token, bodyReader)
+
+		// Content-Type 設定
+		req.Header.Set("Content-Type", "application/json")
+
+		// Contextセット
+		w := httptest.NewRecorder()
+		ginContext, _ := gin.CreateTestContext(w)
+		ginContext.Request = req
+
+		userRegisterUsecase.EXPECT().RegisterUser(gomock.Any()).DoAndReturn(func(data interface{}) error {
+			return errors.New("RegisterUser Error.")
+		})
+
+		authorizationHandler.RegisterUser(ginContext)
+
+		if w.Code != http.StatusInternalServerError {
+			t.Fatal("Error.")
+		}
 	}
 }

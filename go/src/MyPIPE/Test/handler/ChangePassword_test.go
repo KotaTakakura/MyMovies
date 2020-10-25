@@ -6,10 +6,12 @@ import (
 	"MyPIPE/domain/model"
 	"MyPIPE/handler"
 	"MyPIPE/usecase"
+	"errors"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
 	"golang.org/x/crypto/bcrypt"
+	"net/http"
 	"net/http/httptest"
 	"reflect"
 	"strings"
@@ -24,17 +26,6 @@ func TestChangePassword(t *testing.T) {
 	}{
 		{id: 10, password: "myFirstPassword"},
 		{id: 20, password: "mySecondPasword"},
-	}
-
-	falseCases := []struct {
-		id       uint64
-		password string
-	}{
-		{id: 20, password: ""},
-		{id: 30, password: "myFirstPasswordmyFirstPasswordmyFirstPasswordmyFirstPasswordmyFirstPasswordmyFirst" +
-			"PasswordmyFirstPasswordmyFirstPasswordmyFirstPasswordmyFirstPasswordmyFirstPasswordmyFirstPasswordmyFirs" +
-			"tPasswordmyFirstPasswordmyFirstPasswordmyFirstPassword"},
-		{id: 20, password: "ああああああああ"},
 	}
 
 	ctrl := gomock.NewController(t)
@@ -79,7 +70,17 @@ func TestChangePassword(t *testing.T) {
 		changePasswordHandler.ChangePassword(ginContext)
 	}
 
-	//異常系
+	falseCases := []struct {
+		id       uint64
+		password string
+	}{
+		{id: 20, password: ""},
+		{id: 30, password: "myFirstPasswordmyFirstPasswordmyFirstPasswordmyFirstPasswordmyFirstPasswordmyFirst" +
+			"PasswordmyFirstPasswordmyFirstPasswordmyFirstPasswordmyFirstPasswordmyFirstPasswordmyFirstPasswordmyFirs" +
+			"tPasswordmyFirstPasswordmyFirstPasswordmyFirstPassword"},
+		{id: 20, password: "ああああああああ"},
+	}
+
 	for _, falseCase := range falseCases {
 		// ポストデータ
 		bodyReader := strings.NewReader(`{"password": "` + falseCase.password + `"}`)
@@ -98,5 +99,50 @@ func TestChangePassword(t *testing.T) {
 		})
 
 		changePasswordHandler.ChangePassword(ginContext)
+	}
+
+}
+
+func TestChangePassword_UsecaseError(t *testing.T) {
+	trueCases := []struct {
+		id       uint64
+		password string
+	}{
+		{id: 10, password: "myFirstPassword"},
+		{id: 20, password: "mySecondPasword"},
+	}
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	userRepository := mock_repository.NewMockUserRepository(ctrl)
+	changePasswordUsecase := mock_usecase.NewMockIChangePassword(ctrl)
+	changePasswordHandler := handler.NewChangePassword(userRepository, changePasswordUsecase)
+
+	falseChangePasswordUsecaseCases := trueCases
+	for _, falseCase := range falseChangePasswordUsecaseCases {
+		changePasswordUsecase.EXPECT().ChangePassword(gomock.Any()).Return(errors.New("ChangePasswordUsecase Error."))
+
+		// ポストデータ
+		bodyReader := strings.NewReader(`{"password": "` + falseCase.password + `"}`)
+
+		// リクエスト生成
+		req := httptest.NewRequest("POST", "/", bodyReader)
+
+		// Content-Type 設定
+		req.Header.Set("Content-Type", "application/json")
+
+		// Contextセット
+		w := httptest.NewRecorder()
+		ginContext, _ := gin.CreateTestContext(w)
+		ginContext.Request = req
+		ginContext.Set("JWT_PAYLOAD", jwt.MapClaims{
+			"id": float64(falseCase.id),
+		})
+
+		changePasswordHandler.ChangePassword(ginContext)
+
+		if w.Code != http.StatusInternalServerError {
+			t.Fatal("Error")
+		}
 	}
 }

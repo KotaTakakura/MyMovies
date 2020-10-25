@@ -30,29 +30,21 @@ func (checkUserAlreadyLikedMovie CheckUserAlreadyLikedMovie) CheckUserAlreadyLik
 
 	validationErrors := make(map[string]string)
 	var userId model.UserID
-	var userIdErr error
 	var movieId model.MovieID
-	var movieIdErr error
 
 	userIdUint64, userIdUint64Err := strconv.ParseUint(userIdString, 10, 64)
 
 	if userIdUint64Err != nil {
 		validationErrors["user_id"] = userIdUint64Err.Error()
 	} else {
-		userId, userIdErr = model.NewUserID(userIdUint64)
-		if userIdErr != nil {
-			validationErrors["user_id"] = userIdErr.Error()
-		}
+		userId, _ = model.NewUserID(userIdUint64)
 	}
 
 	movieIdUint64, movieIdUint64Err := strconv.ParseUint(movieIdString, 10, 64)
 	if movieIdUint64Err != nil {
 		validationErrors["movie_id"] = movieIdUint64Err.Error()
 	} else {
-		movieId, movieIdErr = model.NewMovieID(movieIdUint64)
-		if movieIdErr != nil {
-			validationErrors["movie_id"] = movieIdErr.Error()
-		}
+		movieId, _ = model.NewMovieID(movieIdUint64)
 	}
 
 	if len(validationErrors) != 0 {
