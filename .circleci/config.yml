@@ -1,103 +1,27 @@
-version: 2.1
+# Golang CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-go/ for more details
+version: 2
 jobs:
-  test:
+  build:
     docker:
-      - image: circleci/golang:latest
-      - image: circleci/mysql:5.7
-        environment:
-          MYSQL_DATABASE: 'mypipe'
-          MYSQL_USER: 'root'
-          MYSQL_ROOT_PASSWORD: 'root'
+      # specify the version
+      - image: circleci/golang:1.9
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/postgres:9.4
+
+    #### TEMPLATE_NOTE: go expects specific checkout path representing url
+    #### expecting it in the form of
+    ####   /go/src/github.com/circleci/go-tool
+    ####   /go/src/bitbucket.org/circleci/go-tool
+    working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
     steps:
       - checkout
 
-      - restore_cache:
-          key: mod-aaa-{{ checksum "./go/src/MyPIPE/go.sum" }}
+      # specify any bash command here prefixed with `run: `
+      - run: go get -v -t -d ./...
+      - run: go test -v ./...
 
-      - run:
-          name: install_migrate
-          command: sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y curl gnupg2 vim && sudo curl -L https://github.com/golang-migrate/migrate/releases/download/v4.11.0/migrate.linux-amd64.tar.gz | tar xvz && sudo mv ./migrate.linux-amd64 /usr/bin/migrate
-
-      - run:
-          name: go_build
-          command: cd ./go/src/MyPIPE && go build
-
-      - run:
-          name: handlerTest
-          command: cd ./go/src/MyPIPE && go test -v ./Test/handler/...
-
-      - run:
-          name: UsecaseTest
-          command: cd ./go/src/MyPIPE && go test -v ./Test/usecase/...
-
-      #      - run:
-      #          name: usecaseTest
-      #          command: cd ./go/src/MyPIPE && go test -v ./Test/usecase/...
-
-      #      - run:
-      #          name: valueObjectTest
-      #          command: cd ./go/src/MyPIPE && go test -v ./Test/model/value_object/...
-
-      - run:
-          name: install dockerize
-          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
-          environment:
-            DOCKERIZE_VERSION: v0.3.0
-
-      - run:
-          name: wait for db
-          command: dockerize -wait tcp://localhost:3306 -timeout 1m
-
-      - run:
-          name: migrationTest
-          command: cd ./go/src/MyPIPE && migrate -database "mysql://root:root@tcp(127.0.0.1:3306)/mypipe" -path ./Migrations up
-
-      - save_cache:
-          key: mod-aaa-{{ checksum "./go/src/MyPIPE/go.sum" }}
-          paths:
-            - /go/pkg/mod
-
-orbs:
-  aws-ecr: circleci/aws-ecr@6.12.2
-  aws-ecs: circleci/aws-ecs@1.2.0
-
-workflows:
-  build-and-deploy:
-    jobs:
-      - test
-      - aws-ecr/build-and-push-image:
-          requires:
-            - test
-          account-url: AWS_ECR_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          create-repo: true
-          dockerfile: Dockerfile-go
-          path: .
-          region: AWS_REGION
-          repo: my_movies_api_repo
-          tag: "$CIRCLE_SHA1"
-          filters:
-            branches:
-              only: master
-      - aws-ecr/build-and-push-image:
-          requires:
-            - test
-          account-url: AWS_ECR_ACCOUNT_URL
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          create-repo: true
-          dockerfile: Dockerfile-nginx
-          path: .
-          region: AWS_REGION
-          repo: my_movies_nginx_repo
-          tag: "$CIRCLE_SHA1"
-          filters:
-            branches:
-              only: master
-#       - aws-ecs/deploy-service-update:
-#           requires:
-#             - aws-ecr/build-and-push-image
-#           family: 'Go'
-#           cluster-name: 'MyPIPE'
-#           service-name: 'sss'
