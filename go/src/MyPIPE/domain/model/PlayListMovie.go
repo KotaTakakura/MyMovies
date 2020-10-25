@@ -1,10 +1,19 @@
 package model
 
-import "time"
+import (
+	validation "github.com/go-ozzo/ozzo-validation"
+	"time"
+)
 
 type PlayListMovieOrder int
 
 func NewPlayListMovieOrder(playListOrder int) (PlayListMovieOrder, error) {
+	err := validation.Validate(playListOrder,
+		validation.Required,
+	)
+	if err != nil {
+		return PlayListMovieOrder(0), err
+	}
 	return PlayListMovieOrder(playListOrder), nil
 }
 

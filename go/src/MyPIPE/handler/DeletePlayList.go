@@ -32,16 +32,12 @@ func (deletePlayList DeletePlayList) DeletePlayList(c *gin.Context) {
 	}
 
 	var playListId model.PlayListID
-	var playListIdErr error
 	playListIdString := c.Query("play_list_id")
 	playListIdUint, playListIdUintErr := strconv.ParseUint(playListIdString, 10, 64)
 	if playListIdUintErr != nil {
 		validationErrors["play_list_id"] = playListIdUintErr.Error()
 	} else {
-		playListId, playListIdErr = model.NewPlayListID(playListIdUint)
-		if playListIdErr != nil {
-			validationErrors["play_list_id"] = playListIdErr.Error()
-		}
+		playListId, _ = model.NewPlayListID(playListIdUint)
 	}
 
 	if len(validationErrors) != 0 {

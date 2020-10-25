@@ -17,11 +17,12 @@ import (
 
 func TestCheckUserAlreadyLikedMovie(t *testing.T) {
 	trueCases := []struct {
-		userId  uint64
-		movieId uint64
+		userId       uint64
+		movieId      uint64
+		alreadyLiked bool
 	}{
-		{userId: 10, movieId: 100},
-		{userId: 99999, movieId: 999},
+		{userId: 10, movieId: 100, alreadyLiked: true},
+		{userId: 99999, movieId: 999, alreadyLiked: false},
 	}
 
 	ctrl := gomock.NewController(t)
@@ -55,8 +56,118 @@ func TestCheckUserAlreadyLikedMovie(t *testing.T) {
 			if data.(*usecase.CheckUserAlreadyLikedMovieFindDTO).MovieID != model.MovieID(trueCase.movieId) {
 				t.Fatal("MovieID Not Match,")
 			}
-			return true
+			return trueCase.alreadyLiked
 		})
+
+		checkUserAlreadyLikedMovieHandler.CheckUserAlreadyLikedMovie(ginContext)
+	}
+}
+
+func TestCheckUserAlreadyLikedMovie_UserIDError(t *testing.T) {
+	trueCases := []struct {
+		userId  uint64
+		movieId uint64
+	}{
+		{userId: 10, movieId: 100},
+		{userId: 99999, movieId: 999},
+	}
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	movieEvaluationRepository := mock_repository.NewMockMovieEvaluationRepository(ctrl)
+	checkAlreadyLikeDMovieUsecase := mock_usecase.NewMockICheckUserAlreadyLikedMovie(ctrl)
+	checkUserAlreadyLikedMovieHandler := handler.NewCheckUserAlreadyLikedMovie(movieEvaluationRepository, checkAlreadyLikeDMovieUsecase)
+
+	for _, trueCase := range trueCases {
+		// ポストデータ
+		bodyReader := strings.NewReader("")
+
+		// リクエスト生成
+		//UserIDが設定されていない
+		req := httptest.NewRequest("GET", "/?movie_id="+fmt.Sprint(trueCase.movieId), bodyReader)
+
+		// Content-Type 設定
+		req.Header.Set("Content-Type", "application/json")
+
+		// Contextセット
+		w := httptest.NewRecorder()
+		ginContext, _ := gin.CreateTestContext(w)
+		ginContext.Request = req
+
+		checkUserAlreadyLikedMovieHandler.CheckUserAlreadyLikedMovie(ginContext)
+	}
+
+	for _, trueCase := range trueCases {
+		// ポストデータ
+		bodyReader := strings.NewReader("")
+
+		// リクエスト生成
+		//UserIDが無効
+		req := httptest.NewRequest("GET", "/?user_id=THISISNOTUSERID&movie_id="+fmt.Sprint(trueCase.movieId), bodyReader)
+
+		// Content-Type 設定
+		req.Header.Set("Content-Type", "application/json")
+
+		// Contextセット
+		w := httptest.NewRecorder()
+		ginContext, _ := gin.CreateTestContext(w)
+		ginContext.Request = req
+
+		checkUserAlreadyLikedMovieHandler.CheckUserAlreadyLikedMovie(ginContext)
+	}
+}
+
+func TestCheckUserAlreadyLikedMovie_MovieIDError(t *testing.T) {
+	trueCases := []struct {
+		userId  uint64
+		movieId uint64
+	}{
+		{userId: 10, movieId: 100},
+		{userId: 99999, movieId: 999},
+	}
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	movieEvaluationRepository := mock_repository.NewMockMovieEvaluationRepository(ctrl)
+	checkAlreadyLikeDMovieUsecase := mock_usecase.NewMockICheckUserAlreadyLikedMovie(ctrl)
+	checkUserAlreadyLikedMovieHandler := handler.NewCheckUserAlreadyLikedMovie(movieEvaluationRepository, checkAlreadyLikeDMovieUsecase)
+
+	for _, trueCase := range trueCases {
+		// ポストデータ
+		bodyReader := strings.NewReader("")
+
+		// リクエスト生成
+		//MovieIDが設定されていない
+		req := httptest.NewRequest("GET", "/?user_id="+fmt.Sprint(trueCase.userId), bodyReader)
+
+		// Content-Type 設定
+		req.Header.Set("Content-Type", "application/json")
+
+		// Contextセット
+		w := httptest.NewRecorder()
+		ginContext, _ := gin.CreateTestContext(w)
+		ginContext.Request = req
+
+		checkUserAlreadyLikedMovieHandler.CheckUserAlreadyLikedMovie(ginContext)
+	}
+
+	for _, trueCase := range trueCases {
+		// ポストデータ
+		bodyReader := strings.NewReader("")
+
+		// リクエスト生成
+		//MovieIDが無効
+		req := httptest.NewRequest("GET", "/?user_id="+fmt.Sprint(trueCase.userId)+"&movie_id=THISISNOTMOVIEID", bodyReader)
+
+		// Content-Type 設定
+		req.Header.Set("Content-Type", "application/json")
+
+		// Contextセット
+		w := httptest.NewRecorder()
+		ginContext, _ := gin.CreateTestContext(w)
+		ginContext.Request = req
 
 		checkUserAlreadyLikedMovieHandler.CheckUserAlreadyLikedMovie(ginContext)
 	}
