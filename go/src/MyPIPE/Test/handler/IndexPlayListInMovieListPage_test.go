@@ -104,7 +104,7 @@ func TestIndexPlayListInMovieListPage_MovieIDError(t *testing.T) {
 
 		indexPlayListInMovieListPageHandler.IndexPlayListInMovieListPage(ginContext)
 
-		if w.Code != http.StatusBadRequest{
+		if w.Code != http.StatusBadRequest {
 			t.Fatal("Error.")
 		}
 	}

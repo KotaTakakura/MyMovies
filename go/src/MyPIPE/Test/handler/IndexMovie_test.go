@@ -25,7 +25,7 @@ func TestIndexMovie(t *testing.T) {
 		url     string
 	}{
 		{keyWord: "game", order: "asc", page: 10, url: "/?keyWord=game&order=asc&page=10"},
-		{keyWord: "movie", order: "desc", page: -1, url: "/?keyWord=movie&order=desc&page=-1"}, //page = 1に変換される
+		{keyWord: "movie", order: "desc", page: -1, url: "/?keyWord=movie&order=desc&page=-1"},    //page = 1に変換される
 		{keyWord: "movie", order: "invalid", page: 10, url: "/?keyWord=movie&order=desc&page=-1"}, //order = "asc"に変換される
 	}
 

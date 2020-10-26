@@ -7,10 +7,12 @@ import (
 	"MyPIPE/domain/model"
 	"MyPIPE/handler"
 	"MyPIPE/usecase"
+	"errors"
 	"fmt"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
+	"net/http"
 	"net/http/httptest"
 	"reflect"
 	"strings"
@@ -90,18 +92,6 @@ func TestMovieUpdateMovie(t *testing.T) {
 		{userId: 10, movieId: 100, description: "TestDescription", displayName: "TestDisplayName", public: 1, status: 2},
 	}
 
-	falseCases := []struct {
-		userId      uint64
-		movieId     uint64
-		displayName string
-		description string
-		public      uint
-		status      uint
-	}{
-		{userId: 10, movieId: 100, description: "TestDescription", displayName: "TestDisplayName", public: 999, status: 0},
-		{userId: 10, movieId: 100, description: "TestDescription", displayName: "TestDisplayName", public: 0, status: 999},
-	}
-
 	for _, trueCase := range trueCases {
 		// ポストデータ
 		bodyReader := strings.NewReader(`{
@@ -167,6 +157,18 @@ func TestMovieUpdateMovie(t *testing.T) {
 
 	}
 
+	falseCases := []struct {
+		userId      uint64
+		movieId     uint64
+		displayName string
+		description string
+		public      uint
+		status      uint
+	}{
+		{userId: 10, movieId: 100, description: "TestDescription", displayName: "TestDisplayName", public: 999, status: 0},
+		{userId: 10, movieId: 100, description: "TestDescription", displayName: "TestDisplayName", public: 0, status: 999},
+	}
+
 	for _, falseCase := range falseCases {
 		// ポストデータ
 		bodyReader := strings.NewReader(`{
@@ -179,7 +181,7 @@ func TestMovieUpdateMovie(t *testing.T) {
 }`)
 
 		// リクエスト生成
-		req := httptest.NewRequest("GET", "/", bodyReader)
+		req := httptest.NewRequest("POST", "/", bodyReader)
 
 		// Content-Type 設定
 		req.Header.Set("Content-Type", "application/json")
@@ -192,5 +194,95 @@ func TestMovieUpdateMovie(t *testing.T) {
 		})
 
 		movieHandler.UpdateMovie(ginContext)
+	}
+
+	for _, falseCase := range falseCases {
+		// ポストデータ
+		//movie_idが無効
+		bodyReader := strings.NewReader(`{
+			"user_id":` + fmt.Sprint(falseCase.userId) + `,
+			"movie_id":"INVALIDMOVIEID",
+			"display_name":"` + fmt.Sprint(falseCase.displayName) + `",
+			"description":"` + fmt.Sprint(falseCase.description) + `",
+			"public":` + fmt.Sprint(falseCase.public) + `,
+			"status":` + fmt.Sprint(falseCase.status) + `
+}`)
+
+		// リクエスト生成
+		req := httptest.NewRequest("POST", "/", bodyReader)
+
+		// Content-Type 設定
+		req.Header.Set("Content-Type", "application/json")
+
+		// Contextセット
+		w := httptest.NewRecorder()
+		ginContext, _ := gin.CreateTestContext(w)
+		ginContext.Request = req
+		ginContext.Set("JWT_PAYLOAD", jwt.MapClaims{
+			"id": float64(falseCase.userId),
+		})
+
+		movieHandler.UpdateMovie(ginContext)
+
+		if w.Code != http.StatusBadRequest {
+			t.Fatal("Error.")
+		}
+	}
+}
+
+func TestMovieUpdateMovie_UsecaseError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	uploadMoviesQueryService := mock_queryService.NewMockUploadedMovies(ctrl)
+	uploadMoviesUsecase := mock_usecase.NewMockIUploadedMovies(ctrl)
+	movieRepository := mock_repository.NewMockMovieRepository(ctrl)
+	updateMovieUsecase := mock_usecase.NewMockIUpdateMovie(ctrl)
+	thumbnailUploadRepository := mock_repository.NewMockThumbnailUploadRepository(ctrl)
+	changeThumbnailUsecase := mock_usecase.NewMockIChangeThumbnail(ctrl)
+	movieHandler := handler.NewMovie(uploadMoviesQueryService, uploadMoviesUsecase, movieRepository, updateMovieUsecase, thumbnailUploadRepository, changeThumbnailUsecase)
+
+	cases := []struct {
+		userId      uint64
+		movieId     uint64
+		displayName string
+		description string
+		public      uint
+		status      uint
+	}{
+		{userId: 10, movieId: 100, description: "TestDescription", displayName: "TestDisplayName", public: 1, status: 2},
+	}
+
+	for _, Case := range cases {
+		bodyReader := strings.NewReader(`{
+			"user_id":` + fmt.Sprint(Case.userId) + `,
+			"movie_id":` + fmt.Sprint(Case.movieId) + `,
+			"display_name":"` + fmt.Sprint(Case.displayName) + `",
+			"description":"` + fmt.Sprint(Case.description) + `",
+			"public":` + fmt.Sprint(Case.public) + `,
+			"status":` + fmt.Sprint(Case.status) + `
+}`)
+
+		// リクエスト生成
+		req := httptest.NewRequest("POST", "/", bodyReader)
+
+		// Content-Type 設定
+		req.Header.Set("Content-Type", "application/json")
+
+		// Contextセット
+		w := httptest.NewRecorder()
+		ginContext, _ := gin.CreateTestContext(w)
+		ginContext.Request = req
+		ginContext.Set("JWT_PAYLOAD", jwt.MapClaims{
+			"id": float64(Case.userId),
+		})
+
+		updateMovieUsecase.EXPECT().Update(gomock.Any()).Return(nil, errors.New("Usecase Error"))
+
+		movieHandler.UpdateMovie(ginContext)
+
+		if w.Code != http.StatusInternalServerError {
+			t.Fatal("Error.")
+		}
 	}
 }

@@ -34,9 +34,9 @@ func (indexPlayListInMovieListPage IndexPlayListInMovieListPage) IndexPlayListIn
 
 	var movieId model.MovieID
 	movieIdUint64, movieIdUint64Err := strconv.ParseUint(c.Param("movie_id"), 10, 64)
-	if movieIdUint64Err != nil{
+	if movieIdUint64Err != nil {
 		validationErrors["movie_id"] = movieIdUint64Err.Error()
-	}else{
+	} else {
 		movieId, _ = model.NewMovieID(movieIdUint64)
 	}
 
