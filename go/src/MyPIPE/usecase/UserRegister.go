@@ -21,7 +21,10 @@ func NewUserRegister(u repository.UserRepository) *UserRegister {
 }
 
 func (u UserRegister) RegisterUser(newUser *model.User) error {
-	registeredUserWithToken, _ := u.UserRepository.FindByToken(newUser.Token)
+	registeredUserWithToken, findUserErr := u.UserRepository.FindByToken(newUser.Token)
+	if findUserErr != nil {
+		return findUserErr
+	}
 
 	if registeredUserWithToken == nil {
 		return errors.New("Invalid Token.")

@@ -4,6 +4,7 @@ import (
 	mock_repository "MyPIPE/Test/mock/repository"
 	"MyPIPE/domain/model"
 	"MyPIPE/usecase"
+	"errors"
 	"github.com/golang/mock/gomock"
 	"reflect"
 	"testing"
@@ -43,6 +44,31 @@ func TestCreatePlayList(t *testing.T) {
 		})
 		result := createPlayListUsecase.CreatePlayList(&trueCase)
 		if result != nil {
+			t.Fatal("Usecase Error.")
+		}
+	}
+}
+
+func TestCreatePlayList_PlayListRepository_Save_Error(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	userRepository := mock_repository.NewMockUserRepository(ctrl)
+	playListRepository := mock_repository.NewMockPlayListRepository(ctrl)
+	createPlayListUsecase := usecase.NewCreatePlayList(userRepository, playListRepository)
+
+	cases := []usecase.CreatePlayListDTO{
+		usecase.CreatePlayListDTO{
+			UserID:              model.UserID(10),
+			PlayListName:        model.PlayListName("TestPlayListName"),
+			PlayListDescription: model.PlayListDescription("TestPlayListDescription"),
+		},
+	}
+
+	for _, Case := range cases {
+		playListRepository.EXPECT().Save(gomock.Any()).Return(errors.New("ERROR"))
+		result := createPlayListUsecase.CreatePlayList(&Case)
+		if result == nil {
 			t.Fatal("Usecase Error.")
 		}
 	}
