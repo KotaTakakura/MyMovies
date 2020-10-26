@@ -4,11 +4,11 @@ import (
 	mock_repository "MyPIPE/Test/mock/repository"
 	"MyPIPE/domain/model"
 	"MyPIPE/usecase"
+	"errors"
 	"github.com/golang/mock/gomock"
 	"reflect"
 	"testing"
 	"time"
-	"errors"
 )
 
 func TestUserTemporaryRegister(t *testing.T) {
@@ -124,18 +124,18 @@ func TestUserTemporaryRegister_User_Already_Temporary_Registered(t *testing.T) {
 		userTemporaryRegisterUsecase := usecase.NewUserTemporaryRegistration(userRepository)
 
 		userRepository.EXPECT().FindByEmail(Case.User.Email).Return(&model.User{
-			ID : model.UserID(20),
+			ID:    model.UserID(20),
 			Token: "1234-5678-910",
 		}, nil)
 
-		userRepository.EXPECT().UpdateUser(gomock.Any()).DoAndReturn(func(data interface{})error{
+		userRepository.EXPECT().UpdateUser(gomock.Any()).DoAndReturn(func(data interface{}) error {
 			if reflect.TypeOf(data) != reflect.TypeOf(&(model.User{})) {
 				t.Fatal("Type Not Match.")
 			}
 			if data.(*model.User).ID != model.UserID(20) {
 				t.Fatal("UserID Not Match,")
 			}
-			if data.(*model.User).Token == "1234-5678-910" ||  data.(*model.User).Token == ""{
+			if data.(*model.User).Token == "1234-5678-910" || data.(*model.User).Token == "" {
 				t.Fatal("Token Error,")
 			}
 			return nil
@@ -155,18 +155,18 @@ func TestUserTemporaryRegister_User_Already_Temporary_Registered(t *testing.T) {
 		userTemporaryRegisterUsecase := usecase.NewUserTemporaryRegistration(userRepository)
 
 		userRepository.EXPECT().FindByEmail(Case.User.Email).Return(&model.User{
-			ID : model.UserID(20),
+			ID:    model.UserID(20),
 			Token: "1234-5678-910",
 		}, nil)
 
-		userRepository.EXPECT().UpdateUser(gomock.Any()).DoAndReturn(func(data interface{})error{
+		userRepository.EXPECT().UpdateUser(gomock.Any()).DoAndReturn(func(data interface{}) error {
 			if reflect.TypeOf(data) != reflect.TypeOf(&(model.User{})) {
 				t.Fatal("Type Not Match.")
 			}
 			if data.(*model.User).ID != model.UserID(20) {
 				t.Fatal("UserID Not Match,")
 			}
-			if data.(*model.User).Token == "1234-5678-910" ||  data.(*model.User).Token == ""{
+			if data.(*model.User).Token == "1234-5678-910" || data.(*model.User).Token == "" {
 				t.Fatal("Token Error,")
 			}
 			return nil
@@ -186,7 +186,7 @@ func TestUserTemporaryRegister_User_Already_Temporary_Registered(t *testing.T) {
 		userTemporaryRegisterUsecase := usecase.NewUserTemporaryRegistration(userRepository)
 
 		userRepository.EXPECT().FindByEmail(Case.User.Email).Return(&model.User{
-			ID : model.UserID(20),
+			ID:    model.UserID(20),
 			Token: "1234-5678-910",
 		}, nil)
 

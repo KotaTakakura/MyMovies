@@ -4,11 +4,11 @@ import (
 	mock_repository "MyPIPE/Test/mock/repository"
 	"MyPIPE/domain/model"
 	"MyPIPE/usecase"
+	"errors"
 	"github.com/golang/mock/gomock"
 	"reflect"
 	"testing"
 	"time"
-	"errors"
 )
 
 func TestUserRegister(t *testing.T) {
@@ -144,12 +144,12 @@ func TestUserRegister_User_Register_Expired_Error(t *testing.T) {
 		userRepository := mock_repository.NewMockUserRepository(ctrl)
 		userRegisterUsecase := usecase.NewUserRegister(userRepository)
 		userRepository.EXPECT().FindByToken(trueCase.User.Token).Return(&model.User{
-			ID:               model.UserID(10),
-			Email:            model.UserEmail("user@email.com"),
-			Birthday:         time.Now(),
-			Token:            model.UserToken("123456-7891011"),
-			CreatedAt:        time.Now(),
-			UpdatedAt:        time.Date(2001, 5, 20, 23, 59, 59, 0, time.Local),
+			ID:        model.UserID(10),
+			Email:     model.UserEmail("user@email.com"),
+			Birthday:  time.Now(),
+			Token:     model.UserToken("123456-7891011"),
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Date(2001, 5, 20, 23, 59, 59, 0, time.Local),
 		}, nil)
 
 		result := userRegisterUsecase.RegisterUser(&trueCase.User)

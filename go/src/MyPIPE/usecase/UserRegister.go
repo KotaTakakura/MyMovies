@@ -22,7 +22,7 @@ func NewUserRegister(u repository.UserRepository) *UserRegister {
 
 func (u UserRegister) RegisterUser(newUser *model.User) error {
 	registeredUserWithToken, findUserErr := u.UserRepository.FindByToken(newUser.Token)
-	if findUserErr != nil{
+	if findUserErr != nil {
 		return findUserErr
 	}
 
