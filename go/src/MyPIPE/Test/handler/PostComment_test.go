@@ -6,6 +6,7 @@ import (
 	"MyPIPE/domain/model"
 	"MyPIPE/handler"
 	"MyPIPE/usecase"
+	"errors"
 	"fmt"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
@@ -15,7 +16,6 @@ import (
 	"reflect"
 	"strings"
 	"testing"
-	"errors"
 )
 
 func TestPostComment(t *testing.T) {
@@ -100,7 +100,7 @@ func TestPostComment(t *testing.T) {
 
 		postCommentHandler.PostComment(ginContext)
 
-		if w.Code != http.StatusBadRequest{
+		if w.Code != http.StatusBadRequest {
 			t.Fatal("Error")
 		}
 	}
@@ -145,7 +145,7 @@ func TestPostComment_UsecaseError(t *testing.T) {
 
 		postCommentHandler.PostComment(ginContext)
 
-		if w.Code != http.StatusInternalServerError{
+		if w.Code != http.StatusInternalServerError {
 			t.Fatal("Error")
 		}
 	}
