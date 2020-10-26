@@ -43,6 +43,18 @@ func (uploadMovieFile UploadMovieFile) UploadMovieFile(c *gin.Context) {
 		validationErrors["user_id"] = userIdErr.Error()
 	}
 
+	thumbnailFile, thumbnailFileHeader, thumbnailFileErr := c.Request.FormFile("uploadThumbnail")
+	var thumbnail *model.MovieThumbnail
+	var thumbnailErr error
+	if thumbnailFileErr != nil {
+		validationErrors["thumbnail"] = thumbnailFileErr.Error()
+	}else{
+		thumbnail,thumbnailErr = model.NewMovieThumbnail(thumbnailFile,*thumbnailFileHeader)
+		if thumbnailErr != nil{
+			validationErrors["thumbnail"] = thumbnailErr.Error()
+		}
+	}
+
 	//バリデーションチェック
 	if len(validationErrors) != 0 {
 		validationErrors, _ := json.Marshal(validationErrors)
@@ -65,19 +77,8 @@ func (uploadMovieFile UploadMovieFile) UploadMovieFile(c *gin.Context) {
 		return
 	}
 
-	//動画サムネイル取得&バリデーション
-	thumbnail, thumbnailHeader, thumbnailErr := c.Request.FormFile("uploadThumbnail")
-	if thumbnailErr != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"result":   "MovieThumbnailUpload Error.",
-			"messages": thumbnailErr.Error(),
-		})
-		c.Abort()
-		return
-	}
-
 	//動画投稿用のDTO
-	postMovieDTO := usecase.NewPostMovieDTO(file, *header, thumbnail, *thumbnailHeader, userId)
+	postMovieDTO := usecase.NewPostMovieDTO(file, *header, *thumbnail, userId)
 
 	newMovieModel, err := uploadMovieFile.PostMovieUsecase.PostMovie(postMovieDTO)
 	if err != nil {
