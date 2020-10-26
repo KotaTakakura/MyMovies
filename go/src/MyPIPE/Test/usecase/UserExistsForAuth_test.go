@@ -34,4 +34,23 @@ func TestUserExistsForAuth(t *testing.T) {
 			t.Fatal("Usecase Error.")
 		}
 	}
+
+	falseCases := []struct {
+		email    model.UserEmail
+		password string
+	}{
+		{email: model.UserEmail("Test@Email.com"), password: "WrongTestPasword"},
+	}
+
+	for _, falseCase := range falseCases {
+		userRepository.EXPECT().FindByEmail(falseCase.email).Return(&model.User{
+			Password: model.UserPassword("Password"),
+			Email:    falseCase.email,
+		}, nil)
+
+		user, _ := userExistsForAuthUsecase.CheckUserExistsForAuth(falseCase.email, falseCase.password)
+		if user != nil {
+			t.Fatal("Usecase Error.")
+		}
+	}
 }
