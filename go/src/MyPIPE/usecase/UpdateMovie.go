@@ -35,14 +35,14 @@ func (u UpdateMovie) Update(updateDTO *UpdateDTO) (*model.Movie, error) {
 		return nil, changeDescriptionErr
 	}
 
-	changePublicErr := movie.ChangePublic(updateDTO.Public)
-	if changePublicErr != nil {
-		return nil, changePublicErr
-	}
-
 	changeStatusErr := movie.ChangeStatus(updateDTO.Status)
 	if changeStatusErr != nil {
 		return nil, changeStatusErr
+	}
+
+	changePublicErr := movie.ChangePublic(updateDTO.Public)
+	if changePublicErr != nil {
+		return nil, changePublicErr
 	}
 
 	updatedMovie, updateMovieErr := u.MovieRepository.Update(*movie)

@@ -8,6 +8,7 @@ import (
 	"reflect"
 	"testing"
 	"time"
+	"errors"
 )
 
 func TestUserRegister(t *testing.T) {
@@ -67,6 +68,128 @@ func TestUserRegister(t *testing.T) {
 
 		result := userRegisterUsecase.RegisterUser(&trueCase.User)
 		if result != nil {
+			t.Fatal("Usecase Error.")
+		}
+	}
+}
+
+func TestUserRegister_UserRepository_FindByToken_Error(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	cases := []struct {
+		User model.User
+	}{
+		{
+			User: model.User{
+				ID:               model.UserID(10),
+				Name:             model.UserName("UserName"),
+				Password:         model.UserPassword("userPassword"),
+				Email:            model.UserEmail("user@email.com"),
+				Birthday:         time.Now(),
+				ProfileImageName: "",
+				Token:            model.UserToken("123456-7891011"),
+				CreatedAt:        time.Now(),
+				UpdatedAt:        time.Now(),
+			},
+		},
+	}
+
+	for _, Case := range cases {
+		userRepository := mock_repository.NewMockUserRepository(ctrl)
+		userRegisterUsecase := usecase.NewUserRegister(userRepository)
+		userRepository.EXPECT().FindByToken(Case.User.Token).Return(nil, errors.New("ERROR"))
+
+		result := userRegisterUsecase.RegisterUser(&Case.User)
+		if result == nil {
+			t.Fatal("Usecase Error.")
+		}
+	}
+
+	for _, Case := range cases {
+		userRepository := mock_repository.NewMockUserRepository(ctrl)
+		userRegisterUsecase := usecase.NewUserRegister(userRepository)
+		userRepository.EXPECT().FindByToken(Case.User.Token).Return(nil, nil)
+
+		result := userRegisterUsecase.RegisterUser(&Case.User)
+		if result == nil {
+			t.Fatal("Usecase Error.")
+		}
+	}
+}
+
+func TestUserRegister_User_Register_Expired_Error(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	trueCases := []struct {
+		User model.User
+	}{
+		{
+			User: model.User{
+				ID:               model.UserID(10),
+				Name:             model.UserName("UserName"),
+				Password:         model.UserPassword("userPassword"),
+				Email:            model.UserEmail("user@email.com"),
+				Birthday:         time.Now(),
+				ProfileImageName: "",
+				Token:            model.UserToken("123456-7891011"),
+				CreatedAt:        time.Now(),
+				UpdatedAt:        time.Now(),
+			},
+		},
+	}
+
+	for _, trueCase := range trueCases {
+		userRepository := mock_repository.NewMockUserRepository(ctrl)
+		userRegisterUsecase := usecase.NewUserRegister(userRepository)
+		userRepository.EXPECT().FindByToken(trueCase.User.Token).Return(&model.User{
+			ID:               model.UserID(10),
+			Email:            model.UserEmail("user@email.com"),
+			Birthday:         time.Now(),
+			Token:            model.UserToken("123456-7891011"),
+			CreatedAt:        time.Now(),
+			UpdatedAt:        time.Date(2001, 5, 20, 23, 59, 59, 0, time.Local),
+		}, nil)
+
+		result := userRegisterUsecase.RegisterUser(&trueCase.User)
+		if result == nil {
+			t.Fatal("Usecase Error.")
+		}
+	}
+}
+
+func TestUserRegister_UserRepository_UpdateUser_Error(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	trueCases := []struct {
+		User model.User
+	}{
+		{
+			User: model.User{
+				ID:               model.UserID(10),
+				Name:             model.UserName("UserName"),
+				Password:         model.UserPassword("userPassword"),
+				Email:            model.UserEmail("user@email.com"),
+				Birthday:         time.Now(),
+				ProfileImageName: "",
+				Token:            model.UserToken("123456-7891011"),
+				CreatedAt:        time.Now(),
+				UpdatedAt:        time.Now(),
+			},
+		},
+	}
+
+	for _, trueCase := range trueCases {
+		userRepository := mock_repository.NewMockUserRepository(ctrl)
+		userRegisterUsecase := usecase.NewUserRegister(userRepository)
+		userRepository.EXPECT().FindByToken(trueCase.User.Token).Return(&trueCase.User, nil)
+
+		userRepository.EXPECT().UpdateUser(gomock.Any()).Return(errors.New("ERROR"))
+
+		result := userRegisterUsecase.RegisterUser(&trueCase.User)
+		if result == nil {
 			t.Fatal("Usecase Error.")
 		}
 	}
