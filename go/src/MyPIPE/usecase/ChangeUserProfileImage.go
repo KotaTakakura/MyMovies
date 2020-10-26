@@ -3,7 +3,6 @@ package usecase
 import (
 	"MyPIPE/domain/model"
 	"MyPIPE/domain/repository"
-	"mime/multipart"
 )
 
 type IChangeUserProfilieImage interface {
@@ -28,12 +27,12 @@ func (c ChangeUserProfileImage) ChangeUserProfileImage(changeUserProfileImageDTO
 		return findUserErr
 	}
 
-	setProfileImageErr := user.SetProfileImage(changeUserProfileImageDTO.ProfileImageHeader)
+	setProfileImageErr := user.SetProfileImage(changeUserProfileImageDTO.ProfileImage)
 	if setProfileImageErr != nil {
 		return setProfileImageErr
 	}
 
-	uploadErr := c.UserProfileImageRepository.Upload(changeUserProfileImageDTO.ProfileImage, user)
+	uploadErr := c.UserProfileImageRepository.Upload(changeUserProfileImageDTO.ProfileImage.File, user)
 	if uploadErr != nil {
 		return uploadErr
 	}
@@ -48,14 +47,12 @@ func (c ChangeUserProfileImage) ChangeUserProfileImage(changeUserProfileImageDTO
 
 type ChangeUserProfileImageDTO struct {
 	UserID             model.UserID
-	ProfileImage       multipart.File
-	ProfileImageHeader *multipart.FileHeader
+	ProfileImage       model.UserProfileImage
 }
 
-func NewChangeUserProfileImageDTO(userId model.UserID, profileImage multipart.File, profileImageHeader *multipart.FileHeader) *ChangeUserProfileImageDTO {
+func NewChangeUserProfileImageDTO(userId model.UserID,profileImage *model.UserProfileImage) *ChangeUserProfileImageDTO {
 	return &ChangeUserProfileImageDTO{
 		UserID:             userId,
-		ProfileImage:       profileImage,
-		ProfileImageHeader: profileImageHeader,
+		ProfileImage:       *profileImage,
 	}
 }

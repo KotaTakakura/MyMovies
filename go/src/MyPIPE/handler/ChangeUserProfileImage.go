@@ -33,9 +33,16 @@ func (changeUserProfileImage ChangeUserProfileImage) ChangeUserProfileImage(c *g
 		validationErrors["user_id"] = userIdErr.Error()
 	}
 
+	var profileImage *model.UserProfileImage
+	var profileImageErr error
 	imageFile, imageHeader, imageFileErr := c.Request.FormFile("profileImage")
 	if imageFileErr != nil {
 		validationErrors["profile_image"] = imageFileErr.Error()
+	}else{
+		profileImage,profileImageErr = model.NewUserProfileImage(*imageHeader,imageFile)
+		if profileImageErr != nil{
+			validationErrors["profile_image"] = profileImageErr.Error()
+		}
 	}
 
 	if len(validationErrors) != 0 {
@@ -48,7 +55,7 @@ func (changeUserProfileImage ChangeUserProfileImage) ChangeUserProfileImage(c *g
 		return
 	}
 
-	changeUserProfileImageDTO := usecase.NewChangeUserProfileImageDTO(userId, imageFile, imageHeader)
+	changeUserProfileImageDTO := usecase.NewChangeUserProfileImageDTO(userId, profileImage)
 	changeProfileImageErr := changeUserProfileImage.ChangeUserProfileImageUsecase.ChangeUserProfileImage(changeUserProfileImageDTO)
 	if changeProfileImageErr != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -62,5 +69,4 @@ func (changeUserProfileImage ChangeUserProfileImage) ChangeUserProfileImage(c *g
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Posted!",
 	})
-
 }

@@ -3,7 +3,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>usecase: Go Coverage Report</title>
+		<title>handler: Go Coverage Report</title>
 		<style>
 			body {
 				background: black;
@@ -55,55 +55,45 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">MyPIPE/usecase/AddPlayListItem.go (100.0%)</option>
+				<option value="file0">MyPIPE/handler/Authorization.go (100.0%)</option>
 				
-				<option value="file1">MyPIPE/usecase/ChangeOrderOfPlayListMovies.go (100.0%)</option>
+				<option value="file1">MyPIPE/handler/ChangeOrderOfPlayListMovies.go (97.2%)</option>
 				
-				<option value="file2">MyPIPE/usecase/ChangePassword.go (83.3%)</option>
+				<option value="file2">MyPIPE/handler/ChangePassword.go (95.7%)</option>
 				
-				<option value="file3">MyPIPE/usecase/ChangeThumbnail.go (0.0%)</option>
+				<option value="file3">MyPIPE/handler/ChangeUserName.go (95.7%)</option>
 				
-				<option value="file4">MyPIPE/usecase/ChangeUserName.go (83.3%)</option>
+				<option value="file4">MyPIPE/handler/ChangeUserProfileImage.go (96.2%)</option>
 				
-				<option value="file5">MyPIPE/usecase/ChangeUserProfileImage.go (0.0%)</option>
+				<option value="file5">MyPIPE/handler/CheckUserAlreadyLikedMovie.go (100.0%)</option>
 				
-				<option value="file6">MyPIPE/usecase/CheckUserAlreadyLikedMovie.go (85.7%)</option>
+				<option value="file6">MyPIPE/handler/DeletePlayList.go (95.8%)</option>
 				
-				<option value="file7">MyPIPE/usecase/CreatePlayList.go (85.7%)</option>
+				<option value="file7">MyPIPE/handler/EvaluateMovie.go (96.6%)</option>
 				
-				<option value="file8">MyPIPE/usecase/DeletePlayList.go (83.3%)</option>
+				<option value="file8">MyPIPE/handler/FollowUser.go (0.0%)</option>
 				
-				<option value="file9">MyPIPE/usecase/DeletePlayListMovie.go (92.9%)</option>
+				<option value="file9">MyPIPE/handler/GetLoggedInUserData.go (64.3%)</option>
 				
-				<option value="file10">MyPIPE/usecase/EvaluateMovie.go (90.5%)</option>
+				<option value="file10">MyPIPE/handler/GetMovieAndComments.go (85.7%)</option>
 				
-				<option value="file11">MyPIPE/usecase/FollowUser.go (0.0%)</option>
+				<option value="file11">MyPIPE/handler/IndexMovie.go (66.7%)</option>
 				
-				<option value="file12">MyPIPE/usecase/GetLoggedInUserData.go (66.7%)</option>
+				<option value="file12">MyPIPE/handler/IndexPlayListInMovieListPage.go (82.6%)</option>
 				
-				<option value="file13">MyPIPE/usecase/GetMovieAndComments.go (66.7%)</option>
+				<option value="file13">MyPIPE/handler/IndexPlayListMovies.go (82.6%)</option>
 				
-				<option value="file14">MyPIPE/usecase/IndexMovie.go (80.0%)</option>
+				<option value="file14">MyPIPE/handler/IndexPlayListsInMyPage.go (57.9%)</option>
 				
-				<option value="file15">MyPIPE/usecase/IndexPlayListInMovieListPage.go (66.7%)</option>
+				<option value="file15">MyPIPE/handler/Movie.go (55.8%)</option>
 				
-				<option value="file16">MyPIPE/usecase/IndexPlayListItem.go (66.7%)</option>
+				<option value="file16">MyPIPE/handler/PlayList.go (93.3%)</option>
 				
-				<option value="file17">MyPIPE/usecase/IndexPlayListsInMyPage.go (66.7%)</option>
+				<option value="file17">MyPIPE/handler/PlayListItem.go (96.2%)</option>
 				
-				<option value="file18">MyPIPE/usecase/PostComment.go (91.7%)</option>
+				<option value="file18">MyPIPE/handler/PostComment.go (93.1%)</option>
 				
-				<option value="file19">MyPIPE/usecase/PostMovie.go (0.0%)</option>
-				
-				<option value="file20">MyPIPE/usecase/UpdateMovie.go (56.7%)</option>
-				
-				<option value="file21">MyPIPE/usecase/UploadedMovies.go (100.0%)</option>
-				
-				<option value="file22">MyPIPE/usecase/UserExistsForAuth.go (100.0%)</option>
-				
-				<option value="file23">MyPIPE/usecase/UserRegister.go (100.0%)</option>
-				
-				<option value="file24">MyPIPE/usecase/UserTemporaryRegistration.go (90.0%)</option>
+				<option value="file19">MyPIPE/handler/UploadMovieFile.go (0.0%)</option>
 				
 				</select>
 			</div>
@@ -117,1277 +107,1745 @@
 		</div>
 		<div id="content">
 		
-		<pre class="file" id="file0" style="display: none">package usecase
+		<pre class="file" id="file0" style="display: none">package handler
 
 import (
-        "MyPIPE/domain/factory"
         "MyPIPE/domain/model"
         "MyPIPE/domain/repository"
-        "errors"
+        "MyPIPE/usecase"
+        "github.com/gin-gonic/gin"
+        "net/http"
 )
 
-type IAddPlayListItem interface {
-        AddPlayListItem(playListItemAddJson *AddPlayListItemAddJson) error
+type Authorization struct {
+        UserRepository                   repository.UserRepository
+        UserTemporaryRegistrationUsecase usecase.IUserTemporaryRegistration
+        UserRegisterUsecase              usecase.IUserRegister
 }
 
-type AddPlayListItem struct {
-        PlayListRepository      repository.PlayListRepository
-        PlayListMovieRepository repository.PlayListMovieRepository
-        PlaylistMovieFactory    factory.IPlayListMovie
-}
-
-func NewAddPlayListItem(p repository.PlayListRepository, plmr repository.PlayListMovieRepository, plmf factory.IPlayListMovie) *AddPlayListItem <span class="cov8" title="1">{
-        return &amp;AddPlayListItem{
-                PlayListRepository:      p,
-                PlayListMovieRepository: plmr,
-                PlaylistMovieFactory:    plmf,
+func NewAuthorization(userRep repository.UserRepository, userTemporaryRegistrationUsecase usecase.IUserTemporaryRegistration, userRegisterUsecase usecase.IUserRegister) *Authorization <span class="cov8" title="1">{
+        return &amp;Authorization{
+                UserRepository:                   userRep,
+                UserTemporaryRegistrationUsecase: userTemporaryRegistrationUsecase,
+                UserRegisterUsecase:              userRegisterUsecase,
         }
 }</span>
 
-func (a AddPlayListItem) AddPlayListItem(playListItemAddJson *AddPlayListItemAddJson) error <span class="cov8" title="1">{
+func (authorization Authorization) TemporaryRegisterUser(c *gin.Context) <span class="cov8" title="1">{
 
-        playList, playListFindErr := a.PlayListRepository.FindByID(playListItemAddJson.PlayListID)
-        if playList == nil || playList.UserID != playListItemAddJson.UserID </span><span class="cov8" title="1">{
-                return errors.New("No Such PlayList.")
-        }</span>
-        <span class="cov8" title="1">if playListFindErr != nil </span><span class="cov8" title="1">{
-                return playListFindErr
+        var newUserInfo TemporaryRegisterUserJson
+        var newUser model.User
+        validationError := map[string]error{}
+        validationErrorMessages := map[string]string{}
+
+        c.Bind(&amp;newUserInfo)
+        newUser.Email, validationError["user_email"] = model.NewUserEmail(newUserInfo.Email)
+
+        if validationError["user_email"] != nil </span><span class="cov8" title="1">{
+                validationErrorMessages["user_email"] = validationError["user_email"].Error()
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":  "Validation Error",
+                        "message": validationErrorMessages,
+                })
+                c.Abort()
+                return
         }</span>
 
-        <span class="cov8" title="1">playListMovie, err := a.PlaylistMovieFactory.CreatePlayListMovie(playListItemAddJson.PlayListID, playListItemAddJson.MovieID)
+        <span class="cov8" title="1">err := authorization.UserTemporaryRegistrationUsecase.TemporaryRegister(&amp;newUser)
         if err != nil </span><span class="cov8" title="1">{
-                return err
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "message": "Temporary Registered!",
+                })
+                c.Abort()
+                return
         }</span>
-        <span class="cov8" title="1">savePlayListMovieErr := a.PlayListMovieRepository.Save(playListMovie)
-        if savePlayListMovieErr != nil </span><span class="cov8" title="1">{
-                return savePlayListMovieErr
-        }</span>
-
-        <span class="cov8" title="1">return nil</span>
-
+        <span class="cov8" title="1">c.JSON(http.StatusOK, gin.H{
+                "message": "Temporary Registered!",
+        })</span>
 }
 
-type AddPlayListItemAddJson struct {
-        PlayListID model.PlayListID
-        UserID     model.UserID
-        MovieID    model.MovieID
+type TemporaryRegisterUserJson struct {
+        Email string `json:"user_email"`
+}
+
+func (authorization Authorization) RegisterUser(c *gin.Context) <span class="cov8" title="1">{
+
+        var newUserInfo RegisterUserJson
+        c.Bind(&amp;newUserInfo)
+
+        validationErrors := map[string]error{}
+        errorMessages := map[string]string{}
+        validationErrorFlag := false
+
+        token := c.Query("token")
+
+        var newUser model.User
+        newUser.Name, validationErrors["user_name"] = model.NewUserName(newUserInfo.Name)
+
+        newUser.Password, validationErrors["user_password"] = model.NewUserPassword(newUserInfo.Password)
+
+        newUser.Token, validationErrors["user_token"] = model.NewUserToken(token)
+
+        validationErrors["user_birthday"] = newUser.SetBirthday(newUserInfo.Birthday)
+
+        for errorKey, errorContent := range validationErrors </span><span class="cov8" title="1">{
+                if errorContent != nil </span><span class="cov8" title="1">{
+                        validationErrorFlag = true
+                        errorMessages[errorKey] = errorContent.Error()
+                }</span>
+        }
+
+        <span class="cov8" title="1">if validationErrorFlag </span><span class="cov8" title="1">{
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "Validation Error",
+                        "messages": errorMessages,
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">registerUserError := authorization.UserRegisterUsecase.RegisterUser(&amp;newUser)
+
+        if registerUserError != nil </span><span class="cov8" title="1">{
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "result":   "Registration Error",
+                        "messages": registerUserError.Error(),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">c.JSON(http.StatusOK, gin.H{
+                "message": "Registered!",
+        })</span>
+}
+
+type RegisterUserJson struct {
+        Name     string `json:"user_name"`
+        Password string `json:"user_password"`
+        Birthday string `json:"user_birthday"`
 }
 </pre>
 		
-		<pre class="file" id="file1" style="display: none">package usecase
+		<pre class="file" id="file1" style="display: none">package handler
 
 import (
         "MyPIPE/domain/model"
         "MyPIPE/domain/repository"
+        "MyPIPE/usecase"
+        "encoding/json"
+        jwt "github.com/appleboy/gin-jwt/v2"
+        "github.com/gin-gonic/gin"
+        "net/http"
 )
-
-type IChangeOrderOfPlayListMovies interface {
-        ChangeOrderOfPlayListMovies(changeOrderOfPlayListMoviesDTO *ChangeOrderOfPlayListMoviesDTO) error
-}
 
 type ChangeOrderOfPlayListMovies struct {
-        PlayListMovieRepository repository.PlayListMovieRepository
+        PlayListMovieRepository            repository.PlayListMovieRepository
+        ChangeOrderOfPlayListMoviesUsecase usecase.IChangeOrderOfPlayListMovies
 }
 
-func NewChangeOrderOfPlayListMovies(p repository.PlayListMovieRepository) *ChangeOrderOfPlayListMovies <span class="cov8" title="1">{
+func NewChangeOrderOfPlayListMovies(playListMovieRepo repository.PlayListMovieRepository, changeOrderOfPlayListMoviesUsecase usecase.IChangeOrderOfPlayListMovies) *ChangeOrderOfPlayListMovies <span class="cov8" title="1">{
         return &amp;ChangeOrderOfPlayListMovies{
-                PlayListMovieRepository: p,
+                PlayListMovieRepository:            playListMovieRepo,
+                ChangeOrderOfPlayListMoviesUsecase: changeOrderOfPlayListMoviesUsecase,
         }
 }</span>
 
-func (c ChangeOrderOfPlayListMovies) ChangeOrderOfPlayListMovies(changeOrderOfPlayListMoviesDTO *ChangeOrderOfPlayListMoviesDTO) error <span class="cov8" title="1">{
-        playListMovies := c.PlayListMovieRepository.FindAll(changeOrderOfPlayListMoviesDTO.UserID, changeOrderOfPlayListMoviesDTO.PlayListID)
-        movieIdAndOrderMap := make(map[model.MovieID]model.PlayListMovieOrder)
+func (changeOrderOfPlayListMovies ChangeOrderOfPlayListMovies) ChangeOrderOfPlayListMovies(c *gin.Context) <span class="cov8" title="1">{
+        var changeOrderOfPlayListMoviesJson ChangeOrderOfPlayListMoviesJson
+        c.Bind(&amp;changeOrderOfPlayListMoviesJson)
+        userIdUint := uint64(jwt.ExtractClaims(c)["id"].(float64))
 
-        for _, movieAndOrder := range changeOrderOfPlayListMoviesDTO.MovieIDAndOrder </span><span class="cov8" title="1">{
-                movieIdAndOrderMap[movieAndOrder.MovieID] = movieAndOrder.Order
+        validationErrors := make(map[string]string)
+        var movieIdAndOrderForChangeOrderOfPlayListMoviesDTO usecase.MovieIdAndOrderForChangeOrderOfPlayListMoviesDTO
+        var changeOrderOfPlayListMoviesDTO usecase.ChangeOrderOfPlayListMoviesDTO
+        for _, value := range changeOrderOfPlayListMoviesJson.PlayListMovieIdAndOrder </span><span class="cov8" title="1">{
+                var movieIdErr error
+                movieIdAndOrderForChangeOrderOfPlayListMoviesDTO.MovieID, movieIdErr = model.NewMovieID(value.MovieID)
+                if movieIdErr != nil </span><span class="cov8" title="1">{
+                        validationErrors["movie_id"] = movieIdErr.Error()
+                }</span>
+
+                <span class="cov8" title="1">var OrderErr error
+                movieIdAndOrderForChangeOrderOfPlayListMoviesDTO.Order, OrderErr = model.NewPlayListMovieOrder(value.Order)
+                if OrderErr != nil </span><span class="cov8" title="1">{
+                        validationErrors["order"] = OrderErr.Error()
+                }</span>
+
+                <span class="cov8" title="1">changeOrderOfPlayListMoviesDTO.MovieIDAndOrder = append(changeOrderOfPlayListMoviesDTO.MovieIDAndOrder, movieIdAndOrderForChangeOrderOfPlayListMoviesDTO)</span>
+        }
+
+        <span class="cov8" title="1">userId, userIdErr := model.NewUserID(userIdUint)
+        if userIdErr != nil </span><span class="cov0" title="0">{
+                validationErrors["user_id"] = userIdErr.Error()
         }</span>
 
-        <span class="cov8" title="1">for i := 0; i &lt; len(playListMovies); i++ </span><span class="cov8" title="1">{
-                playListMovies[i].ChangeOrder(movieIdAndOrderMap[playListMovies[i].MovieID])
+        <span class="cov8" title="1">playListID, playListIDErr := model.NewPlayListID(changeOrderOfPlayListMoviesJson.PlayListID)
+        if playListIDErr != nil </span><span class="cov8" title="1">{
+                validationErrors["play_list_id"] = playListIDErr.Error()
         }</span>
 
-        <span class="cov8" title="1">saveErr := c.PlayListMovieRepository.SaveAll(playListMovies)
-        if saveErr != nil </span><span class="cov8" title="1">{
-                return saveErr
+        <span class="cov8" title="1">if len(validationErrors) != 0 </span><span class="cov8" title="1">{
+                validationErrors, _ := json.Marshal(validationErrors)
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "Validation Error.",
+                        "messages": string(validationErrors),
+                })
+                c.Abort()
+                return
         }</span>
-        <span class="cov8" title="1">return nil</span>
+
+        <span class="cov8" title="1">changeOrderOfPlayListMoviesDTO.UserID = userId
+        changeOrderOfPlayListMoviesDTO.PlayListID = playListID
+
+        result := changeOrderOfPlayListMovies.ChangeOrderOfPlayListMoviesUsecase.ChangeOrderOfPlayListMovies(&amp;changeOrderOfPlayListMoviesDTO)
+        if result != nil </span><span class="cov8" title="1">{
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "result":   "Validation Error.",
+                        "messages": result.Error(),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">c.JSON(http.StatusOK, gin.H{
+                "message": "OK",
+        })</span>
 }
 
-type ChangeOrderOfPlayListMoviesDTO struct {
-        UserID          model.UserID
-        PlayListID      model.PlayListID
-        MovieIDAndOrder []MovieIdAndOrderForChangeOrderOfPlayListMoviesDTO
+type ChangeOrderOfPlayListMoviesJson struct {
+        PlayListID              uint64                                                      `json:"play_list_id"`
+        PlayListMovieIdAndOrder []PlayListMovieIdAndOrderForChangeOrderOfPlayListMoviesJson `json:"play_list_movie_id_and_order"`
 }
 
-type MovieIdAndOrderForChangeOrderOfPlayListMoviesDTO struct {
-        MovieID model.MovieID
-        Order   model.PlayListMovieOrder
+type PlayListMovieIdAndOrderForChangeOrderOfPlayListMoviesJson struct {
+        MovieID uint64 `json:"play_list_movie_id"`
+        Order   int    `json:"play_lise_movie_order"`
 }
 </pre>
 		
-		<pre class="file" id="file2" style="display: none">package usecase
+		<pre class="file" id="file2" style="display: none">package handler
 
 import (
         "MyPIPE/domain/model"
         "MyPIPE/domain/repository"
+        "MyPIPE/usecase"
+        "encoding/json"
+        jwt "github.com/appleboy/gin-jwt/v2"
+        "github.com/gin-gonic/gin"
+        "net/http"
 )
-
-type IChangePassword interface {
-        ChangePassword(changePasswordDTO *ChangePasswordDTO) error
-}
 
 type ChangePassword struct {
-        UserRepository repository.UserRepository
+        UsrRepository         repository.UserRepository
+        ChangePasswordUsecase usecase.IChangePassword
 }
 
-func NewChangePassword(u repository.UserRepository) *ChangePassword <span class="cov8" title="1">{
+func NewChangePassword(u repository.UserRepository, c usecase.IChangePassword) *ChangePassword <span class="cov8" title="1">{
         return &amp;ChangePassword{
-                UserRepository: u,
+                UsrRepository:         u,
+                ChangePasswordUsecase: c,
         }
 }</span>
 
-func (c ChangePassword) ChangePassword(changePasswordDTO *ChangePasswordDTO) error <span class="cov8" title="1">{
-        user, findUserErr := c.UserRepository.FindById(changePasswordDTO.UserID)
-        if findUserErr != nil </span><span class="cov8" title="1">{
-                return findUserErr
+func (changePassword ChangePassword) ChangePassword(c *gin.Context) <span class="cov8" title="1">{
+        userIdUint := uint64(jwt.ExtractClaims(c)["id"].(float64))
+        validationErrors := make(map[string]string)
+        userId, userIdErr := model.NewUserID(userIdUint)
+        if userIdErr != nil </span><span class="cov0" title="0">{
+                validationErrors["user_id"] = userIdErr.Error()
         }</span>
 
-        <span class="cov8" title="1">changePasswordErr := user.ChangePassword(changePasswordDTO.Password)
-        if changePasswordErr != nil </span><span class="cov0" title="0">{
-                return changePasswordErr
+        <span class="cov8" title="1">var changePasswordJson ChangePasswordJson
+        c.Bind(&amp;changePasswordJson)
+        userPassword, userPasswordErr := model.NewUserPassword(changePasswordJson.Password)
+        if userPasswordErr != nil </span><span class="cov8" title="1">{
+                validationErrors["password"] = userPasswordErr.Error()
         }</span>
 
-        <span class="cov8" title="1">updateUserErr := c.UserRepository.UpdateUser(user)
-        if updateUserErr != nil </span><span class="cov8" title="1">{
-                return updateUserErr
+        <span class="cov8" title="1">if len(validationErrors) != 0 </span><span class="cov8" title="1">{
+                validationErrors, _ := json.Marshal(validationErrors)
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "Validation Error.",
+                        "messages": string(validationErrors),
+                })
+                c.Abort()
+                return
         }</span>
 
-        <span class="cov8" title="1">return nil</span>
+        <span class="cov8" title="1">changePasswordDTO := usecase.NewChangePasswordDTO(userId, userPassword)
+        err := changePassword.ChangePasswordUsecase.ChangePassword(changePasswordDTO)
+        if err != nil </span><span class="cov8" title="1">{
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "result":   "Error.",
+                        "messages": err.Error(),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">c.JSON(http.StatusOK, gin.H{
+                "result":   "Success.",
+                "messages": "OK",
+        })</span>
+
 }
 
-type ChangePasswordDTO struct {
-        UserID   model.UserID
-        Password model.UserPassword
+type ChangePasswordJson struct {
+        Password string `json:"password"`
 }
-
-func NewChangePasswordDTO(userId model.UserID, password model.UserPassword) *ChangePasswordDTO <span class="cov0" title="0">{
-        return &amp;ChangePasswordDTO{
-                UserID:   userId,
-                Password: password,
-        }
-}</span>
 </pre>
 		
-		<pre class="file" id="file3" style="display: none">package usecase
+		<pre class="file" id="file3" style="display: none">package handler
 
 import (
         "MyPIPE/domain/model"
         "MyPIPE/domain/repository"
-        "mime/multipart"
+        "MyPIPE/usecase"
+        "encoding/json"
+        jwt "github.com/appleboy/gin-jwt/v2"
+        "github.com/gin-gonic/gin"
+        "net/http"
 )
-
-type IChangeThumbnail interface {
-        ChangeThumbnail(changeThumbnailDTO ChangeThumbnailDTO) error
-}
-
-type ChangeThumbnail struct {
-        MovieRepository           repository.MovieRepository
-        ThumbnailUploadRepository repository.ThumbnailUploadRepository
-}
-
-func NewChangeThumbnail(m repository.MovieRepository, t repository.ThumbnailUploadRepository) *ChangeThumbnail <span class="cov0" title="0">{
-        return &amp;ChangeThumbnail{
-                MovieRepository:           m,
-                ThumbnailUploadRepository: t,
-        }
-}</span>
-
-func (c ChangeThumbnail) ChangeThumbnail(changeThumbnailDTO ChangeThumbnailDTO) error <span class="cov0" title="0">{
-        movie, findMovieErr := c.MovieRepository.FindByUserIdAndMovieId(changeThumbnailDTO.UserID, changeThumbnailDTO.MovieID)
-        if findMovieErr != nil </span><span class="cov0" title="0">{
-                return findMovieErr
-        }</span>
-
-        <span class="cov0" title="0">thumbnailName, thumbnailNameErr := model.NewMovieThumbnailName(changeThumbnailDTO.ThumbnailHeader)
-        if thumbnailNameErr != nil </span><span class="cov0" title="0">{
-                return thumbnailNameErr
-        }</span>
-
-        <span class="cov0" title="0">changeThumbnailNameErr := movie.ChangeThumbnailName(thumbnailName)
-        if changeThumbnailNameErr != nil </span><span class="cov0" title="0">{
-                return changeThumbnailNameErr
-        }</span>
-
-        <span class="cov0" title="0">_, updateErr := c.MovieRepository.Update(*movie)
-        if updateErr != nil </span><span class="cov0" title="0">{
-                return updateErr
-        }</span>
-
-        <span class="cov0" title="0">thumbnailUploadErr := c.ThumbnailUploadRepository.Upload(changeThumbnailDTO.Thumbnail, *movie)
-        if thumbnailUploadErr != nil </span><span class="cov0" title="0">{
-                return thumbnailUploadErr
-        }</span>
-
-        <span class="cov0" title="0">return nil</span>
-}
-
-type ChangeThumbnailDTO struct {
-        UserID          model.UserID
-        MovieID         model.MovieID
-        Thumbnail       multipart.File
-        ThumbnailHeader multipart.FileHeader
-}
-
-func NewChangeThumbnailDTO(userId model.UserID, movieId model.MovieID, thumbnail multipart.File, thumbnailHeader multipart.FileHeader) *ChangeThumbnailDTO <span class="cov0" title="0">{
-        return &amp;ChangeThumbnailDTO{
-                UserID:          userId,
-                MovieID:         movieId,
-                Thumbnail:       thumbnail,
-                ThumbnailHeader: thumbnailHeader,
-        }
-}</span>
-</pre>
-		
-		<pre class="file" id="file4" style="display: none">package usecase
-
-import (
-        "MyPIPE/domain/model"
-        "MyPIPE/domain/repository"
-)
-
-type IChangeUserName interface {
-        ChangeUserName(changeUserNameDTO *ChangeUserNameDTO) error
-}
 
 type ChangeUserName struct {
-        UserRepository repository.UserRepository
+        UserRepository        repository.UserRepository
+        ChangeUserNameUsecase usecase.IChangeUserName
 }
 
-func NewChangeUserName(u repository.UserRepository) *ChangeUserName <span class="cov8" title="1">{
+func NewChangeUserName(u repository.UserRepository, c usecase.IChangeUserName) *ChangeUserName <span class="cov8" title="1">{
         return &amp;ChangeUserName{
-                UserRepository: u,
+                UserRepository:        u,
+                ChangeUserNameUsecase: c,
         }
 }</span>
 
-func (c ChangeUserName) ChangeUserName(changeUserNameDTO *ChangeUserNameDTO) error <span class="cov8" title="1">{
-        user, findUserErr := c.UserRepository.FindById(changeUserNameDTO.UserID)
-        if findUserErr != nil </span><span class="cov8" title="1">{
-                return findUserErr
+func (changeUserName ChangeUserName) ChangeUserName(c *gin.Context) <span class="cov8" title="1">{
+        userIdUint := uint64(jwt.ExtractClaims(c)["id"].(float64))
+        validationErrors := make(map[string]string)
+
+        userId, userIdErr := model.NewUserID(userIdUint)
+        if userIdErr != nil </span><span class="cov0" title="0">{
+                validationErrors["user_id"] = userIdErr.Error()
         }</span>
 
-        <span class="cov8" title="1">changeUserNameErr := user.ChangeName(changeUserNameDTO.UserName)
-        if changeUserNameErr != nil </span><span class="cov0" title="0">{
-                return changeUserNameErr
+        <span class="cov8" title="1">var changeUserNameJson ChangeUserNameJson
+        c.Bind(&amp;changeUserNameJson)
+        userName, userNameErr := model.NewUserName(changeUserNameJson.UserName)
+        if userNameErr != nil </span><span class="cov8" title="1">{
+                validationErrors["user_name"] = userNameErr.Error()
         }</span>
 
-        <span class="cov8" title="1">updateUserErr := c.UserRepository.UpdateUser(user)
-        if updateUserErr != nil </span><span class="cov8" title="1">{
-                return updateUserErr
+        <span class="cov8" title="1">if len(validationErrors) != 0 </span><span class="cov8" title="1">{
+                validationErrors, _ := json.Marshal(validationErrors)
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "Validation Error.",
+                        "messages": string(validationErrors),
+                })
+                c.Abort()
+                return
         }</span>
 
-        <span class="cov8" title="1">return nil</span>
+        <span class="cov8" title="1">changeUserNameDTO := usecase.NewChangeUserNameDTO(userId, userName)
+        err := changeUserName.ChangeUserNameUsecase.ChangeUserName(changeUserNameDTO)
+
+        if err != nil </span><span class="cov8" title="1">{
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "result":   "Error.",
+                        "messages": err.Error(),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">c.JSON(http.StatusOK, gin.H{
+                "result":   "Success.",
+                "messages": "OK",
+        })</span>
+
 }
 
-type ChangeUserNameDTO struct {
-        UserID   model.UserID
-        UserName model.UserName
+type ChangeUserNameJson struct {
+        UserName string `json:"user_name"`
 }
-
-func NewChangeUserNameDTO(userId model.UserID, userName model.UserName) *ChangeUserNameDTO <span class="cov0" title="0">{
-        return &amp;ChangeUserNameDTO{
-                UserID:   userId,
-                UserName: userName,
-        }
-}</span>
 </pre>
 		
-		<pre class="file" id="file5" style="display: none">package usecase
+		<pre class="file" id="file4" style="display: none">package handler
 
 import (
         "MyPIPE/domain/model"
         "MyPIPE/domain/repository"
-        "mime/multipart"
+        "MyPIPE/usecase"
+        "encoding/json"
+        jwt "github.com/appleboy/gin-jwt/v2"
+        "github.com/gin-gonic/gin"
+        "net/http"
 )
-
-type IChangeUserProfilieImage interface {
-        ChangeUserProfileImage(changeUserProfileImageDTO *ChangeUserProfileImageDTO) error
-}
 
 type ChangeUserProfileImage struct {
-        UserRepository             repository.UserRepository
-        UserProfileImageRepository repository.UserProfileImageRepository
+        UserRepository                repository.UserRepository
+        UserProfileImageRepository    repository.UserProfileImageRepository
+        ChangeUserProfileImageUsecase usecase.IChangeUserProfilieImage
 }
 
-func NewChangeUserProfileImage(userRepo repository.UserRepository, userProfileImageRepo repository.UserProfileImageRepository) *ChangeUserProfileImage <span class="cov0" title="0">{
+func NewChangeUserProfileImage(userRepo repository.UserRepository, userProfileImageRepo repository.UserProfileImageRepository, changeUserProfileImageUsecase usecase.IChangeUserProfilieImage) *ChangeUserProfileImage <span class="cov8" title="1">{
         return &amp;ChangeUserProfileImage{
-                UserRepository:             userRepo,
-                UserProfileImageRepository: userProfileImageRepo,
+                UserRepository:                userRepo,
+                UserProfileImageRepository:    userProfileImageRepo,
+                ChangeUserProfileImageUsecase: changeUserProfileImageUsecase,
         }
 }</span>
 
-func (c ChangeUserProfileImage) ChangeUserProfileImage(changeUserProfileImageDTO *ChangeUserProfileImageDTO) error <span class="cov0" title="0">{
-        user, findUserErr := c.UserRepository.FindById(changeUserProfileImageDTO.UserID)
-        if findUserErr != nil </span><span class="cov0" title="0">{
-                return findUserErr
+func (changeUserProfileImage ChangeUserProfileImage) ChangeUserProfileImage(c *gin.Context) <span class="cov8" title="1">{
+        userIdUint := uint64(jwt.ExtractClaims(c)["id"].(float64))
+        validationErrors := make(map[string]string)
+
+        userId, userIdErr := model.NewUserID(userIdUint)
+        if userIdErr != nil </span><span class="cov0" title="0">{
+                validationErrors["user_id"] = userIdErr.Error()
         }</span>
 
-        <span class="cov0" title="0">setProfileImageErr := user.SetProfileImage(changeUserProfileImageDTO.ProfileImageHeader)
-        if setProfileImageErr != nil </span><span class="cov0" title="0">{
-                return setProfileImageErr
-        }</span>
-
-        <span class="cov0" title="0">uploadErr := c.UserProfileImageRepository.Upload(changeUserProfileImageDTO.ProfileImage, user)
-        if uploadErr != nil </span><span class="cov0" title="0">{
-                return uploadErr
-        }</span>
-
-        <span class="cov0" title="0">updateUserErr := c.UserRepository.UpdateUser(user)
-        if updateUserErr != nil </span><span class="cov0" title="0">{
-                return updateUserErr
-        }</span>
-
-        <span class="cov0" title="0">return nil</span>
-}
-
-type ChangeUserProfileImageDTO struct {
-        UserID             model.UserID
-        ProfileImage       multipart.File
-        ProfileImageHeader *multipart.FileHeader
-}
-
-func NewChangeUserProfileImageDTO(userId model.UserID, profileImage multipart.File, profileImageHeader *multipart.FileHeader) *ChangeUserProfileImageDTO <span class="cov0" title="0">{
-        return &amp;ChangeUserProfileImageDTO{
-                UserID:             userId,
-                ProfileImage:       profileImage,
-                ProfileImageHeader: profileImageHeader,
+        <span class="cov8" title="1">var profileImage *model.UserProfileImage
+        var profileImageErr error
+        imageFile, imageHeader, imageFileErr := c.Request.FormFile("profileImage")
+        if imageFileErr != nil </span><span class="cov8" title="1">{
+                validationErrors["profile_image"] = imageFileErr.Error()
+        }</span>else<span class="cov8" title="1">{
+                profileImage,profileImageErr = model.NewUserProfileImage(*imageHeader,imageFile)
+                if profileImageErr != nil</span><span class="cov8" title="1">{
+                        validationErrors["profile_image"] = profileImageErr.Error()
+                }</span>
         }
-}</span>
+
+        <span class="cov8" title="1">if len(validationErrors) != 0 </span><span class="cov8" title="1">{
+                validationErrors, _ := json.Marshal(validationErrors)
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "Validation Error.",
+                        "messages": string(validationErrors),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">changeUserProfileImageDTO := usecase.NewChangeUserProfileImageDTO(userId, profileImage)
+        changeProfileImageErr := changeUserProfileImage.ChangeUserProfileImageUsecase.ChangeUserProfileImage(changeUserProfileImageDTO)
+        if changeProfileImageErr != nil </span><span class="cov8" title="1">{
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "result":   "Profile Image Set Failed.",
+                        "messages": changeProfileImageErr.Error(),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">c.JSON(http.StatusOK, gin.H{
+                "message": "Posted!",
+        })</span>
+}
 </pre>
 		
-		<pre class="file" id="file6" style="display: none">package usecase
+		<pre class="file" id="file5" style="display: none">package handler
 
 import (
         "MyPIPE/domain/model"
         "MyPIPE/domain/repository"
+        "MyPIPE/usecase"
+        "encoding/json"
+        "github.com/gin-gonic/gin"
+        "net/http"
+        "strconv"
 )
-
-type ICheckUserAlreadyLikedMovie interface {
-        Find(checkUserAlreadyLikedMovieFindDTO *CheckUserAlreadyLikedMovieFindDTO) bool
-}
 
 type CheckUserAlreadyLikedMovie struct {
-        MovieEvaluationRepository repository.MovieEvaluationRepository
+        MovieEvaluationRepository         repository.MovieEvaluationRepository
+        CheckUserAlreadyLikedMovieUsecase usecase.ICheckUserAlreadyLikedMovie
 }
 
-func NewCheckUserAlreadyLikedMovie(mer repository.MovieEvaluationRepository) *CheckUserAlreadyLikedMovie <span class="cov8" title="1">{
+func NewCheckUserAlreadyLikedMovie(movieEvaluationRepo repository.MovieEvaluationRepository, checkUserAlreadyLikedMovieUsecase usecase.ICheckUserAlreadyLikedMovie) *CheckUserAlreadyLikedMovie <span class="cov8" title="1">{
         return &amp;CheckUserAlreadyLikedMovie{
-                MovieEvaluationRepository: mer,
+                MovieEvaluationRepository:         movieEvaluationRepo,
+                CheckUserAlreadyLikedMovieUsecase: checkUserAlreadyLikedMovieUsecase,
         }
 }</span>
 
-func (c CheckUserAlreadyLikedMovie) Find(checkUserAlreadyLikedMovieFindDTO *CheckUserAlreadyLikedMovieFindDTO) bool <span class="cov8" title="1">{
-        evaluation, _ := model.NewEvaluation("good")
-        movieEvaluation := c.MovieEvaluationRepository.FindByUserIdAndMovieIdAndEvaluation(checkUserAlreadyLikedMovieFindDTO.UserID, checkUserAlreadyLikedMovieFindDTO.MovieID, evaluation)
-        if movieEvaluation == nil </span><span class="cov8" title="1">{
-                return false
+func (checkUserAlreadyLikedMovie CheckUserAlreadyLikedMovie) CheckUserAlreadyLikedMovie(c *gin.Context) <span class="cov8" title="1">{
+        var checkUserAlreadyLikedMovieJson CheckUserAlreadyLikedMovieJson
+        c.Bind(&amp;checkUserAlreadyLikedMovieJson)
+        userIdString := c.Query("user_id")
+        movieIdString := c.Query("movie_id")
+
+        validationErrors := make(map[string]string)
+        var userId model.UserID
+        var movieId model.MovieID
+
+        userIdUint64, userIdUint64Err := strconv.ParseUint(userIdString, 10, 64)
+
+        if userIdUint64Err != nil </span><span class="cov8" title="1">{
+                validationErrors["user_id"] = userIdUint64Err.Error()
+        }</span> else<span class="cov8" title="1"> {
+                userId, _ = model.NewUserID(userIdUint64)
         }</span>
-        <span class="cov8" title="1">return true</span>
+
+        <span class="cov8" title="1">movieIdUint64, movieIdUint64Err := strconv.ParseUint(movieIdString, 10, 64)
+        if movieIdUint64Err != nil </span><span class="cov8" title="1">{
+                validationErrors["movie_id"] = movieIdUint64Err.Error()
+        }</span> else<span class="cov8" title="1"> {
+                movieId, _ = model.NewMovieID(movieIdUint64)
+        }</span>
+
+        <span class="cov8" title="1">if len(validationErrors) != 0 </span><span class="cov8" title="1">{
+                validationErrors, _ := json.Marshal(validationErrors)
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "Validation Error.",
+                        "messages": string(validationErrors),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">checkUserAlreadyLikedMovieFindDTO := usecase.NewCheckUserAlreadyLikedMovieFindDTO(userId, movieId)
+        result := checkUserAlreadyLikedMovie.CheckUserAlreadyLikedMovieUsecase.Find(checkUserAlreadyLikedMovieFindDTO)
+
+        if result </span><span class="cov8" title="1">{
+                c.JSON(http.StatusOK, gin.H{
+                        "evaluated": "true",
+                })
+        }</span> else<span class="cov8" title="1"> {
+                c.JSON(http.StatusOK, gin.H{
+                        "evaluated": "false",
+                })
+        }</span>
 }
 
-type CheckUserAlreadyLikedMovieFindDTO struct {
-        UserID  model.UserID
-        MovieID model.MovieID
+type CheckUserAlreadyLikedMovieJson struct {
+        UserID  uint64
+        MovieID uint64
 }
-
-func NewCheckUserAlreadyLikedMovieFindDTO(userId model.UserID, movieId model.MovieID) *CheckUserAlreadyLikedMovieFindDTO <span class="cov0" title="0">{
-        return &amp;CheckUserAlreadyLikedMovieFindDTO{
-                UserID:  userId,
-                MovieID: movieId,
-        }
-}</span>
 </pre>
 		
-		<pre class="file" id="file7" style="display: none">package usecase
+		<pre class="file" id="file6" style="display: none">package handler
 
 import (
         "MyPIPE/domain/model"
         "MyPIPE/domain/repository"
+        "MyPIPE/usecase"
+        "encoding/json"
+        jwt "github.com/appleboy/gin-jwt/v2"
+        "github.com/gin-gonic/gin"
+        "net/http"
+        "strconv"
 )
-
-type ICreatePlayList interface {
-        CreatePlayList(createPlayList *CreatePlayListDTO) error
-}
-
-type CreatePlayList struct {
-        UserRepository     repository.UserRepository
-        PlayListRepository repository.PlayListRepository
-}
-
-func NewCreatePlayList(u repository.UserRepository, p repository.PlayListRepository) *CreatePlayList <span class="cov8" title="1">{
-        return &amp;CreatePlayList{
-                UserRepository:     u,
-                PlayListRepository: p,
-        }
-}</span>
-
-func (c CreatePlayList) CreatePlayList(createPlayList *CreatePlayListDTO) error <span class="cov8" title="1">{
-        playList := model.NewPlayList(createPlayList.UserID, createPlayList.PlayListName, createPlayList.PlayListDescription)
-
-        saveErr := c.PlayListRepository.Save(playList)
-        if saveErr != nil </span><span class="cov8" title="1">{
-                return saveErr
-        }</span>
-        <span class="cov8" title="1">return nil</span>
-}
-
-type CreatePlayListDTO struct {
-        UserID              model.UserID
-        PlayListName        model.PlayListName
-        PlayListDescription model.PlayListDescription
-}
-
-func NewCreatePlayListDTO(userId model.UserID, playListName model.PlayListName, playListDescription model.PlayListDescription) *CreatePlayListDTO <span class="cov0" title="0">{
-        return &amp;CreatePlayListDTO{
-                UserID:              userId,
-                PlayListName:        playListName,
-                PlayListDescription: playListDescription,
-        }
-}</span>
-</pre>
-		
-		<pre class="file" id="file8" style="display: none">package usecase
-
-import (
-        "MyPIPE/domain/model"
-        "MyPIPE/domain/repository"
-)
-
-type IDeletePlayList interface {
-        Delete(deletePlayListDTO *DeletePlayListDTO) error
-}
 
 type DeletePlayList struct {
-        PlayListRepository repository.PlayListRepository
+        PlayListRepository    repository.PlayListRepository
+        DeletePlayListUsecase usecase.IDeletePlayList
 }
 
-func NewDeletePlayList(p repository.PlayListRepository) *DeletePlayList <span class="cov8" title="1">{
+func NewDeletePlayList(playListRepo repository.PlayListRepository, deletePlayListUsecase usecase.IDeletePlayList) *DeletePlayList <span class="cov8" title="1">{
         return &amp;DeletePlayList{
-                PlayListRepository: p,
+                PlayListRepository:    playListRepo,
+                DeletePlayListUsecase: deletePlayListUsecase,
         }
 }</span>
 
-func (d DeletePlayList) Delete(deletePlayListDTO *DeletePlayListDTO) error <span class="cov8" title="1">{
-        result := d.PlayListRepository.Remove(deletePlayListDTO.UserID, deletePlayListDTO.PlaylistID)
+func (deletePlayList DeletePlayList) DeletePlayList(c *gin.Context) <span class="cov8" title="1">{
+        validationErrors := make(map[string]string)
+        userIdUint := uint64((jwt.ExtractClaims(c)["id"]).(float64))
+        userId, userIdErr := model.NewUserID(userIdUint)
+        if userIdErr != nil </span><span class="cov0" title="0">{
+                validationErrors["user_id"] = userIdErr.Error()
+        }</span>
+
+        <span class="cov8" title="1">var playListId model.PlayListID
+        playListIdString := c.Query("play_list_id")
+        playListIdUint, playListIdUintErr := strconv.ParseUint(playListIdString, 10, 64)
+        if playListIdUintErr != nil </span><span class="cov8" title="1">{
+                validationErrors["play_list_id"] = playListIdUintErr.Error()
+        }</span> else<span class="cov8" title="1"> {
+                playListId, _ = model.NewPlayListID(playListIdUint)
+        }</span>
+
+        <span class="cov8" title="1">if len(validationErrors) != 0 </span><span class="cov8" title="1">{
+                validationErrors, _ := json.Marshal(validationErrors)
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "Validation Error.",
+                        "messages": string(validationErrors),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">deletePlayListDTO := usecase.NewDeletePlayListDTO(userId, playListId)
+        result := deletePlayList.DeletePlayListUsecase.Delete(deletePlayListDTO)
+
         if result != nil </span><span class="cov8" title="1">{
-                return result
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "result":   "Error.",
+                        "messages": result.Error(),
+                })
+                c.Abort()
+                return
         }</span>
-        <span class="cov8" title="1">return nil</span>
-}
 
-type DeletePlayListDTO struct {
-        UserID     model.UserID
-        PlaylistID model.PlayListID
+        <span class="cov8" title="1">c.JSON(http.StatusOK, gin.H{
+                "result":   "Success.",
+                "messages": "OK",
+        })</span>
 }
-
-func NewDeletePlayListDTO(userId model.UserID, playListId model.PlayListID) *DeletePlayListDTO <span class="cov0" title="0">{
-        return &amp;DeletePlayListDTO{
-                UserID:     userId,
-                PlaylistID: playListId,
-        }
-}</span>
 </pre>
 		
-		<pre class="file" id="file9" style="display: none">package usecase
+		<pre class="file" id="file7" style="display: none">package handler
 
 import (
         "MyPIPE/domain/model"
         "MyPIPE/domain/repository"
-        "errors"
+        "MyPIPE/usecase"
+        "encoding/json"
+        jwt "github.com/appleboy/gin-jwt/v2"
+        "github.com/gin-gonic/gin"
+        "net/http"
 )
-
-type IDeletePlayListMovie interface {
-        DeletePlayListItem(playListItemDeleteJson *DeletePlayListMovieDTO) error
-}
-
-type DeletePlayListMovie struct {
-        PlayListRepository      repository.PlayListRepository
-        PlayListMovieRepository repository.PlayListMovieRepository
-}
-
-func NewDeletePlayListMovie(p repository.PlayListRepository, plmr repository.PlayListMovieRepository) *DeletePlayListMovie <span class="cov8" title="1">{
-        return &amp;DeletePlayListMovie{
-                PlayListRepository:      p,
-                PlayListMovieRepository: plmr,
-        }
-}</span>
-
-func (a DeletePlayListMovie) DeletePlayListItem(playListItemDeleteJson *DeletePlayListMovieDTO) error <span class="cov8" title="1">{
-
-        playList, playListFindErr := a.PlayListRepository.FindByID(playListItemDeleteJson.PlayListID)
-        if playList == nil || playList.UserID != playListItemDeleteJson.UserID </span><span class="cov8" title="1">{
-                return errors.New("No Such PlayList.")
-        }</span>
-        <span class="cov8" title="1">if playListFindErr != nil </span><span class="cov8" title="1">{
-                return playListFindErr
-        }</span>
-
-        <span class="cov8" title="1">playListMovie := a.PlayListMovieRepository.Find(playListItemDeleteJson.UserID, playListItemDeleteJson.PlayListID, playListItemDeleteJson.MovieID)
-        if playListMovie == nil </span><span class="cov8" title="1">{
-                return errors.New("No Such PlayListMovie.")
-        }</span>
-
-        <span class="cov8" title="1">removePlayListMovieErr := a.PlayListMovieRepository.Remove(playListMovie)
-        if removePlayListMovieErr != nil </span><span class="cov8" title="1">{
-                return removePlayListMovieErr
-        }</span>
-
-        <span class="cov8" title="1">return nil</span>
-
-}
-
-type DeletePlayListMovieDTO struct {
-        PlayListID model.PlayListID
-        UserID     model.UserID
-        MovieID    model.MovieID
-}
-
-func NewDeletePlayListMovieJson(playListID model.PlayListID, userId model.UserID, movieId model.MovieID) *DeletePlayListMovieDTO <span class="cov0" title="0">{
-        return &amp;DeletePlayListMovieDTO{
-                PlayListID: playListID,
-                UserID:     userId,
-                MovieID:    movieId,
-        }
-}</span>
-</pre>
-		
-		<pre class="file" id="file10" style="display: none">package usecase
-
-import (
-        "MyPIPE/domain/model"
-        "MyPIPE/domain/repository"
-        "errors"
-)
-
-type IEvaluateMovie interface {
-        EvaluateMovie(evaluateMovieDTO *EvaluateMovieDTO) error
-}
 
 type EvaluateMovie struct {
         MovieRepository           repository.MovieRepository
         MovieEvaluationRepository repository.MovieEvaluationRepository
+        EvaluateMovieUsecase      usecase.IEvaluateMovie
 }
 
-func NewEvaluateUsecase(m repository.MovieRepository, me repository.MovieEvaluationRepository) *EvaluateMovie <span class="cov8" title="1">{
+func NewEvaluateMovie(movieRepo repository.MovieRepository, movieEvaluateRepo repository.MovieEvaluationRepository, evaluateMovieUsecase usecase.IEvaluateMovie) *EvaluateMovie <span class="cov8" title="1">{
         return &amp;EvaluateMovie{
-                MovieRepository:           m,
-                MovieEvaluationRepository: me,
+                MovieRepository:           movieRepo,
+                MovieEvaluationRepository: movieEvaluateRepo,
+                EvaluateMovieUsecase:      evaluateMovieUsecase,
         }
 }</span>
 
-func (e EvaluateMovie) EvaluateMovie(evaluateMovieDTO *EvaluateMovieDTO) error <span class="cov8" title="1">{
-        movie, movieErr := e.MovieRepository.FindById(evaluateMovieDTO.MovieID)
-        if movieErr != nil </span><span class="cov8" title="1">{
-                return movieErr
+func (evaluateMovie EvaluateMovie) EvaluateMovie(c *gin.Context) <span class="cov8" title="1">{
+        var evaluateMovieJson EvaluateMovieJson
+        c.Bind(&amp;evaluateMovieJson)
+
+        userId := uint64(jwt.ExtractClaims(c)["id"].(float64))
+        var evaluateMovieDTO usecase.EvaluateMovieDTO
+        validationErrors := make(map[string]string)
+        var userIdErr error
+        evaluateMovieDTO.UserID, userIdErr = model.NewUserID(userId)
+        if userIdErr != nil </span><span class="cov0" title="0">{
+                validationErrors["user_id"] = userIdErr.Error()
         }</span>
 
-        <span class="cov8" title="1">if movie == nil </span><span class="cov8" title="1">{
-                return errors.New("No Such Movie.")
+        <span class="cov8" title="1">var movieIdErr error
+        evaluateMovieDTO.MovieID, movieIdErr = model.NewMovieID(evaluateMovieJson.MovieID)
+        if movieIdErr != nil </span><span class="cov8" title="1">{
+                validationErrors["movie_id"] = movieIdErr.Error()
         }</span>
 
-        <span class="cov8" title="1">movieEvaluation := e.MovieEvaluationRepository.FindByUserIdAndMovieId(evaluateMovieDTO.UserID, evaluateMovieDTO.MovieID)
-
-        if movieEvaluation == nil </span><span class="cov8" title="1">{
-                newMovieEvaluation := model.NewMovieEvaluation(evaluateMovieDTO.UserID, evaluateMovieDTO.MovieID, evaluateMovieDTO.Evaluation)
-                evaluationSaveErr := e.MovieEvaluationRepository.Save(newMovieEvaluation)
-                if evaluationSaveErr != nil </span><span class="cov8" title="1">{
-                        return evaluationSaveErr
-                }</span>
-                <span class="cov8" title="1">return nil</span>
-        }
-
-        <span class="cov8" title="1">evaluationErr := movieEvaluation.EvaluateMovie(evaluateMovieDTO.Evaluation)
-        if evaluationErr != nil </span><span class="cov0" title="0">{
-                return evaluationErr
+        <span class="cov8" title="1">var evaluationErr error
+        evaluateMovieDTO.Evaluation, evaluationErr = model.NewEvaluation(evaluateMovieJson.Evaluation)
+        if evaluationErr != nil </span><span class="cov8" title="1">{
+                validationErrors["evaluation"] = evaluationErr.Error()
         }</span>
 
-        <span class="cov8" title="1">evaluationSaveErr := e.MovieEvaluationRepository.Save(movieEvaluation)
-        if evaluationSaveErr != nil </span><span class="cov8" title="1">{
-                return evaluationSaveErr
+        <span class="cov8" title="1">if len(validationErrors) != 0 </span><span class="cov8" title="1">{
+                validationErrors, _ := json.Marshal(validationErrors)
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "Validation Error.",
+                        "messages": string(validationErrors),
+                })
+                c.Abort()
+                return
         }</span>
-        <span class="cov8" title="1">return nil</span>
+
+        <span class="cov8" title="1">evaluateMovieUsecaseErr := evaluateMovie.EvaluateMovieUsecase.EvaluateMovie(&amp;evaluateMovieDTO)
+        if evaluateMovieUsecaseErr != nil </span><span class="cov8" title="1">{
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "result":   "Error.",
+                        "messages": evaluateMovieUsecaseErr.Error(),
+                })
+                c.Abort()
+                return
+        }</span>
+        <span class="cov8" title="1">c.JSON(http.StatusOK, gin.H{
+                "result":   "Success.",
+                "messages": "OK",
+        })</span>
 }
 
-type EvaluateMovieDTO struct {
-        UserID     model.UserID
-        MovieID    model.MovieID
-        Evaluation model.Evaluation
+type EvaluateMovieJson struct {
+        MovieID    uint64 `json:"movie_id"`
+        Evaluation string `json:"evaluate"`
 }
-
-func NewEvaluateMovieDTO(userId model.UserID, movieId model.MovieID, evaluation model.Evaluation) *EvaluateMovieDTO <span class="cov0" title="0">{
-        return &amp;EvaluateMovieDTO{
-                UserID:     userId,
-                MovieID:    movieId,
-                Evaluation: evaluation,
-        }
-}</span>
 </pre>
 		
-		<pre class="file" id="file11" style="display: none">package usecase
+		<pre class="file" id="file8" style="display: none">package handler
 
 import (
         "MyPIPE/domain/model"
-        "MyPIPE/domain/repository"
-        "errors"
+        "MyPIPE/infra"
+        "MyPIPE/usecase"
+        "encoding/json"
+        jwt "github.com/appleboy/gin-jwt/v2"
+        "github.com/gin-gonic/gin"
+        "net/http"
 )
 
-type FollowUser struct {
-        UserRepository       repository.UserRepository
-        FollowUserRepository repository.FollowUserRepository
+func FollowUser(c *gin.Context) <span class="cov0" title="0">{
+        var followUserJson FollowUserJson
+        c.Bind(&amp;followUserJson)
+        userIdJWT := uint64(jwt.ExtractClaims(c)["id"].(float64))
+        followUserJson.UserID = userIdJWT
+
+        validationErrors := make(map[string]string)
+        userId, userIdErr := model.NewUserID(followUserJson.UserID)
+        if userIdErr != nil </span><span class="cov0" title="0">{
+                validationErrors["user_id"] = userIdErr.Error()
+        }</span>
+
+        <span class="cov0" title="0">followId, followIdErr := model.NewUserID(followUserJson.FollowID)
+        if followIdErr != nil </span><span class="cov0" title="0">{
+                validationErrors["follow_id"] = followIdErr.Error()
+        }</span>
+
+        <span class="cov0" title="0">if len(validationErrors) != 0 </span><span class="cov0" title="0">{
+                validationErrors, _ := json.Marshal(validationErrors)
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "Validation Error.",
+                        "messages": string(validationErrors),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov0" title="0">followUserDTO := usecase.NewFollowDTO(userId, followId)
+        userRepository := infra.NewUserPersistence()
+        followUserRepository := infra.NewFollowUserPersistence()
+        followUserUsecase := usecase.NewFollowUser(userRepository, followUserRepository)
+        followUserUsecaseErr := followUserUsecase.Follow(followUserDTO)
+        if followUserUsecaseErr != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "Error.",
+                        "messages": followUserUsecaseErr.Error(),
+                })
+                c.Abort()
+                return
+        }</span>
+        <span class="cov0" title="0">c.JSON(http.StatusOK, gin.H{
+                "result":   "Success.",
+                "messages": "OK",
+        })</span>
 }
 
-func NewFollowUser(u repository.UserRepository, f repository.FollowUserRepository) *FollowUser <span class="cov0" title="0">{
-        return &amp;FollowUser{
-                UserRepository:       u,
-                FollowUserRepository: f,
-        }
-}</span>
-
-func (f FollowUser) Follow(followDTO FollowDTO) error <span class="cov0" title="0">{
-        followUser := f.FollowUserRepository.FindByUserIdAndFollowId(followDTO.UserID, followDTO.FollowID)
-        if followUser != nil </span><span class="cov0" title="0">{
-                return errors.New("Already Followed.")
-        }</span>
-
-        <span class="cov0" title="0">existUser, _ := f.UserRepository.FindById(followDTO.UserID)
-        if existUser == nil </span><span class="cov0" title="0">{
-                return errors.New("No Such User.")
-        }</span>
-
-        <span class="cov0" title="0">existFollowUser, _ := f.UserRepository.FindById(followDTO.FollowID)
-        if existFollowUser == nil </span><span class="cov0" title="0">{
-                return errors.New("No Such User To Follow.")
-        }</span>
-
-        <span class="cov0" title="0">newFollowUser := model.NewFollowUser(followDTO.UserID, followDTO.FollowID)
-        saveErr := f.FollowUserRepository.Save(newFollowUser)
-        if saveErr != nil </span><span class="cov0" title="0">{
-                return saveErr
-        }</span>
-        <span class="cov0" title="0">return nil</span>
+type FollowUserJson struct {
+        UserID   uint64
+        FollowID uint64 `json:"follow_id"`
 }
-
-type FollowDTO struct {
-        UserID   model.UserID
-        FollowID model.UserID
-}
-
-func NewFollowDTO(userId model.UserID, followId model.UserID) FollowDTO <span class="cov0" title="0">{
-        return FollowDTO{
-                UserID:   userId,
-                FollowID: followId,
-        }
-}</span>
 </pre>
 		
-		<pre class="file" id="file12" style="display: none">package usecase
+		<pre class="file" id="file9" style="display: none">package handler
 
 import (
         "MyPIPE/domain/model"
         "MyPIPE/domain/queryService"
+        "MyPIPE/usecase"
+        "encoding/json"
+        jwt "github.com/appleboy/gin-jwt/v2"
+        "github.com/gin-gonic/gin"
+        "net/http"
 )
-
-type IGetLoggedInUserData interface {
-        Find(getLoggedInUserDataDTO *GetLoggedInUserDataDTO) *queryService.GetLoggedInUserDataDTO
-}
 
 type GetLoggedInUserData struct {
         GetLoggedInUserDataQueryService queryService.GetLoggedInUserDataQueryService
+        GetLoggedInUserDataUsecase      usecase.IGetLoggedInUserData
 }
 
-func NewGetLoggedInUserData(g queryService.GetLoggedInUserDataQueryService) *GetLoggedInUserData <span class="cov8" title="1">{
+func NewGetLoggedInUserData(GetLoggedInUserDataQueryService queryService.GetLoggedInUserDataQueryService, getLoggedInUserDataUsecase usecase.IGetLoggedInUserData) *GetLoggedInUserData <span class="cov8" title="1">{
         return &amp;GetLoggedInUserData{
-                GetLoggedInUserDataQueryService: g,
+                GetLoggedInUserDataQueryService: GetLoggedInUserDataQueryService,
+                GetLoggedInUserDataUsecase:      getLoggedInUserDataUsecase,
         }
 }</span>
 
-func (g GetLoggedInUserData) Find(getLoggedInUserDataDTO *GetLoggedInUserDataDTO) *queryService.GetLoggedInUserDataDTO <span class="cov8" title="1">{
-        return g.GetLoggedInUserDataQueryService.FindByUserId(getLoggedInUserDataDTO.UserID)
-}</span>
+func (getLoggedInUserData GetLoggedInUserData) GetLoggedInUserData(c *gin.Context) <span class="cov8" title="1">{
+        validationErrors := make(map[string]string)
+        userIdUint := uint64((jwt.ExtractClaims(c)["id"]).(float64))
+        userId, userIdErr := model.NewUserID(userIdUint)
+        if userIdErr != nil </span><span class="cov0" title="0">{
+                validationErrors["user_id"] = userIdErr.Error()
+        }</span>
 
-type GetLoggedInUserDataDTO struct {
-        UserID model.UserID
+        <span class="cov8" title="1">if len(validationErrors) != 0 </span><span class="cov0" title="0">{
+                validationErrors, _ := json.Marshal(validationErrors)
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "Validation Error.",
+                        "messages": string(validationErrors),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">getLoggedInUserDataDTO := usecase.NewGetLoggedInUserDataDTO(userId)
+        loggedInUser := getLoggedInUserData.GetLoggedInUserDataUsecase.Find(getLoggedInUserDataDTO)
+
+        c.JSON(http.StatusOK, loggedInUser)</span>
 }
-
-func NewGetLoggedInUserDataDTO(userId model.UserID) *GetLoggedInUserDataDTO <span class="cov0" title="0">{
-        return &amp;GetLoggedInUserDataDTO{
-                UserID: userId,
-        }
-}</span>
 </pre>
 		
-		<pre class="file" id="file13" style="display: none">package usecase
+		<pre class="file" id="file10" style="display: none">package handler
 
 import (
         "MyPIPE/domain/model"
         "MyPIPE/domain/queryService"
+        "MyPIPE/usecase"
+        "encoding/json"
+        "github.com/gin-gonic/gin"
+        "net/http"
+        "strconv"
 )
-
-type IGetMovieAndComments interface {
-        Get(getDTO *MovieAndGetCommentsDTO) queryService.FindByMovieIdDTO
-}
 
 type GetMovieAndComments struct {
         CommentQueryService queryService.CommentQueryService
+        GetCommentsUsecase  usecase.IGetMovieAndComments
 }
 
-func NewGetMovieAndComments(cqs queryService.CommentQueryService) *GetMovieAndComments <span class="cov8" title="1">{
+func NewGetMovieAndComments(commentQueryService queryService.CommentQueryService, getCommentsUsecase usecase.IGetMovieAndComments) *GetMovieAndComments <span class="cov8" title="1">{
         return &amp;GetMovieAndComments{
-                CommentQueryService: cqs,
+                CommentQueryService: commentQueryService,
+                GetCommentsUsecase:  getCommentsUsecase,
         }
 }</span>
 
-func (g GetMovieAndComments) Get(getDTO *MovieAndGetCommentsDTO) queryService.FindByMovieIdDTO <span class="cov8" title="1">{
-        return g.CommentQueryService.FindByMovieId(getDTO.MovieID)
-}</span>
+func (getMovieAndComments GetMovieAndComments) GetMovieAndComments(c *gin.Context) <span class="cov8" title="1">{
+        var getCommentsJson GetCommentsJson
+        c.Bind(&amp;getCommentsJson)
 
-type MovieAndGetCommentsDTO struct {
-        MovieID model.MovieID
+        validationErrors := make(map[string]string)
+        movieIdInt, _ := strconv.ParseUint(c.Query("movie_id"), 10, 64)
+        movieId, movieIdErr := model.NewMovieID(movieIdInt)
+        if movieIdErr != nil </span><span class="cov8" title="1">{
+                validationErrors["movie_id"] = movieIdErr.Error()
+        }</span>
+
+        <span class="cov8" title="1">if len(validationErrors) != 0 </span><span class="cov8" title="1">{
+                validationErrors, _ := json.Marshal(validationErrors)
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "Validation Error.",
+                        "messages": string(validationErrors),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">getCommentsDTO := usecase.NewGetMovieAndCommentsDTO(movieId)
+        comments := getMovieAndComments.GetCommentsUsecase.Get(getCommentsDTO)
+
+        jsonResult, jsonMarshalErr := json.Marshal(comments)
+        if jsonMarshalErr != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "result":   "Validation Error.",
+                        "messages": jsonMarshalErr.Error(),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">c.JSON(http.StatusOK, string(jsonResult))</span>
 }
 
-func NewGetMovieAndCommentsDTO(movieId model.MovieID) *MovieAndGetCommentsDTO <span class="cov0" title="0">{
-        return &amp;MovieAndGetCommentsDTO{
-                MovieID: movieId,
-        }
-}</span>
+type GetCommentsJson struct {
+        MovieID uint64
+}
 </pre>
 		
-		<pre class="file" id="file14" style="display: none">package usecase
+		<pre class="file" id="file11" style="display: none">package handler
 
-import "MyPIPE/domain/queryService"
-
-type IIndexMovie interface {
-        Search(indexMovieSearchDTO *IndexMovieSearchDTO) queryService.IndexMovieDTO
-}
+import (
+        "MyPIPE/domain/queryService"
+        "MyPIPE/usecase"
+        "encoding/json"
+        "github.com/gin-gonic/gin"
+        "net/http"
+        "strconv"
+)
 
 type IndexMovie struct {
         IndexMovieQueryService queryService.IndexMovieQueryService
+        IndexMovieUsecase      usecase.IIndexMovie
 }
 
-func NewIndexMovie(imq queryService.IndexMovieQueryService) *IndexMovie <span class="cov8" title="1">{
+func NewIndexMovie(indexMovieQueryService queryService.IndexMovieQueryService, indexMovieUsecase usecase.IIndexMovie) *IndexMovie <span class="cov8" title="1">{
         return &amp;IndexMovie{
-                IndexMovieQueryService: imq,
+                IndexMovieQueryService: indexMovieQueryService,
+                IndexMovieUsecase:      indexMovieUsecase,
         }
 }</span>
 
-func (i IndexMovie) Search(indexMovieSearchDTO *IndexMovieSearchDTO) queryService.IndexMovieDTO <span class="cov8" title="1">{
-        if indexMovieSearchDTO.KeyWord == "" </span><span class="cov8" title="1">{
-                return i.IndexMovieQueryService.All(indexMovieSearchDTO.Page, indexMovieSearchDTO.Order)
+func (indexMovie IndexMovie) IndexMovie(c *gin.Context) <span class="cov8" title="1">{
+        keyWord := c.Query("keyWord")
+
+        validationErrors := make(map[string]string)
+
+        var page queryService.IndexMovieQueryServicePage
+        pageInt, err := strconv.ParseUint(c.Query("page"), 10, 64)
+        if err != nil </span><span class="cov8" title="1">{
+                page, _ = queryService.NewIndexMovieQueryServicePage(1)
+        }</span> else<span class="cov8" title="1"> {
+                page, _ = queryService.NewIndexMovieQueryServicePage(uint(pageInt))
         }</span>
-        <span class="cov8" title="1">return i.IndexMovieQueryService.Search(indexMovieSearchDTO.Page, indexMovieSearchDTO.KeyWord, indexMovieSearchDTO.Order)</span>
+
+        <span class="cov8" title="1">order, orderErr := queryService.NewIndexMovieQueryServiceOrder(c.Query("order"))
+        if orderErr != nil </span><span class="cov0" title="0">{
+                validationErrors["order"] = orderErr.Error()
+        }</span>
+
+        <span class="cov8" title="1">if len(validationErrors) != 0 </span><span class="cov0" title="0">{
+                validationErrors, _ := json.Marshal(validationErrors)
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "Validation Error.",
+                        "messages": string(validationErrors),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">indexMovieSearchDTO := usecase.NewIndexMovieSearchDTO(page, keyWord, order)
+        movies := indexMovie.IndexMovieUsecase.Search(indexMovieSearchDTO)
+
+        jsonResult, jsonMarshalErr := json.Marshal(movies)
+        if jsonMarshalErr != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "result":   "Server Error.",
+                        "messages": jsonMarshalErr.Error(),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">c.JSON(http.StatusOK, string(jsonResult))</span>
 }
 
-type IndexMovieSearchDTO struct {
-        Page    queryService.IndexMovieQueryServicePage
+type IndexMovieJson struct {
         KeyWord string
-        Order   queryService.IndexMovieQueryServiceOrder
 }
-
-func NewIndexMovieSearchDTO(page queryService.IndexMovieQueryServicePage, keyWord string, order queryService.IndexMovieQueryServiceOrder) *IndexMovieSearchDTO <span class="cov0" title="0">{
-        return &amp;IndexMovieSearchDTO{
-                Page:    page,
-                KeyWord: keyWord,
-                Order:   order,
-        }
-}</span>
 </pre>
 		
-		<pre class="file" id="file15" style="display: none">package usecase
+		<pre class="file" id="file12" style="display: none">package handler
 
 import (
         "MyPIPE/domain/model"
         "MyPIPE/domain/queryService"
+        "MyPIPE/usecase"
+        "encoding/json"
+        jwt "github.com/appleboy/gin-jwt/v2"
+        "github.com/gin-gonic/gin"
+        "net/http"
+        "strconv"
 )
-
-type IIndexPlayListInMovieListPage interface {
-        Find(findDTO *FindDTO) *queryService.IndexPlayListInMovieListPageDTO
-}
 
 type IndexPlayListInMovieListPage struct {
         IndexPlayListInMovieListPageQueryService queryService.IndexPlayListInMovieListPageQueryService
+        IndexPlayListInMovieListPageUsecase      usecase.IIndexPlayListInMovieListPage
 }
 
-func NewIndexPlayListInMovieListPage(indexPlayListInMovieListPage queryService.IndexPlayListInMovieListPageQueryService) *IndexPlayListInMovieListPage <span class="cov8" title="1">{
+func NewIndexPlayListInMovieListPage(indexPlayListInMovieListPageQueryService queryService.IndexPlayListInMovieListPageQueryService, indexPlayListInMovieListPageUsecase usecase.IIndexPlayListInMovieListPage) *IndexPlayListInMovieListPage <span class="cov8" title="1">{
         return &amp;IndexPlayListInMovieListPage{
-                IndexPlayListInMovieListPageQueryService: indexPlayListInMovieListPage,
+                IndexPlayListInMovieListPageQueryService: indexPlayListInMovieListPageQueryService,
+                IndexPlayListInMovieListPageUsecase:      indexPlayListInMovieListPageUsecase,
         }
 }</span>
 
-func (i IndexPlayListInMovieListPage) Find(findDTO *FindDTO) *queryService.IndexPlayListInMovieListPageDTO <span class="cov8" title="1">{
-        return i.IndexPlayListInMovieListPageQueryService.Find(findDTO.UserID, findDTO.MovieID)
-}</span>
+func (indexPlayListInMovieListPage IndexPlayListInMovieListPage) IndexPlayListInMovieListPage(c *gin.Context) <span class="cov8" title="1">{
+        userId, userIdErr := model.NewUserID(uint64(jwt.ExtractClaims(c)["id"].(float64)))
 
-type FindDTO struct {
-        UserID  model.UserID
-        MovieID model.MovieID
+        validationErrors := make(map[string]string)
+
+        if userIdErr != nil </span><span class="cov0" title="0">{
+                validationErrors["user_id"] = userIdErr.Error()
+        }</span>
+
+        <span class="cov8" title="1">var movieId model.MovieID
+        movieIdUint64, movieIdUint64Err := strconv.ParseUint(c.Param("movie_id"), 10, 64)
+        if movieIdUint64Err != nil </span><span class="cov8" title="1">{
+                validationErrors["movie_id"] = movieIdUint64Err.Error()
+        }</span> else<span class="cov8" title="1"> {
+                movieId, _ = model.NewMovieID(movieIdUint64)
+        }</span>
+
+        <span class="cov8" title="1">if len(validationErrors) != 0 </span><span class="cov8" title="1">{
+                validationErrors, _ := json.Marshal(validationErrors)
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "Validation Error.",
+                        "messages": string(validationErrors),
+                })
+                c.Abort()
+                return
+        }</span>
+        <span class="cov8" title="1">findDTO := usecase.NewFindDTO(userId, movieId)
+        result := indexPlayListInMovieListPage.IndexPlayListInMovieListPageUsecase.Find(findDTO)
+
+        jsonResult, jsonMarshalErr := json.Marshal(result)
+        if jsonMarshalErr != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "result":   "Server Error.",
+                        "messages": jsonMarshalErr.Error(),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">c.JSON(http.StatusOK, string(jsonResult))</span>
+
 }
-
-func NewFindDTO(userId model.UserID, movieId model.MovieID) *FindDTO <span class="cov0" title="0">{
-        return &amp;FindDTO{
-                UserID:  userId,
-                MovieID: movieId,
-        }
-}</span>
 </pre>
 		
-		<pre class="file" id="file16" style="display: none">package usecase
+		<pre class="file" id="file13" style="display: none">package handler
 
 import (
         "MyPIPE/domain/model"
         "MyPIPE/domain/queryService"
+        "MyPIPE/usecase"
+        "encoding/json"
+        jwt "github.com/appleboy/gin-jwt/v2"
+        "github.com/gin-gonic/gin"
+        "net/http"
+        "strconv"
 )
 
-type IIndexPlaylistItemInMyPage interface {
-        Find(indexPlayListMoviesInMyPageDTO *IndexPlayListItemInMyPageDTO) *queryService.IndexPlayListMovieInMyPageDTO
+type IndexPlaylistMovies struct {
+        IndexPlaylistMoviesQueryService queryService.IndexPlayListMovieQueryService
+        IndexPlaylistMoviesUsecase      usecase.IIndexPlaylistItemInMyPage
 }
 
-type IndexPlayListItemInMyPage struct {
-        IndexPlayListMovieInMyPage queryService.IndexPlayListMovieQueryService
-}
-
-func NewIndexPlayListItemInMyPage(i queryService.IndexPlayListMovieQueryService) *IndexPlayListItemInMyPage <span class="cov8" title="1">{
-        return &amp;IndexPlayListItemInMyPage{
-                IndexPlayListMovieInMyPage: i,
+func NewIndexPlaylistMovies(indexPlaylistMoviesQueryService queryService.IndexPlayListMovieQueryService, indexPlaylistMoviesUsecase usecase.IIndexPlaylistItemInMyPage) *IndexPlaylistMovies <span class="cov8" title="1">{
+        return &amp;IndexPlaylistMovies{
+                IndexPlaylistMoviesQueryService: indexPlaylistMoviesQueryService,
+                IndexPlaylistMoviesUsecase:      indexPlaylistMoviesUsecase,
         }
 }</span>
 
-func (i IndexPlayListItemInMyPage) Find(indexPlayListMoviesInMyPageDTO *IndexPlayListItemInMyPageDTO) *queryService.IndexPlayListMovieInMyPageDTO <span class="cov8" title="1">{
-        return i.IndexPlayListMovieInMyPage.Find(indexPlayListMoviesInMyPageDTO.UserID, indexPlayListMoviesInMyPageDTO.PlayListID)
-}</span>
+func (indexPlaylistMovies IndexPlaylistMovies) IndexPlaylistMovies(c *gin.Context) <span class="cov8" title="1">{
+        userIdInt := uint64(jwt.ExtractClaims(c)["id"].(float64))
+        playListIdInt, _ := strconv.ParseUint(c.Param("play_list_id"), 10, 64)
 
-type IndexPlayListItemInMyPageDTO struct {
-        UserID     model.UserID
-        PlayListID model.PlayListID
+        validationErrors := make(map[string]string)
+
+        userId, userIdErr := model.NewUserID(userIdInt)
+        if userIdErr != nil </span><span class="cov0" title="0">{
+                validationErrors["user_id"] = userIdErr.Error()
+        }</span>
+
+        <span class="cov8" title="1">playListId, playListIdErr := model.NewPlayListID(playListIdInt)
+        if playListIdErr != nil </span><span class="cov8" title="1">{
+                validationErrors["play_list_id"] = playListIdErr.Error()
+        }</span>
+
+        <span class="cov8" title="1">if len(validationErrors) != 0 </span><span class="cov8" title="1">{
+                validationErrors, _ := json.Marshal(validationErrors)
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "Validation Error.",
+                        "messages": string(validationErrors),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">indexPlayListItemUsecaseDTO := usecase.NewIndexPlayListItemInMyPageDTO(userId, playListId)
+        result := indexPlaylistMovies.IndexPlaylistMoviesUsecase.Find(indexPlayListItemUsecaseDTO)
+
+        jsonResult, jsonMarshalErr := json.Marshal(result)
+        if jsonMarshalErr != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "result":   "Server Error.",
+                        "messages": jsonMarshalErr.Error(),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">c.JSON(http.StatusOK, string(jsonResult))</span>
 }
 
-func NewIndexPlayListItemInMyPageDTO(userId model.UserID, playListId model.PlayListID) *IndexPlayListItemInMyPageDTO <span class="cov0" title="0">{
-        return &amp;IndexPlayListItemInMyPageDTO{
-                UserID:     userId,
-                PlayListID: playListId,
-        }
-}</span>
+type IndexPlayListMoviesJson struct {
+        PlayListID uint64
+}
 </pre>
 		
-		<pre class="file" id="file17" style="display: none">package usecase
+		<pre class="file" id="file14" style="display: none">package handler
 
 import (
         "MyPIPE/domain/model"
         "MyPIPE/domain/queryService"
+        "MyPIPE/usecase"
+        "encoding/json"
+        jwt "github.com/appleboy/gin-jwt/v2"
+        "github.com/gin-gonic/gin"
+        "net/http"
 )
-
-type IIndexPlayListsInMyPage interface {
-        All(indexPlayListsInMyPageDTO *IndexPlayListsInMyPageDTO) *queryService.IndexPlayListsInMyPageDTO
-}
 
 type IndexPlayListsInMyPage struct {
         IndexPlayListsInMyPageQueryService queryService.IndexPlayListsInMyPageQueryService
+        IndexPlayListsInMyPageUsecase      usecase.IIndexPlayListsInMyPage
 }
 
-func NewIndexPlayListsInMyPage(ipq queryService.IndexPlayListsInMyPageQueryService) *IndexPlayListsInMyPage <span class="cov8" title="1">{
+func NewIndexPlayListsInMyPage(indexPlayListsInMyPageQueryService queryService.IndexPlayListsInMyPageQueryService, indexPlayListsInMyPageUsecase usecase.IIndexPlayListsInMyPage) *IndexPlayListsInMyPage <span class="cov8" title="1">{
         return &amp;IndexPlayListsInMyPage{
-                IndexPlayListsInMyPageQueryService: ipq,
+                IndexPlayListsInMyPageQueryService: indexPlayListsInMyPageQueryService,
+                IndexPlayListsInMyPageUsecase:      indexPlayListsInMyPageUsecase,
         }
 }</span>
 
-func (i IndexPlayListsInMyPage) All(indexPlayListsInMyPageDTO *IndexPlayListsInMyPageDTO) *queryService.IndexPlayListsInMyPageDTO <span class="cov8" title="1">{
-        return i.IndexPlayListsInMyPageQueryService.All(indexPlayListsInMyPageDTO.UserID)
-}</span>
+func (indexPlayListsInMyPage IndexPlayListsInMyPage) IndexPlayListsInMyPage(c *gin.Context) <span class="cov8" title="1">{
+        userIdInt := uint64(jwt.ExtractClaims(c)["id"].(float64))
 
-type IndexPlayListsInMyPageDTO struct {
-        UserID model.UserID
+        validationErrors := make(map[string]string)
+
+        userId, userIdErr := model.NewUserID(userIdInt)
+        if userIdErr != nil </span><span class="cov0" title="0">{
+                validationErrors["user_id"] = userIdErr.Error()
+        }</span>
+
+        <span class="cov8" title="1">if len(validationErrors) != 0 </span><span class="cov0" title="0">{
+                validationErrors, _ := json.Marshal(validationErrors)
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "Validation Error.",
+                        "messages": string(validationErrors),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">indexPlayListsInMyPageDTO := usecase.NewIndexPlayListsInMyPageDTO(userId)
+        playLists := indexPlayListsInMyPage.IndexPlayListsInMyPageUsecase.All(indexPlayListsInMyPageDTO)
+
+        jsonResult, jsonMarshalErr := json.Marshal(playLists)
+        if jsonMarshalErr != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "result":   "Internal Server Error.",
+                        "messages": jsonMarshalErr.Error(),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">c.JSON(http.StatusOK, string(jsonResult))</span>
 }
-
-func NewIndexPlayListsInMyPageDTO(userId model.UserID) *IndexPlayListsInMyPageDTO <span class="cov0" title="0">{
-        return &amp;IndexPlayListsInMyPageDTO{
-                UserID: userId,
-        }
-}</span>
 </pre>
 		
-		<pre class="file" id="file18" style="display: none">package usecase
+		<pre class="file" id="file15" style="display: none">package handler
+
+import (
+        "MyPIPE/domain/model"
+        queryService_uploadMovies "MyPIPE/domain/queryService/UploadedMovies"
+        "MyPIPE/domain/repository"
+        "MyPIPE/usecase"
+        "encoding/json"
+        jwt "github.com/appleboy/gin-jwt/v2"
+        "github.com/gin-gonic/gin"
+        "net/http"
+        "strconv"
+)
+
+type Movie struct {
+        UploadMovieQueryService   queryService_uploadMovies.UploadedMovies
+        UploadMovieUsecase        usecase.IUploadedMovies
+        MovieRepository           repository.MovieRepository
+        UpdateMovieUsecase        usecase.IUpdateMovie
+        ThumbnailUploadRepository repository.ThumbnailUploadRepository
+        ChangeThumbnailUsecase    usecase.IChangeThumbnail
+}
+
+func NewMovie(uploadMovieQueryService queryService_uploadMovies.UploadedMovies, uploadMovieUsecase usecase.IUploadedMovies, movieRepository repository.MovieRepository, updateMovieUsecase usecase.IUpdateMovie, thumbnailUploadRepository repository.ThumbnailUploadRepository, changeThumbnailUsecase usecase.IChangeThumbnail) *Movie <span class="cov8" title="1">{
+        return &amp;Movie{
+                UploadMovieQueryService:   uploadMovieQueryService,
+                UploadMovieUsecase:        uploadMovieUsecase,
+                MovieRepository:           movieRepository,
+                UpdateMovieUsecase:        updateMovieUsecase,
+                ThumbnailUploadRepository: thumbnailUploadRepository,
+                ChangeThumbnailUsecase:    changeThumbnailUsecase,
+        }
+}</span>
+
+func (movie Movie) GetUploadedMovies(c *gin.Context) <span class="cov8" title="1">{
+        userId := jwt.ExtractClaims(c)["id"]
+        iuserId := uint64(userId.(float64))
+
+        userIdModel, err := model.NewUserID(iuserId)
+        if err != nil </span><span class="cov0" title="0">{
+                return
+        }</span>
+
+        <span class="cov8" title="1">result := movie.UploadMovieUsecase.Get(userIdModel)
+        jsonResult, jsonMarshalErr := json.Marshal(result)
+        if jsonMarshalErr != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "result":   "Internal Server Error.",
+                        "messages": jsonMarshalErr.Error(),
+                })
+                c.Abort()
+                return
+        }</span> else<span class="cov8" title="1"> {
+                c.JSON(http.StatusOK, string(jsonResult))
+        }</span>
+}
+
+func (movie Movie) UpdateMovie(c *gin.Context) <span class="cov8" title="1">{
+        userId := jwt.ExtractClaims(c)["id"]
+        iuserId := uint64(userId.(float64))
+
+        userIdModel, err := model.NewUserID(iuserId)
+
+        var updateMovieDTO UpdateMovieDTO
+        c.Bind(&amp;updateMovieDTO)
+
+        validationErrors := make(map[string]string)
+
+        if err != nil </span><span class="cov0" title="0">{
+                validationErrors["user_id"] = err.Error()
+        }</span>
+
+        <span class="cov8" title="1">movieId, movieIdErr := model.NewMovieID(updateMovieDTO.MovieID)
+        if movieIdErr != nil </span><span class="cov8" title="1">{
+                validationErrors["movie_id"] = movieIdErr.Error()
+        }</span>
+
+        <span class="cov8" title="1">displayName, displayNameErr := model.NewMovieDisplayName(updateMovieDTO.DisplayName)
+        if displayNameErr != nil </span><span class="cov0" title="0">{
+                validationErrors["display_name"] = displayNameErr.Error()
+        }</span>
+
+        <span class="cov8" title="1">description, descriptionErr := model.NewMovieDescription(updateMovieDTO.Description)
+        if descriptionErr != nil </span><span class="cov0" title="0">{
+                validationErrors["description"] = descriptionErr.Error()
+        }</span>
+
+        <span class="cov8" title="1">public, publicErr := model.NewMoviePublic(updateMovieDTO.Public)
+        if publicErr != nil </span><span class="cov8" title="1">{
+                validationErrors["public"] = publicErr.Error()
+        }</span>
+
+        <span class="cov8" title="1">status, statusErr := model.NewMovieStatus(updateMovieDTO.Status)
+        if statusErr != nil </span><span class="cov8" title="1">{
+                validationErrors["status"] = statusErr.Error()
+        }</span>
+
+        <span class="cov8" title="1">if len(validationErrors) != 0 </span><span class="cov8" title="1">{
+                validationErrors, _ := json.Marshal(validationErrors)
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "Validation Error.",
+                        "messages": string(validationErrors),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">updateDTO := usecase.UpdateDTO{
+                UserID:      userIdModel,
+                MovieID:     movieId,
+                DisplayName: displayName,
+                Description: description,
+                Public:      public,
+                Status:      status,
+        }
+
+        result, updateMovieUsecaseErr := movie.UpdateMovieUsecase.Update(&amp;updateDTO)
+        if updateMovieUsecaseErr != nil </span><span class="cov8" title="1">{
+                jsonUpdateMovieUsecaseErr, _ := json.Marshal(updateMovieUsecaseErr.Error())
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "result":   "Server Error.",
+                        "messages": string(jsonUpdateMovieUsecaseErr),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">updatedData, _ := json.Marshal(result)
+        c.JSON(http.StatusOK, gin.H{
+                "result":      "Success.",
+                "messages":    "OK",
+                "updatedData": string(updatedData),
+        })</span>
+}
+
+type UpdateMovieDTO struct {
+        UserID      uint64
+        MovieID     uint64 `json:"movie_id"`
+        DisplayName string `json:"display_name"`
+        Description string `json:"description"`
+        Public      uint   `json:"public"`
+        Status      uint   `json:"status"`
+}
+
+func (movie Movie) ChangeThumbnail(c *gin.Context) <span class="cov0" title="0">{
+
+        //バリデーションエラー格納
+        validationErrors := make(map[string]string)
+        //ユーザーID取得
+        iuserId := uint64(jwt.ExtractClaims(c)["id"].(float64))
+        userId, userIdErr := model.NewUserID(iuserId)
+        //ユーザーID valid
+        if userIdErr != nil </span><span class="cov0" title="0">{
+                validationErrors["user_id"] = userIdErr.Error()
+        }</span>
+
+        <span class="cov0" title="0">requestMovieId := c.PostForm("movie_id")
+        imovieId, _ := strconv.ParseUint(requestMovieId, 10, 64)
+        movieId, movieIdErr := model.NewMovieID(imovieId)
+        if movieIdErr != nil </span><span class="cov0" title="0">{
+                validationErrors["movie_id"] = movieIdErr.Error()
+        }</span>
+
+        <span class="cov0" title="0">if len(validationErrors) != 0 </span><span class="cov0" title="0">{
+                validationErrors, _ := json.Marshal(validationErrors)
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "Validation Error.",
+                        "messages": string(validationErrors),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov0" title="0">thumbnail, thumbnailHeader, thumbnailErr := c.Request.FormFile("uploadThumbnail")
+        if thumbnailErr != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "Thumbnail Change Error.",
+                        "messages": thumbnailErr.Error(),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov0" title="0">changeThumbnailDTO := usecase.NewChangeThumbnailDTO(userId, movieId, thumbnail, *thumbnailHeader)
+        changeThumbnailUsecaseErr := movie.ChangeThumbnailUsecase.ChangeThumbnail(*changeThumbnailDTO)
+        if changeThumbnailUsecaseErr != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "result":   "Server Error.",
+                        "messages": changeThumbnailUsecaseErr.Error(),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov0" title="0">c.JSON(http.StatusOK, gin.H{
+                "result":   "OK",
+                "messages": "OK",
+        })</span>
+
+}
+</pre>
+		
+		<pre class="file" id="file16" style="display: none">package handler
 
 import (
         "MyPIPE/domain/model"
         "MyPIPE/domain/repository"
-        "errors"
+        "MyPIPE/usecase"
+        "encoding/json"
+        jwt "github.com/appleboy/gin-jwt/v2"
+        "github.com/gin-gonic/gin"
+        "net/http"
 )
 
-type IPostComment interface {
-        PostComment(postCommentDTO *PostCommentDTO) error
+type CreatePlayList struct {
+        UserRepository        repository.UserRepository
+        PlayListRepository    repository.PlayListRepository
+        CreatePlayListUsecase usecase.ICreatePlayList
 }
 
-type PostComment struct {
-        CommentRepository repository.CommentRepository
-        MovieRepository   repository.MovieRepository
-}
-
-func NewPostComment(c repository.CommentRepository, m repository.MovieRepository) *PostComment <span class="cov8" title="1">{
-        return &amp;PostComment{
-                CommentRepository: c,
-                MovieRepository:   m,
+func NewCreatePlayList(
+        userRepository repository.UserRepository,
+        playListRepository repository.PlayListRepository,
+        createPlayListUsecase usecase.ICreatePlayList,
+) *CreatePlayList <span class="cov8" title="1">{
+        return &amp;CreatePlayList{
+                UserRepository:        userRepository,
+                PlayListRepository:    playListRepository,
+                CreatePlayListUsecase: createPlayListUsecase,
         }
 }</span>
 
-func (p PostComment) PostComment(postCommentDTO *PostCommentDTO) error <span class="cov8" title="1">{
+func (createPlayList CreatePlayList) CreatePlayList(c *gin.Context) <span class="cov8" title="1">{
+        var playListJson CreatePlayListJson
+        c.Bind(&amp;playListJson)
 
-        movie, movieFindErr := p.MovieRepository.FindById(postCommentDTO.MovieID)
-        if movieFindErr != nil </span><span class="cov8" title="1">{
-                return movieFindErr
-        }</span>
-        <span class="cov8" title="1">if movie == nil </span><span class="cov8" title="1">{
-                return errors.New("No Such Movie.")
+        userId := uint64(jwt.ExtractClaims(c)["id"].(float64))
+        playListJson.UserID = userId
+
+        validationErrors := make(map[string]string)
+        var CreatePlayListDTO usecase.CreatePlayListDTO
+        var userIDErr error
+        CreatePlayListDTO.UserID, userIDErr = model.NewUserID(playListJson.UserID)
+        if userIDErr != nil </span><span class="cov0" title="0">{
+                validationErrors["user_id"] = userIDErr.Error()
         }</span>
 
-        <span class="cov8" title="1">newComment := model.NewComment(postCommentDTO.UserID, postCommentDTO.MovieID, postCommentDTO.Body)
-
-        err := p.CommentRepository.Save(newComment)
-        if err != nil </span><span class="cov8" title="1">{
-                return err
+        <span class="cov8" title="1">var playListNameErr error
+        CreatePlayListDTO.PlayListName, playListNameErr = model.NewPlayListName(playListJson.PlayListName)
+        if playListNameErr != nil </span><span class="cov8" title="1">{
+                validationErrors["play_list_name"] = playListNameErr.Error()
         }</span>
-        <span class="cov8" title="1">return nil</span>
+
+        <span class="cov8" title="1">var playListDescriptionErr error
+        CreatePlayListDTO.PlayListDescription, playListDescriptionErr = model.NewPlayListDescription(playListJson.PlayListDescription)
+        if playListDescriptionErr != nil </span><span class="cov0" title="0">{
+                validationErrors["play_list_description"] = playListDescriptionErr.Error()
+        }</span>
+
+        <span class="cov8" title="1">if len(validationErrors) != 0 </span><span class="cov8" title="1">{
+                validationErrors, _ := json.Marshal(validationErrors)
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "Validation Error.",
+                        "messages": string(validationErrors),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">createPlayListUsecaseErr := createPlayList.CreatePlayListUsecase.CreatePlayList(&amp;CreatePlayListDTO)
+        if createPlayListUsecaseErr != nil </span><span class="cov8" title="1">{
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "result":   "Error.",
+                        "messages": createPlayListUsecaseErr.Error(),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">c.JSON(http.StatusOK, gin.H{
+                "result":   "Success.",
+                "messages": "OK",
+        })</span>
 }
 
-type PostCommentDTO struct {
-        UserID  model.UserID
-        MovieID model.MovieID
-        Body    model.CommentBody
+type CreatePlayListJson struct {
+        UserID              uint64
+        PlayListName        string `json:"play_list_name"`
+        PlayListDescription string `json:"play_list_description"`
 }
-
-func NewPostCommentDTO(userId model.UserID, movieId model.MovieID, body model.CommentBody) *PostCommentDTO <span class="cov0" title="0">{
-        return &amp;PostCommentDTO{
-                UserID:  userId,
-                MovieID: movieId,
-                Body:    body,
-        }
-}</span>
 </pre>
 		
-		<pre class="file" id="file19" style="display: none">package usecase
+		<pre class="file" id="file17" style="display: none">package handler
 
 import (
         "MyPIPE/domain/factory"
         "MyPIPE/domain/model"
         "MyPIPE/domain/repository"
-        "mime/multipart"
+        "MyPIPE/usecase"
+        "encoding/json"
+        jwt "github.com/appleboy/gin-jwt/v2"
+        "github.com/gin-gonic/gin"
+        "net/http"
+        "strconv"
 )
 
-type IPostMovie interface {
-        PostMovie(postMovieDTO *PostMovieDTO) (*model.Movie, error)
+type PlayList struct {
+        PlayListRepository         repository.PlayListRepository
+        PlayListMovieRepository    repository.PlayListMovieRepository
+        PlayListMovieFactory       factory.IPlayListMovie
+        AddPlayListItemUsecase     usecase.IAddPlayListItem
+        DeletePlayListMovieUsecase usecase.IDeletePlayListMovie
 }
 
-type PostMovie struct {
-        FileUploadRepository      repository.FileUpload
-        ThumbnailUploadRepository repository.ThumbnailUploadRepository
+func NewPlayListItem(
+        playListRepository repository.PlayListRepository,
+        playListMovieRepository repository.PlayListMovieRepository,
+        playListMovieFactory factory.IPlayListMovie,
+        addPlayListItemUsecase usecase.IAddPlayListItem,
+        deletePlayListMovieUsecase usecase.IDeletePlayListMovie,
+) *PlayList <span class="cov8" title="1">{
+        return &amp;PlayList{
+                PlayListRepository:         playListRepository,
+                PlayListMovieRepository:    playListMovieRepository,
+                PlayListMovieFactory:       playListMovieFactory,
+                AddPlayListItemUsecase:     addPlayListItemUsecase,
+                DeletePlayListMovieUsecase: deletePlayListMovieUsecase,
+        }
+}</span>
+
+func (playList PlayList) AddPlayListMovie(c *gin.Context) <span class="cov8" title="1">{
+        var playListItemAddJson AddPlayListItemJson
+        c.Bind(&amp;playListItemAddJson)
+        userId := uint64(jwt.ExtractClaims(c)["id"].(float64))
+        playListItemAddJson.UserID = userId
+
+        validationErrors := make(map[string]string)
+        var playListItemAddDTO usecase.AddPlayListItemAddJson
+        var playListIDErr error
+        playListItemAddDTO.PlayListID, playListIDErr = model.NewPlayListID(playListItemAddJson.PlayListID)
+        if playListIDErr != nil </span><span class="cov8" title="1">{
+                validationErrors["play_list_id"] = playListIDErr.Error()
+        }</span>
+
+        <span class="cov8" title="1">var UserIDErr error
+        playListItemAddDTO.UserID, UserIDErr = model.NewUserID(playListItemAddJson.UserID)
+        if UserIDErr != nil </span><span class="cov0" title="0">{
+                validationErrors["user_id"] = UserIDErr.Error()
+        }</span>
+
+        <span class="cov8" title="1">var MovieIDErr error
+        playListItemAddDTO.MovieID, MovieIDErr = model.NewMovieID(playListItemAddJson.MovieID)
+        if MovieIDErr != nil </span><span class="cov8" title="1">{
+                validationErrors["movie_id"] = MovieIDErr.Error()
+        }</span>
+
+        <span class="cov8" title="1">if len(validationErrors) != 0 </span><span class="cov8" title="1">{
+                validationErrors, _ := json.Marshal(validationErrors)
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "Validation Error.",
+                        "messages": string(validationErrors),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">err := playList.AddPlayListItemUsecase.AddPlayListItem(&amp;playListItemAddDTO)
+        if err != nil </span><span class="cov8" title="1">{
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "result":   "Error.",
+                        "messages": err.Error(),
+                })
+                c.Abort()
+                return
+        }</span>
+        <span class="cov8" title="1">c.JSON(http.StatusOK, gin.H{
+                "result":   "Success.",
+                "messages": "OK",
+        })</span>
+}
+
+type AddPlayListItemJson struct {
+        PlayListID uint64 `json:"play_list_id"`
+        UserID     uint64 `json:"user_id"`
+        MovieID    uint64 `json:"movie_id"`
+}
+
+func (playList PlayList) DeletePlayListMovie(c *gin.Context) <span class="cov8" title="1">{
+
+        validationErrors := make(map[string]string)
+        playListIdFromQuery, _ := strconv.ParseUint(c.Query("play_list_id"), 10, 64)
+        playListID, playListIDErr := model.NewPlayListID(playListIdFromQuery)
+        if playListIDErr != nil </span><span class="cov8" title="1">{
+                validationErrors["play_list_id"] = playListIDErr.Error()
+        }</span>
+
+        <span class="cov8" title="1">userId, UserIDErr := model.NewUserID(uint64(jwt.ExtractClaims(c)["id"].(float64)))
+        if UserIDErr != nil </span><span class="cov0" title="0">{
+                validationErrors["user_id"] = UserIDErr.Error()
+        }</span>
+
+        <span class="cov8" title="1">movieIdFromQuery, _ := strconv.ParseUint(c.Query("movie_id"), 10, 64)
+        movieId, MovieIDErr := model.NewMovieID(movieIdFromQuery)
+        if MovieIDErr != nil </span><span class="cov8" title="1">{
+                validationErrors["movie_id"] = MovieIDErr.Error()
+        }</span>
+
+        <span class="cov8" title="1">if len(validationErrors) != 0 </span><span class="cov8" title="1">{
+                validationErrors, _ := json.Marshal(validationErrors)
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "Validation Error.",
+                        "messages": string(validationErrors),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">playListMovieDeleteDTO := usecase.NewDeletePlayListMovieJson(playListID, userId, movieId)
+
+        err := playList.DeletePlayListMovieUsecase.DeletePlayListItem(playListMovieDeleteDTO)
+        if err != nil </span><span class="cov8" title="1">{
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "result":   "Error.",
+                        "messages": err.Error(),
+                })
+                c.Abort()
+        }</span>
+        <span class="cov8" title="1">c.JSON(http.StatusOK, gin.H{
+                "result":   "Success.",
+                "messages": "OK",
+        })</span>
+}
+
+type DeletePlayListItemJson struct {
+        PlayListID uint64 `json:"play_list_id"`
+        UserID     uint64 `json:"user_id"`
+        MovieID    uint64 `json:"movie_id"`
+}
+</pre>
+		
+		<pre class="file" id="file18" style="display: none">package handler
+
+import (
+        "MyPIPE/domain/model"
+        "MyPIPE/domain/repository"
+        "MyPIPE/usecase"
+        jwt "github.com/appleboy/gin-jwt/v2"
+        "github.com/gin-gonic/gin"
+        "net/http"
+)
+
+type PostComment struct {
+        CommentRepository  repository.CommentRepository
+        MovieRepository    repository.MovieRepository
+        PostCommentUsecase usecase.IPostComment
+}
+
+func NewPostComment(commentRepo repository.CommentRepository, movieRepo repository.MovieRepository, postCommentUsecase usecase.IPostComment) *PostComment <span class="cov8" title="1">{
+        return &amp;PostComment{
+                CommentRepository:  commentRepo,
+                MovieRepository:    movieRepo,
+                PostCommentUsecase: postCommentUsecase,
+        }
+}</span>
+
+func (postComment PostComment) PostComment(c *gin.Context) <span class="cov8" title="1">{
+        iuserId := uint64(jwt.ExtractClaims(c)["id"].(float64))
+
+        var comment PostCommentJson
+        c.Bind(&amp;comment)
+
+        errorMessages := map[string]string{}
+        validationErrorFlag := false
+
+        body, bodyErr := model.NewCommentBody(comment.CommentBody)
+        if bodyErr != nil </span><span class="cov8" title="1">{
+                validationErrorFlag = true
+                errorMessages["comment_body"] = bodyErr.Error()
+        }</span>
+
+        <span class="cov8" title="1">userId, userIdErr := model.NewUserID(iuserId)
+        if userIdErr != nil </span><span class="cov0" title="0">{
+                validationErrorFlag = true
+                errorMessages["user_id"] = userIdErr.Error()
+        }</span>
+
+        <span class="cov8" title="1">movieId, movieIdErr := model.NewMovieID(comment.MovieID)
+        if movieIdErr != nil </span><span class="cov8" title="1">{
+                validationErrorFlag = true
+                errorMessages["movie_id"] = movieIdErr.Error()
+        }</span>
+
+        <span class="cov8" title="1">if validationErrorFlag </span><span class="cov8" title="1">{
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "Validation Error.",
+                        "messages": errorMessages,
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">postCommentDTO := usecase.NewPostCommentDTO(userId, movieId, body)
+
+        postCommentErr := postComment.PostCommentUsecase.PostComment(postCommentDTO)
+        if postCommentErr != nil </span><span class="cov8" title="1">{
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "result":   "Comment Post Failed.",
+                        "messages": postCommentErr.Error(),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        <span class="cov8" title="1">c.JSON(http.StatusOK, gin.H{
+                "message": "Posted!",
+        })</span>
+}
+
+type PostCommentJson struct {
+        CommentBody string `json:"comment_body"`
+        MovieID     uint64 `json:"movie_id"`
+}
+</pre>
+		
+		<pre class="file" id="file19" style="display: none">package handler
+
+import (
+        "MyPIPE/domain/model"
+        "MyPIPE/domain/repository"
+        "MyPIPE/usecase"
+        "encoding/json"
+        jwt "github.com/appleboy/gin-jwt/v2"
+        "github.com/gin-gonic/gin"
+        "net/http"
+)
+
+type UploadMovieFile struct {
         MovieRepository           repository.MovieRepository
-        MovieModelFactory         factory.IMovieModelFactory
+        ThumbnailUploadRepository repository.ThumbnailUploadRepository
+        MovieUploadRepository     repository.FileUpload
+        PostMovieUsecase          usecase.IPostMovie
 }
 
-func NewPostMovie(fr repository.FileUpload, tu repository.ThumbnailUploadRepository, mr repository.MovieRepository, mf factory.IMovieModelFactory) *PostMovie <span class="cov0" title="0">{
-        return &amp;PostMovie{
-                FileUploadRepository:      fr,
-                ThumbnailUploadRepository: tu,
-                MovieRepository:           mr,
-                MovieModelFactory:         mf,
+func NewUploadMovieFile(
+        movieRepository repository.MovieRepository,
+        thumbnailUploadRepository repository.ThumbnailUploadRepository,
+        movieUploadRepository repository.FileUpload,
+        postMovieUsecase usecase.IPostMovie,
+) *UploadMovieFile <span class="cov0" title="0">{
+        return &amp;UploadMovieFile{
+                MovieRepository:           movieRepository,
+                ThumbnailUploadRepository: thumbnailUploadRepository,
+                MovieUploadRepository:     movieUploadRepository,
+                PostMovieUsecase:          postMovieUsecase,
         }
 }</span>
 
-func (p *PostMovie) PostMovie(postMovieDTO *PostMovieDTO) (*model.Movie, error) <span class="cov0" title="0">{
-        newMovie, createError := p.MovieModelFactory.CreateMovieModel(postMovieDTO.UserID, postMovieDTO.FileHeader, postMovieDTO.ThumbnailHeader)
-        if createError != nil </span><span class="cov0" title="0">{
-                return nil, createError
+func (uploadMovieFile UploadMovieFile) UploadMovieFile(c *gin.Context) <span class="cov0" title="0">{
+
+        //バリデーションエラー格納
+        validationErrors := make(map[string]string)
+        //ユーザーID取得
+        iuserId := uint64(jwt.ExtractClaims(c)["id"].(float64))
+        userId, userIdErr := model.NewUserID(iuserId)
+        //ユーザーID valid
+        if userIdErr != nil </span><span class="cov0" title="0">{
+                validationErrors["user_id"] = userIdErr.Error()
         }</span>
 
-        <span class="cov0" title="0">savedNewMovie, saveError := p.MovieRepository.Save(*newMovie)
-        if saveError != nil </span><span class="cov0" title="0">{
-                return nil, saveError
+        //バリデーションチェック
+        <span class="cov0" title="0">if len(validationErrors) != 0 </span><span class="cov0" title="0">{
+                validationErrors, _ := json.Marshal(validationErrors)
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "Validation Error.",
+                        "messages": string(validationErrors),
+                })
+                c.Abort()
+                return
         }</span>
 
-        <span class="cov0" title="0">err := p.FileUploadRepository.Upload(postMovieDTO.File, postMovieDTO.FileHeader, savedNewMovie.ID)
+        //動画ファイル取得&amp;バリデーション
+        <span class="cov0" title="0">file, header, fileErr := c.Request.FormFile("uploadMovie")
+        if fileErr != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "MovieFileUpload Error.",
+                        "messages": fileErr.Error(),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        //動画サムネイル取得&amp;バリデーション
+        <span class="cov0" title="0">thumbnail, thumbnailHeader, thumbnailErr := c.Request.FormFile("uploadThumbnail")
+        if thumbnailErr != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "MovieThumbnailUpload Error.",
+                        "messages": thumbnailErr.Error(),
+                })
+                c.Abort()
+                return
+        }</span>
+
+        //動画投稿用のDTO
+        <span class="cov0" title="0">postMovieDTO := usecase.NewPostMovieDTO(file, *header, thumbnail, *thumbnailHeader, userId)
+
+        newMovieModel, err := uploadMovieFile.PostMovieUsecase.PostMovie(postMovieDTO)
         if err != nil </span><span class="cov0" title="0">{
-                return nil, err
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "PostMovie Error.",
+                        "messages": err.Error(),
+                })
+                c.Abort()
+                return
         }</span>
 
-        <span class="cov0" title="0">thumbnailUploadErr := p.ThumbnailUploadRepository.Upload(postMovieDTO.Thumbnail, *savedNewMovie)
-        if thumbnailUploadErr != nil </span><span class="cov0" title="0">{
-                return nil, thumbnailUploadErr
-        }</span>
-
-        <span class="cov0" title="0">return savedNewMovie, nil</span>
-}
-
-type PostMovieDTO struct {
-        File            multipart.File
-        FileHeader      multipart.FileHeader
-        Thumbnail       multipart.File
-        ThumbnailHeader multipart.FileHeader
-        UserID          model.UserID
-}
-
-func NewPostMovieDTO(file multipart.File, file_header multipart.FileHeader, thumbnail multipart.File, thumbnailHeader multipart.FileHeader, userId model.UserID) *PostMovieDTO <span class="cov0" title="0">{
-        return &amp;PostMovieDTO{
-                File:            file,
-                FileHeader:      file_header,
-                Thumbnail:       thumbnail,
-                ThumbnailHeader: thumbnailHeader,
-                UserID:          userId,
-        }
-}</span>
-</pre>
-		
-		<pre class="file" id="file20" style="display: none">package usecase
-
-import (
-        "MyPIPE/domain/model"
-        "MyPIPE/domain/repository"
-)
-
-type IUpdateMovie interface {
-        Update(updateDTO *UpdateDTO) (*model.Movie, error)
-        UpdateStatus(updateStatusDTO UpdateStatusDTO) (*model.Movie, error)
-}
-
-type UpdateMovie struct {
-        MovieRepository repository.MovieRepository
-}
-
-func NewUpdateMovie(m repository.MovieRepository) *UpdateMovie <span class="cov8" title="1">{
-        return &amp;UpdateMovie{
-                MovieRepository: m,
-        }
-}</span>
-
-func (u UpdateMovie) Update(updateDTO *UpdateDTO) (*model.Movie, error) <span class="cov8" title="1">{
-        movie, findMovieErr := u.MovieRepository.FindByUserIdAndMovieId(updateDTO.UserID, updateDTO.MovieID)
-        if findMovieErr != nil </span><span class="cov8" title="1">{
-                return nil, findMovieErr
-        }</span>
-        <span class="cov8" title="1">changeDisplayNameErr := movie.ChangeDisplayName(updateDTO.DisplayName)
-        if changeDisplayNameErr != nil </span><span class="cov0" title="0">{
-                return nil, changeDisplayNameErr
-        }</span>
-
-        <span class="cov8" title="1">changeDescriptionErr := movie.ChangeDescription(updateDTO.Description)
-        if changeDescriptionErr != nil </span><span class="cov0" title="0">{
-                return nil, changeDescriptionErr
-        }</span>
-
-        <span class="cov8" title="1">changeStatusErr := movie.ChangeStatus(updateDTO.Status)
-        if changeStatusErr != nil </span><span class="cov0" title="0">{
-                return nil, changeStatusErr
-        }</span>
-
-        <span class="cov8" title="1">changePublicErr := movie.ChangePublic(updateDTO.Public)
-        if changePublicErr != nil </span><span class="cov8" title="1">{
-                return nil, changePublicErr
-        }</span>
-
-        <span class="cov8" title="1">updatedMovie, updateMovieErr := u.MovieRepository.Update(*movie)
-        if updateMovieErr != nil </span><span class="cov8" title="1">{
-                return nil, updateMovieErr
-        }</span>
-
-        <span class="cov8" title="1">return updatedMovie, nil</span>
-}
-
-type UpdateDTO struct {
-        UserID      model.UserID
-        MovieID     model.MovieID
-        DisplayName model.MovieDisplayName
-        Description model.MovieDescription
-        Public      model.MoviePublic
-        Status      model.MovieStatus
-}
-
-func (u UpdateMovie) UpdateStatus(updateStatusDTO UpdateStatusDTO) (*model.Movie, error) <span class="cov0" title="0">{
-        movie, findMovieErr := u.MovieRepository.FindByUserIdAndMovieId(updateStatusDTO.UserID, updateStatusDTO.MovieID)
-        if findMovieErr != nil </span><span class="cov0" title="0">{
-                return nil, findMovieErr
-        }</span>
-
-        <span class="cov0" title="0">changeStatusErr := movie.ChangeStatus(updateStatusDTO.Status)
-        if changeStatusErr != nil </span><span class="cov0" title="0">{
-                return nil, changeStatusErr
-        }</span>
-
-        <span class="cov0" title="0">updatedMovie, updateMovieErr := u.MovieRepository.Update(*movie)
-        if updateMovieErr != nil </span><span class="cov0" title="0">{
-                return nil, updateMovieErr
-        }</span>
-
-        <span class="cov0" title="0">return updatedMovie, nil</span>
-}
-
-type UpdateStatusDTO struct {
-        UserID  model.UserID
-        MovieID model.MovieID
-        Status  model.MovieStatus
-}
-</pre>
-		
-		<pre class="file" id="file21" style="display: none">package usecase
-
-import (
-        "MyPIPE/domain/model"
-        queryService "MyPIPE/domain/queryService/UploadedMovies"
-)
-
-type IUploadedMovies interface {
-        Get(userId model.UserID) []queryService.UploadedMoviesDTO
-}
-
-type UploadedMovies struct {
-        UploadedMoviesQueryService queryService.UploadedMovies
-}
-
-func NewUploadedMovies(umq queryService.UploadedMovies) *UploadedMovies <span class="cov8" title="1">{
-        return &amp;UploadedMovies{
-                UploadedMoviesQueryService: umq,
-        }
-}</span>
-
-func (u UploadedMovies) Get(userId model.UserID) []queryService.UploadedMoviesDTO <span class="cov8" title="1">{
-        result := u.UploadedMoviesQueryService.Get(userId)
-        return result
-}</span>
-</pre>
-		
-		<pre class="file" id="file22" style="display: none">package usecase
-
-import (
-        "MyPIPE/domain/model"
-        "MyPIPE/domain/repository"
-)
-
-type UserExists struct {
-        UserRepository repository.UserRepository
-}
-
-func NewUserExists(u repository.UserRepository) *UserExists <span class="cov8" title="1">{
-        return &amp;UserExists{
-                UserRepository: u,
-        }
-}</span>
-
-func (u UserExists) CheckUserExistsForAuth(email model.UserEmail, password string) (*model.User, error) <span class="cov8" title="1">{
-        user, err := u.UserRepository.FindByEmail(email)
-
-        if user != nil &amp;&amp; user.CheckPassword(password) &amp;&amp; err == nil </span><span class="cov8" title="1">{
-                return user, nil
-        }</span>
-
-        <span class="cov8" title="1">return nil, err</span>
-
-}
-</pre>
-		
-		<pre class="file" id="file23" style="display: none">package usecase
-
-import (
-        "MyPIPE/domain/model"
-        "MyPIPE/domain/repository"
-        "errors"
-)
-
-type IUserRegister interface {
-        RegisterUser(newUser *model.User) error
-}
-
-type UserRegister struct {
-        UserRepository repository.UserRepository
-}
-
-func NewUserRegister(u repository.UserRepository) *UserRegister <span class="cov8" title="1">{
-        return &amp;UserRegister{
-                UserRepository: u,
-        }
-}</span>
-
-func (u UserRegister) RegisterUser(newUser *model.User) error <span class="cov8" title="1">{
-        registeredUserWithToken, findUserErr := u.UserRepository.FindByToken(newUser.Token)
-        if findUserErr != nil</span><span class="cov8" title="1">{
-                return findUserErr
-        }</span>
-
-        <span class="cov8" title="1">if registeredUserWithToken == nil </span><span class="cov8" title="1">{
-                return errors.New("Invalid Token.")
-        }</span>
-
-        <span class="cov8" title="1">registerErr := registeredUserWithToken.Register(newUser.Name, newUser.Password, newUser.Birthday)
-        if registerErr != nil </span><span class="cov8" title="1">{
-                return registerErr
-        }</span>
-        <span class="cov8" title="1">e := u.UserRepository.UpdateUser(registeredUserWithToken)
-
-        if e != nil </span><span class="cov8" title="1">{
-                return e
-        }</span>
-
-        <span class="cov8" title="1">return nil</span>
-}
-</pre>
-		
-		<pre class="file" id="file24" style="display: none">package usecase
-
-import (
-        "MyPIPE/domain/model"
-        "MyPIPE/domain/repository"
-        "errors"
-        "time"
-)
-
-type IUserTemporaryRegistration interface {
-        TemporaryRegister(user *model.User) error
-}
-
-type UserTemporaryRegistration struct {
-        UserRepository repository.UserRepository
-}
-
-func NewUserTemporaryRegistration(userRepository repository.UserRepository) *UserTemporaryRegistration <span class="cov8" title="1">{
-        return &amp;UserTemporaryRegistration{
-                UserRepository: userRepository,
-        }
-}</span>
-
-func (u *UserTemporaryRegistration) TemporaryRegister(user *model.User) error <span class="cov8" title="1">{
-        registeredUser, _ := u.UserRepository.FindByEmail(user.Email)
-        //本登録済み
-        if registeredUser != nil &amp;&amp; registeredUser.Token == "" </span><span class="cov8" title="1">{
-                return nil
-        }</span>
-
-        //仮登録済み・本登録前
-        <span class="cov8" title="1">if registeredUser != nil &amp;&amp; registeredUser.Token != "" </span><span class="cov8" title="1">{
-                setTokenErr := registeredUser.SetNewToken()
-                if setTokenErr != nil </span><span class="cov0" title="0">{
-                        return setTokenErr
-                }</span>
-                <span class="cov8" title="1">updateError := u.UserRepository.UpdateUser(registeredUser)
-                if updateError != nil </span><span class="cov8" title="1">{
-                        return errors.New("Update Error.")
-                }</span>
-                <span class="cov8" title="1">return nil</span>
-        }
-        <span class="cov8" title="1">newUser := model.NewUser(user.Email, time.Date(1000, 1, 1, 0, 0, 0, 0, time.Local))
-        setTokenErr := newUser.SetNewToken()
-        if setTokenErr != nil </span><span class="cov0" title="0">{
-                return setTokenErr
-        }</span>
-        <span class="cov8" title="1">err2 := u.UserRepository.SetUser(newUser)
-        if err2 != nil </span><span class="cov8" title="1">{
-                return err2
-        }</span>
-        <span class="cov8" title="1">return nil</span>
+        <span class="cov0" title="0">jsonNewMovieModel, _ := json.Marshal(newMovieModel)
+        c.JSON(http.StatusOK, string(jsonNewMovieModel))</span>
 }
 </pre>
 		
