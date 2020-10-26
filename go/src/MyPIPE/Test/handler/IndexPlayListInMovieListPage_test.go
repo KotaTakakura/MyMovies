@@ -10,6 +10,7 @@ import (
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
+	"net/http"
 	"net/http/httptest"
 	"reflect"
 	"strings"
@@ -64,5 +65,47 @@ func TestIndexPlayListInMovieListPage(t *testing.T) {
 		})
 
 		indexPlayListInMovieListPageHandler.IndexPlayListInMovieListPage(ginContext)
+	}
+}
+
+func TestIndexPlayListInMovieListPage_MovieIDError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	indexPlayListInMovieListPageQueryService := mock_queryService.NewMockIndexPlayListInMovieListPageQueryService(ctrl)
+	indexPlayListInMovieListPageUsecase := mock_usecase.NewMockIIndexPlayListInMovieListPage(ctrl)
+	indexPlayListInMovieListPageHandler := handler.NewIndexPlayListInMovieListPage(indexPlayListInMovieListPageQueryService, indexPlayListInMovieListPageUsecase)
+
+	cases := []struct {
+		userId  uint64
+		movieId uint64
+	}{
+		{userId: 10, movieId: 100},
+	}
+
+	for _, Case := range cases {
+		// ポストデータ
+		bodyReader := strings.NewReader("")
+
+		// リクエスト生成
+		req := httptest.NewRequest("GET", "/play-lists/10", bodyReader)
+
+		// Content-Type 設定
+		req.Header.Set("Content-Type", "application/json")
+
+		// Contextセット
+		w := httptest.NewRecorder()
+		ginContext, _ := gin.CreateTestContext(w)
+		ginContext.Request = req
+		ginContext.Params = append(ginContext.Params, gin.Param{Key: "movie_id", Value: "INVALIDMOVIEID"})
+		ginContext.Set("JWT_PAYLOAD", jwt.MapClaims{
+			"id": float64(Case.userId),
+		})
+
+		indexPlayListInMovieListPageHandler.IndexPlayListInMovieListPage(ginContext)
+
+		if w.Code != http.StatusBadRequest{
+			t.Fatal("Error.")
+		}
 	}
 }
