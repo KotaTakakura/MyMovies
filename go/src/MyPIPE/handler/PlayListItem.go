@@ -74,7 +74,7 @@ func (playList PlayList) AddPlayListMovie(c *gin.Context) {
 
 	err := playList.AddPlayListItemUsecase.AddPlayListItem(&playListItemAddDTO)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"result":   "Error.",
 			"messages": err.Error(),
 		})
@@ -94,8 +94,6 @@ type AddPlayListItemJson struct {
 }
 
 func (playList PlayList) DeletePlayListMovie(c *gin.Context) {
-	var playListItemDeleteJson DeletePlayListItemJson
-	c.Bind(&playListItemDeleteJson)
 
 	validationErrors := make(map[string]string)
 	playListIdFromQuery, _ := strconv.ParseUint(c.Query("play_list_id"), 10, 64)
@@ -129,12 +127,11 @@ func (playList PlayList) DeletePlayListMovie(c *gin.Context) {
 
 	err := playList.DeletePlayListMovieUsecase.DeletePlayListItem(playListMovieDeleteDTO)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"result":   "Error.",
 			"messages": err.Error(),
 		})
 		c.Abort()
-		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"result":   "Success.",

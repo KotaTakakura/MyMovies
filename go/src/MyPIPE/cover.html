@@ -81,17 +81,17 @@
 				
 				<option value="file12">MyPIPE/handler/IndexPlayListInMovieListPage.go (82.6%)</option>
 				
-				<option value="file13">MyPIPE/handler/IndexPlayListMovies.go (60.9%)</option>
+				<option value="file13">MyPIPE/handler/IndexPlayListMovies.go (82.6%)</option>
 				
 				<option value="file14">MyPIPE/handler/IndexPlayListsInMyPage.go (57.9%)</option>
 				
-				<option value="file15">MyPIPE/handler/Movie.go (49.3%)</option>
+				<option value="file15">MyPIPE/handler/Movie.go (55.8%)</option>
 				
-				<option value="file16">MyPIPE/handler/PlayList.go (76.5%)</option>
+				<option value="file16">MyPIPE/handler/PlayList.go (93.3%)</option>
 				
-				<option value="file17">MyPIPE/handler/PlayListItem.go (64.3%)</option>
+				<option value="file17">MyPIPE/handler/PlayListItem.go (96.2%)</option>
 				
-				<option value="file18">MyPIPE/handler/PostComment.go (69.7%)</option>
+				<option value="file18">MyPIPE/handler/PostComment.go (93.1%)</option>
 				
 				<option value="file19">MyPIPE/handler/UploadMovieFile.go (0.0%)</option>
 				
@@ -1057,9 +1057,9 @@ func (indexPlayListInMovieListPage IndexPlayListInMovieListPage) IndexPlayListIn
 
         <span class="cov8" title="1">var movieId model.MovieID
         movieIdUint64, movieIdUint64Err := strconv.ParseUint(c.Param("movie_id"), 10, 64)
-        if movieIdUint64Err != nil</span><span class="cov8" title="1">{
+        if movieIdUint64Err != nil </span><span class="cov8" title="1">{
                 validationErrors["movie_id"] = movieIdUint64Err.Error()
-        }</span>else<span class="cov8" title="1">{
+        }</span> else<span class="cov8" title="1"> {
                 movieId, _ = model.NewMovieID(movieIdUint64)
         }</span>
 
@@ -1127,11 +1127,11 @@ func (indexPlaylistMovies IndexPlaylistMovies) IndexPlaylistMovies(c *gin.Contex
         }</span>
 
         <span class="cov8" title="1">playListId, playListIdErr := model.NewPlayListID(playListIdInt)
-        if playListIdErr != nil </span><span class="cov0" title="0">{
+        if playListIdErr != nil </span><span class="cov8" title="1">{
                 validationErrors["play_list_id"] = playListIdErr.Error()
         }</span>
 
-        <span class="cov8" title="1">if len(validationErrors) != 0 </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if len(validationErrors) != 0 </span><span class="cov8" title="1">{
                 validationErrors, _ := json.Marshal(validationErrors)
                 c.JSON(http.StatusBadRequest, gin.H{
                         "result":   "Validation Error.",
@@ -1269,10 +1269,15 @@ func (movie Movie) GetUploadedMovies(c *gin.Context) <span class="cov8" title="1
         <span class="cov8" title="1">result := movie.UploadMovieUsecase.Get(userIdModel)
         jsonResult, jsonMarshalErr := json.Marshal(result)
         if jsonMarshalErr != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusInternalServerError, gin.H{
+                        "result":   "Internal Server Error.",
+                        "messages": jsonMarshalErr.Error(),
+                })
+                c.Abort()
                 return
+        }</span> else<span class="cov8" title="1"> {
+                c.JSON(http.StatusOK, string(jsonResult))
         }</span>
-
-        <span class="cov8" title="1">c.JSON(http.StatusOK, string(jsonResult))</span>
 }
 
 func (movie Movie) UpdateMovie(c *gin.Context) <span class="cov8" title="1">{
@@ -1306,12 +1311,12 @@ func (movie Movie) UpdateMovie(c *gin.Context) <span class="cov8" title="1">{
         }</span>
 
         <span class="cov8" title="1">public, publicErr := model.NewMoviePublic(updateMovieDTO.Public)
-        if publicErr != nil </span><span class="cov0" title="0">{
+        if publicErr != nil </span><span class="cov8" title="1">{
                 validationErrors["public"] = publicErr.Error()
         }</span>
 
         <span class="cov8" title="1">status, statusErr := model.NewMovieStatus(updateMovieDTO.Status)
-        if statusErr != nil </span><span class="cov0" title="0">{
+        if statusErr != nil </span><span class="cov8" title="1">{
                 validationErrors["status"] = statusErr.Error()
         }</span>
 
@@ -1335,7 +1340,7 @@ func (movie Movie) UpdateMovie(c *gin.Context) <span class="cov8" title="1">{
         }
 
         result, updateMovieUsecaseErr := movie.UpdateMovieUsecase.Update(&amp;updateDTO)
-        if updateMovieUsecaseErr != nil </span><span class="cov0" title="0">{
+        if updateMovieUsecaseErr != nil </span><span class="cov8" title="1">{
                 jsonUpdateMovieUsecaseErr, _ := json.Marshal(updateMovieUsecaseErr.Error())
                 c.JSON(http.StatusInternalServerError, gin.H{
                         "result":   "Server Error.",
@@ -1452,16 +1457,9 @@ func NewCreatePlayList(
 
 func (createPlayList CreatePlayList) CreatePlayList(c *gin.Context) <span class="cov8" title="1">{
         var playListJson CreatePlayListJson
-        bindErr := c.Bind(&amp;playListJson)
-        if bindErr != nil </span><span class="cov0" title="0">{
-                c.JSON(http.StatusBadRequest, gin.H{
-                        "result":   "Error.",
-                        "messages": bindErr.Error(),
-                })
-                c.Abort()
-                return
-        }</span>
-        <span class="cov8" title="1">userId := uint64(jwt.ExtractClaims(c)["id"].(float64))
+        c.Bind(&amp;playListJson)
+
+        userId := uint64(jwt.ExtractClaims(c)["id"].(float64))
         playListJson.UserID = userId
 
         validationErrors := make(map[string]string)
@@ -1495,8 +1493,8 @@ func (createPlayList CreatePlayList) CreatePlayList(c *gin.Context) <span class=
         }</span>
 
         <span class="cov8" title="1">createPlayListUsecaseErr := createPlayList.CreatePlayListUsecase.CreatePlayList(&amp;CreatePlayListDTO)
-        if createPlayListUsecaseErr != nil </span><span class="cov0" title="0">{
-                c.JSON(http.StatusBadRequest, gin.H{
+        if createPlayListUsecaseErr != nil </span><span class="cov8" title="1">{
+                c.JSON(http.StatusInternalServerError, gin.H{
                         "result":   "Error.",
                         "messages": createPlayListUsecaseErr.Error(),
                 })
@@ -1565,7 +1563,7 @@ func (playList PlayList) AddPlayListMovie(c *gin.Context) <span class="cov8" tit
         var playListItemAddDTO usecase.AddPlayListItemAddJson
         var playListIDErr error
         playListItemAddDTO.PlayListID, playListIDErr = model.NewPlayListID(playListItemAddJson.PlayListID)
-        if playListIDErr != nil </span><span class="cov0" title="0">{
+        if playListIDErr != nil </span><span class="cov8" title="1">{
                 validationErrors["play_list_id"] = playListIDErr.Error()
         }</span>
 
@@ -1577,11 +1575,11 @@ func (playList PlayList) AddPlayListMovie(c *gin.Context) <span class="cov8" tit
 
         <span class="cov8" title="1">var MovieIDErr error
         playListItemAddDTO.MovieID, MovieIDErr = model.NewMovieID(playListItemAddJson.MovieID)
-        if MovieIDErr != nil </span><span class="cov0" title="0">{
+        if MovieIDErr != nil </span><span class="cov8" title="1">{
                 validationErrors["movie_id"] = MovieIDErr.Error()
         }</span>
 
-        <span class="cov8" title="1">if len(validationErrors) != 0 </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if len(validationErrors) != 0 </span><span class="cov8" title="1">{
                 validationErrors, _ := json.Marshal(validationErrors)
                 c.JSON(http.StatusBadRequest, gin.H{
                         "result":   "Validation Error.",
@@ -1592,8 +1590,8 @@ func (playList PlayList) AddPlayListMovie(c *gin.Context) <span class="cov8" tit
         }</span>
 
         <span class="cov8" title="1">err := playList.AddPlayListItemUsecase.AddPlayListItem(&amp;playListItemAddDTO)
-        if err != nil </span><span class="cov0" title="0">{
-                c.JSON(http.StatusBadRequest, gin.H{
+        if err != nil </span><span class="cov8" title="1">{
+                c.JSON(http.StatusInternalServerError, gin.H{
                         "result":   "Error.",
                         "messages": err.Error(),
                 })
@@ -1613,13 +1611,11 @@ type AddPlayListItemJson struct {
 }
 
 func (playList PlayList) DeletePlayListMovie(c *gin.Context) <span class="cov8" title="1">{
-        var playListItemDeleteJson DeletePlayListItemJson
-        c.Bind(&amp;playListItemDeleteJson)
 
         validationErrors := make(map[string]string)
         playListIdFromQuery, _ := strconv.ParseUint(c.Query("play_list_id"), 10, 64)
         playListID, playListIDErr := model.NewPlayListID(playListIdFromQuery)
-        if playListIDErr != nil </span><span class="cov0" title="0">{
+        if playListIDErr != nil </span><span class="cov8" title="1">{
                 validationErrors["play_list_id"] = playListIDErr.Error()
         }</span>
 
@@ -1630,11 +1626,11 @@ func (playList PlayList) DeletePlayListMovie(c *gin.Context) <span class="cov8" 
 
         <span class="cov8" title="1">movieIdFromQuery, _ := strconv.ParseUint(c.Query("movie_id"), 10, 64)
         movieId, MovieIDErr := model.NewMovieID(movieIdFromQuery)
-        if MovieIDErr != nil </span><span class="cov0" title="0">{
+        if MovieIDErr != nil </span><span class="cov8" title="1">{
                 validationErrors["movie_id"] = MovieIDErr.Error()
         }</span>
 
-        <span class="cov8" title="1">if len(validationErrors) != 0 </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if len(validationErrors) != 0 </span><span class="cov8" title="1">{
                 validationErrors, _ := json.Marshal(validationErrors)
                 c.JSON(http.StatusBadRequest, gin.H{
                         "result":   "Validation Error.",
@@ -1647,13 +1643,12 @@ func (playList PlayList) DeletePlayListMovie(c *gin.Context) <span class="cov8" 
         <span class="cov8" title="1">playListMovieDeleteDTO := usecase.NewDeletePlayListMovieJson(playListID, userId, movieId)
 
         err := playList.DeletePlayListMovieUsecase.DeletePlayListItem(playListMovieDeleteDTO)
-        if err != nil </span><span class="cov0" title="0">{
-                c.JSON(http.StatusBadRequest, gin.H{
+        if err != nil </span><span class="cov8" title="1">{
+                c.JSON(http.StatusInternalServerError, gin.H{
                         "result":   "Error.",
                         "messages": err.Error(),
                 })
                 c.Abort()
-                return
         }</span>
         <span class="cov8" title="1">c.JSON(http.StatusOK, gin.H{
                 "result":   "Success.",
@@ -1697,17 +1692,9 @@ func (postComment PostComment) PostComment(c *gin.Context) <span class="cov8" ti
         iuserId := uint64(jwt.ExtractClaims(c)["id"].(float64))
 
         var comment PostCommentJson
-        bindErr := c.Bind(&amp;comment)
-        if bindErr != nil </span><span class="cov0" title="0">{
-                c.JSON(http.StatusInternalServerError, gin.H{
-                        "result":   "Server Error.",
-                        "messages": bindErr.Error(),
-                })
-                c.Abort()
-                return
-        }</span>
+        c.Bind(&amp;comment)
 
-        <span class="cov8" title="1">errorMessages := map[string]string{}
+        errorMessages := map[string]string{}
         validationErrorFlag := false
 
         body, bodyErr := model.NewCommentBody(comment.CommentBody)
@@ -1719,13 +1706,13 @@ func (postComment PostComment) PostComment(c *gin.Context) <span class="cov8" ti
         <span class="cov8" title="1">userId, userIdErr := model.NewUserID(iuserId)
         if userIdErr != nil </span><span class="cov0" title="0">{
                 validationErrorFlag = true
-                errorMessages["user_id"] = bodyErr.Error()
+                errorMessages["user_id"] = userIdErr.Error()
         }</span>
 
         <span class="cov8" title="1">movieId, movieIdErr := model.NewMovieID(comment.MovieID)
-        if movieIdErr != nil </span><span class="cov0" title="0">{
+        if movieIdErr != nil </span><span class="cov8" title="1">{
                 validationErrorFlag = true
-                errorMessages["movie_id"] = bodyErr.Error()
+                errorMessages["movie_id"] = movieIdErr.Error()
         }</span>
 
         <span class="cov8" title="1">if validationErrorFlag </span><span class="cov8" title="1">{
@@ -1740,7 +1727,7 @@ func (postComment PostComment) PostComment(c *gin.Context) <span class="cov8" ti
         <span class="cov8" title="1">postCommentDTO := usecase.NewPostCommentDTO(userId, movieId, body)
 
         postCommentErr := postComment.PostCommentUsecase.PostComment(postCommentDTO)
-        if postCommentErr != nil </span><span class="cov0" title="0">{
+        if postCommentErr != nil </span><span class="cov8" title="1">{
                 c.JSON(http.StatusInternalServerError, gin.H{
                         "result":   "Comment Post Failed.",
                         "messages": postCommentErr.Error(),

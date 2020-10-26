@@ -6,6 +6,7 @@ import (
 	"MyPIPE/domain/model"
 	"MyPIPE/handler"
 	"MyPIPE/usecase"
+	"errors"
 	"fmt"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
@@ -15,7 +16,6 @@ import (
 	"reflect"
 	"strings"
 	"testing"
-	"errors"
 )
 
 func TestEvaluateMovie(t *testing.T) {
@@ -121,7 +121,7 @@ func TestEvaluateMovie_MovieIDError(t *testing.T) {
 		{userId: 10, movieId: 100, evaluate: "bad"},
 	}
 
-	for _,Case := range cases {
+	for _, Case := range cases {
 		// ポストデータ
 		//moviIDが無効
 		bodyReader := strings.NewReader(`{"movie_id": "INVALIDMOVIEID","evaluate":"` + Case.evaluate + `"}`)
@@ -142,7 +142,7 @@ func TestEvaluateMovie_MovieIDError(t *testing.T) {
 
 		evaluateMovieHandler.EvaluateMovie(ginContext)
 
-		if w.Code != http.StatusBadRequest{
+		if w.Code != http.StatusBadRequest {
 			t.Fatal("Error.")
 		}
 	}
@@ -166,7 +166,7 @@ func TestEvaluateMovie_UsecaseError(t *testing.T) {
 		{userId: 10, movieId: 100, evaluate: "bad"},
 	}
 
-	for _,Case := range cases {
+	for _, Case := range cases {
 		// ポストデータ
 		bodyReader := strings.NewReader(`{"movie_id": ` + fmt.Sprint(Case.movieId) + `,"evaluate":"` + Case.evaluate + `"}`)
 
@@ -188,7 +188,7 @@ func TestEvaluateMovie_UsecaseError(t *testing.T) {
 
 		evaluateMovieHandler.EvaluateMovie(ginContext)
 
-		if w.Code != http.StatusInternalServerError{
+		if w.Code != http.StatusInternalServerError {
 			t.Fatal("Error.")
 		}
 	}

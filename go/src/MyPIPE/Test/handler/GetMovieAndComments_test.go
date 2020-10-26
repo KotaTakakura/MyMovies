@@ -93,7 +93,7 @@ func TestGetMovieAndComments_MovieIDError(t *testing.T) {
 
 		getMovieAndCommentsHandler.GetMovieAndComments(ginContext)
 
-		if w.Code != http.StatusBadRequest{
+		if w.Code != http.StatusBadRequest {
 			t.Fatal("Error")
 		}
 	}
@@ -116,7 +116,7 @@ func TestGetMovieAndComments_MovieIDError(t *testing.T) {
 
 		getMovieAndCommentsHandler.GetMovieAndComments(ginContext)
 
-		if w.Code != http.StatusBadRequest{
+		if w.Code != http.StatusBadRequest {
 			t.Fatal("Error")
 		}
 	}

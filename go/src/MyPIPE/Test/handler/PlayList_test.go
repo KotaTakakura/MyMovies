@@ -6,10 +6,12 @@ import (
 	"MyPIPE/domain/model"
 	"MyPIPE/handler"
 	"MyPIPE/usecase"
+	"errors"
 	"fmt"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
+	"net/http"
 	"net/http/httptest"
 	"reflect"
 	"strings"
@@ -31,14 +33,6 @@ func TestPlayList(t *testing.T) {
 		playListDescription string
 	}{
 		{userId: 10, playListName: "TestPlaylistName", playListDescription: "TestPlayListDescription"},
-	}
-
-	falseCases := []struct {
-		userId              uint64
-		playListName        string
-		playListDescription string
-	}{
-		{userId: 10, playListName: "", playListDescription: "TestPlayListDescription"},
 	}
 
 	for _, trueCase := range trueCases {
@@ -82,6 +76,14 @@ func TestPlayList(t *testing.T) {
 		createPlayListHandler.CreatePlayList(ginContext)
 	}
 
+	falseCases := []struct {
+		userId              uint64
+		playListName        string
+		playListDescription string
+	}{
+		{userId: 10, playListName: "", playListDescription: "TestPlayListDescription"},
+	}
+
 	for _, falseCase := range falseCases {
 		// ポストデータ
 		bodyReader := strings.NewReader(`
@@ -105,5 +107,55 @@ func TestPlayList(t *testing.T) {
 		})
 
 		createPlayListHandler.CreatePlayList(ginContext)
+	}
+}
+
+func TestPlayList_UsecaseError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	userRepository := mock_repository.NewMockUserRepository(ctrl)
+	playListRepository := mock_repository.NewMockPlayListRepository(ctrl)
+	createPlayListUsecase := mock_usecase.NewMockICreatePlayList(ctrl)
+	createPlayListHandler := handler.NewCreatePlayList(userRepository, playListRepository, createPlayListUsecase)
+
+	cases := []struct {
+		userId              uint64
+		playListName        string
+		playListDescription string
+	}{
+		{userId: 10, playListName: "TestPlaylistName", playListDescription: "TestPlayListDescription"},
+	}
+
+	for _, Case := range cases {
+		// ポストデータ
+		bodyReader := strings.NewReader(`
+			{
+				"play_list_name":"` + fmt.Sprint(Case.playListName) + `",
+				"play_list_description":"` + fmt.Sprint(Case.playListDescription) + `"
+			}
+`)
+
+		// リクエスト生成
+		req := httptest.NewRequest("POST", "/", bodyReader)
+
+		// Content-Type 設定
+		req.Header.Set("Content-Type", "application/json")
+
+		// Contextセット
+		w := httptest.NewRecorder()
+		ginContext, _ := gin.CreateTestContext(w)
+		ginContext.Request = req
+		ginContext.Set("JWT_PAYLOAD", jwt.MapClaims{
+			"id": float64(Case.userId),
+		})
+
+		createPlayListUsecase.EXPECT().CreatePlayList(gomock.Any()).Return(errors.New("Usecase Error"))
+
+		createPlayListHandler.CreatePlayList(ginContext)
+
+		if w.Code != http.StatusInternalServerError {
+			t.Fatal("Error.")
+		}
 	}
 }

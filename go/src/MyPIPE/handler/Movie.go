@@ -44,10 +44,15 @@ func (movie Movie) GetUploadedMovies(c *gin.Context) {
 	result := movie.UploadMovieUsecase.Get(userIdModel)
 	jsonResult, jsonMarshalErr := json.Marshal(result)
 	if jsonMarshalErr != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"result":   "Internal Server Error.",
+			"messages": jsonMarshalErr.Error(),
+		})
+		c.Abort()
 		return
+	} else {
+		c.JSON(http.StatusOK, string(jsonResult))
 	}
-
-	c.JSON(http.StatusOK, string(jsonResult))
 }
 
 func (movie Movie) UpdateMovie(c *gin.Context) {

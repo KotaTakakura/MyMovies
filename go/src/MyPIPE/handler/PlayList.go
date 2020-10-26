@@ -30,15 +30,8 @@ func NewCreatePlayList(
 
 func (createPlayList CreatePlayList) CreatePlayList(c *gin.Context) {
 	var playListJson CreatePlayListJson
-	bindErr := c.Bind(&playListJson)
-	if bindErr != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"result":   "Error.",
-			"messages": bindErr.Error(),
-		})
-		c.Abort()
-		return
-	}
+	c.Bind(&playListJson)
+
 	userId := uint64(jwt.ExtractClaims(c)["id"].(float64))
 	playListJson.UserID = userId
 
@@ -74,7 +67,7 @@ func (createPlayList CreatePlayList) CreatePlayList(c *gin.Context) {
 
 	createPlayListUsecaseErr := createPlayList.CreatePlayListUsecase.CreatePlayList(&CreatePlayListDTO)
 	if createPlayListUsecaseErr != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"result":   "Error.",
 			"messages": createPlayListUsecaseErr.Error(),
 		})

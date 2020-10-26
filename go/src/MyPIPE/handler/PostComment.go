@@ -27,15 +27,7 @@ func (postComment PostComment) PostComment(c *gin.Context) {
 	iuserId := uint64(jwt.ExtractClaims(c)["id"].(float64))
 
 	var comment PostCommentJson
-	bindErr := c.Bind(&comment)
-	if bindErr != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"result":   "Server Error.",
-			"messages": bindErr.Error(),
-		})
-		c.Abort()
-		return
-	}
+	c.Bind(&comment)
 
 	errorMessages := map[string]string{}
 	validationErrorFlag := false
@@ -49,13 +41,13 @@ func (postComment PostComment) PostComment(c *gin.Context) {
 	userId, userIdErr := model.NewUserID(iuserId)
 	if userIdErr != nil {
 		validationErrorFlag = true
-		errorMessages["user_id"] = bodyErr.Error()
+		errorMessages["user_id"] = userIdErr.Error()
 	}
 
 	movieId, movieIdErr := model.NewMovieID(comment.MovieID)
 	if movieIdErr != nil {
 		validationErrorFlag = true
-		errorMessages["movie_id"] = bodyErr.Error()
+		errorMessages["movie_id"] = movieIdErr.Error()
 	}
 
 	if validationErrorFlag {
