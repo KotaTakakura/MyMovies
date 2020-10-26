@@ -26,15 +26,8 @@ func NewEvaluateMovie(movieRepo repository.MovieRepository, movieEvaluateRepo re
 
 func (evaluateMovie EvaluateMovie) EvaluateMovie(c *gin.Context) {
 	var evaluateMovieJson EvaluateMovieJson
-	evaluateMovieJsonErr := c.Bind(&evaluateMovieJson)
-	if evaluateMovieJsonErr != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"result":   "Error.",
-			"messages": evaluateMovieJsonErr.Error(),
-		})
-		c.Abort()
-		return
-	}
+	c.Bind(&evaluateMovieJson)
+
 	userId := uint64(jwt.ExtractClaims(c)["id"].(float64))
 	var evaluateMovieDTO usecase.EvaluateMovieDTO
 	validationErrors := make(map[string]string)
@@ -68,7 +61,7 @@ func (evaluateMovie EvaluateMovie) EvaluateMovie(c *gin.Context) {
 
 	evaluateMovieUsecaseErr := evaluateMovie.EvaluateMovieUsecase.EvaluateMovie(&evaluateMovieDTO)
 	if evaluateMovieUsecaseErr != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"result":   "Error.",
 			"messages": evaluateMovieUsecaseErr.Error(),
 		})

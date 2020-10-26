@@ -26,6 +26,7 @@ func TestIndexMovie(t *testing.T) {
 	}{
 		{keyWord: "game", order: "asc", page: 10, url: "/?keyWord=game&order=asc&page=10"},
 		{keyWord: "movie", order: "desc", page: -1, url: "/?keyWord=movie&order=desc&page=-1"}, //page = 1に変換される
+		{keyWord: "movie", order: "invalid", page: 10, url: "/?keyWord=movie&order=desc&page=-1"}, //order = "asc"に変換される
 	}
 
 	ctrl := gomock.NewController(t)
@@ -60,7 +61,7 @@ func TestIndexMovie(t *testing.T) {
 			if data.(*usecase.IndexMovieSearchDTO).Page != queryService.IndexMovieQueryServicePage(trueCase.page) && data.(*usecase.IndexMovieSearchDTO).Page != 1 {
 				t.Fatal("Page Not Match,")
 			}
-			if data.(*usecase.IndexMovieSearchDTO).Order != queryService.IndexMovieQueryServiceOrder(trueCase.order) {
+			if !(data.(*usecase.IndexMovieSearchDTO).Order == "asc" || data.(*usecase.IndexMovieSearchDTO).Order == "desc") {
 				t.Fatal("Order Not Match,")
 			}
 			return nil

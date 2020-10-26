@@ -32,11 +32,12 @@ func (indexPlayListInMovieListPage IndexPlayListInMovieListPage) IndexPlayListIn
 		validationErrors["user_id"] = userIdErr.Error()
 	}
 
-	movieIdUint64, _ := strconv.ParseUint(c.Param("movie_id"), 10, 64)
-	movieId, movieIdErr := model.NewMovieID(movieIdUint64)
-
-	if movieIdErr != nil {
-		validationErrors["movie_id"] = movieIdErr.Error()
+	var movieId model.MovieID
+	movieIdUint64, movieIdUint64Err := strconv.ParseUint(c.Param("movie_id"), 10, 64)
+	if movieIdUint64Err != nil{
+		validationErrors["movie_id"] = movieIdUint64Err.Error()
+	}else{
+		movieId, _ = model.NewMovieID(movieIdUint64)
 	}
 
 	if len(validationErrors) != 0 {

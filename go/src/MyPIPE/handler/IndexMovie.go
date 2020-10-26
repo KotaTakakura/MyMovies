@@ -31,11 +31,7 @@ func (indexMovie IndexMovie) IndexMovie(c *gin.Context) {
 	if err != nil {
 		page, _ = queryService.NewIndexMovieQueryServicePage(1)
 	} else {
-		var pageErr error
-		page, pageErr = queryService.NewIndexMovieQueryServicePage(uint(pageInt))
-		if pageErr != nil {
-			validationErrors["page"] = pageErr.Error()
-		}
+		page, _ = queryService.NewIndexMovieQueryServicePage(uint(pageInt))
 	}
 
 	order, orderErr := queryService.NewIndexMovieQueryServiceOrder(c.Query("order"))
