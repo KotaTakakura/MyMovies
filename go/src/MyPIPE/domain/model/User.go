@@ -79,6 +79,29 @@ func NewUserToken(userToken string) (UserToken, error) {
 	return UserToken(userToken), nil
 }
 
+type UserProfileImage struct{
+	Name string
+	FileHeader multipart.FileHeader
+	File multipart.File
+}
+
+func NewUserProfileImage(fileHeader multipart.FileHeader,file multipart.File)(*UserProfileImage,error){
+	extension := filepath.Ext(fileHeader.Filename)
+	if !(extension == ".jpg" || extension == ".JPG" || extension == ".png" || extension == ".PNG" || extension == ".bmp" || extension == ".BMP" || extension == ".gif" || extension == ".GIF"){
+		return nil,errors.New("Image File Only.")
+	}
+	if fileHeader.Size > 2000000 {
+		return nil,errors.New("Too Large File.")
+	}
+		timestamp := strconv.FormatInt(time.Now().Unix(), 10)
+
+	return &UserProfileImage{
+		Name:       timestamp + extension,
+		FileHeader: fileHeader,
+		File:       file,
+	},nil
+}
+
 type User struct {
 	ID               UserID   `json:"id" gorm:"primaryKey"`
 	Name             UserName `json:"name"`
@@ -179,10 +202,8 @@ func (u *User) Evaluate(ievaluate IEvaluate, movieID MovieID) error {
 	return nil
 }
 
-func (u *User) SetProfileImage(profileImageHeader *multipart.FileHeader) error {
-	extension := filepath.Ext(profileImageHeader.Filename)
-	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
-	u.ProfileImageName = timestamp + extension
+func (u *User) SetProfileImage(profileImage UserProfileImage) error {
+	u.ProfileImageName = profileImage.Name
 	return nil
 }
 

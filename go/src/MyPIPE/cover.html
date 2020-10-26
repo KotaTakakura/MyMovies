@@ -63,7 +63,7 @@
 				
 				<option value="file3">MyPIPE/handler/ChangeUserName.go (95.7%)</option>
 				
-				<option value="file4">MyPIPE/handler/ChangeUserProfileImage.go (0.0%)</option>
+				<option value="file4">MyPIPE/handler/ChangeUserProfileImage.go (96.2%)</option>
 				
 				<option value="file5">MyPIPE/handler/CheckUserAlreadyLikedMovie.go (100.0%)</option>
 				
@@ -488,7 +488,7 @@ type ChangeUserProfileImage struct {
         ChangeUserProfileImageUsecase usecase.IChangeUserProfilieImage
 }
 
-func NewChangeUserProfileImage(userRepo repository.UserRepository, userProfileImageRepo repository.UserProfileImageRepository, changeUserProfileImageUsecase usecase.IChangeUserProfilieImage) *ChangeUserProfileImage <span class="cov0" title="0">{
+func NewChangeUserProfileImage(userRepo repository.UserRepository, userProfileImageRepo repository.UserProfileImageRepository, changeUserProfileImageUsecase usecase.IChangeUserProfilieImage) *ChangeUserProfileImage <span class="cov8" title="1">{
         return &amp;ChangeUserProfileImage{
                 UserRepository:                userRepo,
                 UserProfileImageRepository:    userProfileImageRepo,
@@ -496,7 +496,7 @@ func NewChangeUserProfileImage(userRepo repository.UserRepository, userProfileIm
         }
 }</span>
 
-func (changeUserProfileImage ChangeUserProfileImage) ChangeUserProfileImage(c *gin.Context) <span class="cov0" title="0">{
+func (changeUserProfileImage ChangeUserProfileImage) ChangeUserProfileImage(c *gin.Context) <span class="cov8" title="1">{
         userIdUint := uint64(jwt.ExtractClaims(c)["id"].(float64))
         validationErrors := make(map[string]string)
 
@@ -505,12 +505,19 @@ func (changeUserProfileImage ChangeUserProfileImage) ChangeUserProfileImage(c *g
                 validationErrors["user_id"] = userIdErr.Error()
         }</span>
 
-        <span class="cov0" title="0">imageFile, imageHeader, imageFileErr := c.Request.FormFile("profileImage")
-        if imageFileErr != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">var profileImage *model.UserProfileImage
+        var profileImageErr error
+        imageFile, imageHeader, imageFileErr := c.Request.FormFile("profileImage")
+        if imageFileErr != nil </span><span class="cov8" title="1">{
                 validationErrors["profile_image"] = imageFileErr.Error()
-        }</span>
+        }</span>else<span class="cov8" title="1">{
+                profileImage,profileImageErr = model.NewUserProfileImage(*imageHeader,imageFile)
+                if profileImageErr != nil</span><span class="cov8" title="1">{
+                        validationErrors["profile_image"] = profileImageErr.Error()
+                }</span>
+        }
 
-        <span class="cov0" title="0">if len(validationErrors) != 0 </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if len(validationErrors) != 0 </span><span class="cov8" title="1">{
                 validationErrors, _ := json.Marshal(validationErrors)
                 c.JSON(http.StatusBadRequest, gin.H{
                         "result":   "Validation Error.",
@@ -520,9 +527,9 @@ func (changeUserProfileImage ChangeUserProfileImage) ChangeUserProfileImage(c *g
                 return
         }</span>
 
-        <span class="cov0" title="0">changeUserProfileImageDTO := usecase.NewChangeUserProfileImageDTO(userId, imageFile, imageHeader)
+        <span class="cov8" title="1">changeUserProfileImageDTO := usecase.NewChangeUserProfileImageDTO(userId, profileImage)
         changeProfileImageErr := changeUserProfileImage.ChangeUserProfileImageUsecase.ChangeUserProfileImage(changeUserProfileImageDTO)
-        if changeProfileImageErr != nil </span><span class="cov0" title="0">{
+        if changeProfileImageErr != nil </span><span class="cov8" title="1">{
                 c.JSON(http.StatusInternalServerError, gin.H{
                         "result":   "Profile Image Set Failed.",
                         "messages": changeProfileImageErr.Error(),
@@ -531,10 +538,9 @@ func (changeUserProfileImage ChangeUserProfileImage) ChangeUserProfileImage(c *g
                 return
         }</span>
 
-        <span class="cov0" title="0">c.JSON(http.StatusOK, gin.H{
+        <span class="cov8" title="1">c.JSON(http.StatusOK, gin.H{
                 "message": "Posted!",
         })</span>
-
 }
 </pre>
 		
