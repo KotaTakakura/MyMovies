@@ -41,6 +41,30 @@ func NewMovieThumbnailName(thumbnailHeader multipart.FileHeader) (MovieThumbnail
 	return MovieThumbnailName("_" + timestamp + extension), nil
 }
 
+type MovieThumbnail struct{
+	Name string
+	File multipart.File
+	FileHeader multipart.FileHeader
+}
+
+func NewMovieThumbnail(file multipart.File,fileHeader multipart.FileHeader)(*MovieThumbnail,error){
+	extension := filepath.Ext(fileHeader.Filename)
+	if !(extension == ".jpg" || extension == ".JPG" || extension == ".png" || extension == ".PNG" || extension == ".bmp" || extension == ".BMP" || extension == ".gif" || extension == ".GIF"){
+		return nil,errors.New("Image File Only.")
+	}
+	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
+
+	if fileHeader.Size > 2000000 {
+		return nil,errors.New("Too Large File.")
+	}
+
+	return &MovieThumbnail{
+		Name:       "_" + timestamp + extension,
+		File:       file,
+		FileHeader: fileHeader,
+	},nil
+}
+
 type MoviePublic uint
 
 func NewMoviePublic(public uint) (MoviePublic, error) {
@@ -70,7 +94,7 @@ type Movie struct {
 	StoreName     MovieStoreName     `gorm:"column:store_name"`
 	DisplayName   MovieDisplayName   `gorm:"column:display_name"`
 	Description   MovieDescription   `gorm:"column:description"`
-	ThumbnailName MovieThumbnailName `gorm:"column:thumbnail_name"`
+	ThumbnailName string `gorm:"column:thumbnail_name"`
 	UserID        UserID             `gorm:"column:user_id"`
 	Public        MoviePublic        `gorm:"column:public"`
 	Status        MovieStatus        `gorm:"column:status"`
@@ -78,13 +102,13 @@ type Movie struct {
 	UpdatedAt     time.Time
 }
 
-func NewMovie(uploaderID UserID, storeName MovieStoreName, displayName MovieDisplayName, thumbnailName MovieThumbnailName) *Movie {
+func NewMovie(uploaderID UserID, storeName MovieStoreName, displayName MovieDisplayName, thumbnail MovieThumbnail) *Movie {
 	return &Movie{
 		StoreName:     storeName,
 		DisplayName:   displayName,
 		UserID:        uploaderID,
 		Description:   MovieDescription(""),
-		ThumbnailName: thumbnailName,
+		ThumbnailName: thumbnail.Name,
 		Public:        MoviePublic(0),
 		Status:        MovieStatus(0),
 	}
@@ -121,7 +145,7 @@ func (m *Movie) ChangeStatus(status MovieStatus) error {
 	return nil
 }
 
-func (m *Movie) ChangeThumbnailName(thumbnailName MovieThumbnailName) error {
-	m.ThumbnailName = thumbnailName
+func (m *Movie) ChangeThumbnailName(thumbnail MovieThumbnail) error {
+	m.ThumbnailName = thumbnail.Name
 	return nil
 }

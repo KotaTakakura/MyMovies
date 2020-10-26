@@ -161,6 +161,18 @@ func (movie Movie) ChangeThumbnail(c *gin.Context) {
 		validationErrors["movie_id"] = movieIdErr.Error()
 	}
 
+	thumbnailFile, thumbnailFileHeader, thumbnailFileErr := c.Request.FormFile("uploadThumbnail")
+	var thumbnail *model.MovieThumbnail
+	var thumbnailErr error
+	if thumbnailFileErr != nil {
+		validationErrors["thumbnail"] = thumbnailFileErr.Error()
+	}else{
+		thumbnail,thumbnailErr = model.NewMovieThumbnail(thumbnailFile,*thumbnailFileHeader)
+		if thumbnailErr != nil{
+			validationErrors["thumbnail"] = thumbnailErr.Error()
+		}
+	}
+
 	if len(validationErrors) != 0 {
 		validationErrors, _ := json.Marshal(validationErrors)
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -171,18 +183,8 @@ func (movie Movie) ChangeThumbnail(c *gin.Context) {
 		return
 	}
 
-	thumbnail, thumbnailHeader, thumbnailErr := c.Request.FormFile("uploadThumbnail")
-	if thumbnailErr != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"result":   "Thumbnail Change Error.",
-			"messages": thumbnailErr.Error(),
-		})
-		c.Abort()
-		return
-	}
-
-	changeThumbnailDTO := usecase.NewChangeThumbnailDTO(userId, movieId, thumbnail, *thumbnailHeader)
-	changeThumbnailUsecaseErr := movie.ChangeThumbnailUsecase.ChangeThumbnail(*changeThumbnailDTO)
+	changeThumbnailDTO := usecase.NewChangeThumbnailDTO(userId, movieId, *thumbnail)
+	changeThumbnailUsecaseErr := movie.ChangeThumbnailUsecase.ChangeThumbnail(changeThumbnailDTO)
 	if changeThumbnailUsecaseErr != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"result":   "Server Error.",

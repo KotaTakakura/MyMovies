@@ -3,11 +3,10 @@ package usecase
 import (
 	"MyPIPE/domain/model"
 	"MyPIPE/domain/repository"
-	"mime/multipart"
 )
 
 type IChangeThumbnail interface {
-	ChangeThumbnail(changeThumbnailDTO ChangeThumbnailDTO) error
+	ChangeThumbnail(changeThumbnailDTO *ChangeThumbnailDTO) error
 }
 
 type ChangeThumbnail struct {
@@ -22,18 +21,13 @@ func NewChangeThumbnail(m repository.MovieRepository, t repository.ThumbnailUplo
 	}
 }
 
-func (c ChangeThumbnail) ChangeThumbnail(changeThumbnailDTO ChangeThumbnailDTO) error {
+func (c ChangeThumbnail) ChangeThumbnail(changeThumbnailDTO *ChangeThumbnailDTO) error {
 	movie, findMovieErr := c.MovieRepository.FindByUserIdAndMovieId(changeThumbnailDTO.UserID, changeThumbnailDTO.MovieID)
 	if findMovieErr != nil {
 		return findMovieErr
 	}
 
-	thumbnailName, thumbnailNameErr := model.NewMovieThumbnailName(changeThumbnailDTO.ThumbnailHeader)
-	if thumbnailNameErr != nil {
-		return thumbnailNameErr
-	}
-
-	changeThumbnailNameErr := movie.ChangeThumbnailName(thumbnailName)
+	changeThumbnailNameErr := movie.ChangeThumbnailName(changeThumbnailDTO.Thumbnail)
 	if changeThumbnailNameErr != nil {
 		return changeThumbnailNameErr
 	}
@@ -43,7 +37,7 @@ func (c ChangeThumbnail) ChangeThumbnail(changeThumbnailDTO ChangeThumbnailDTO) 
 		return updateErr
 	}
 
-	thumbnailUploadErr := c.ThumbnailUploadRepository.Upload(changeThumbnailDTO.Thumbnail, *movie)
+	thumbnailUploadErr := c.ThumbnailUploadRepository.Upload(changeThumbnailDTO.Thumbnail.File, *movie)
 	if thumbnailUploadErr != nil {
 		return thumbnailUploadErr
 	}
@@ -54,15 +48,13 @@ func (c ChangeThumbnail) ChangeThumbnail(changeThumbnailDTO ChangeThumbnailDTO) 
 type ChangeThumbnailDTO struct {
 	UserID          model.UserID
 	MovieID         model.MovieID
-	Thumbnail       multipart.File
-	ThumbnailHeader multipart.FileHeader
+	Thumbnail       model.MovieThumbnail
 }
 
-func NewChangeThumbnailDTO(userId model.UserID, movieId model.MovieID, thumbnail multipart.File, thumbnailHeader multipart.FileHeader) *ChangeThumbnailDTO {
+func NewChangeThumbnailDTO(userId model.UserID, movieId model.MovieID, thumbnail model.MovieThumbnail) *ChangeThumbnailDTO {
 	return &ChangeThumbnailDTO{
 		UserID:          userId,
 		MovieID:         movieId,
 		Thumbnail:       thumbnail,
-		ThumbnailHeader: thumbnailHeader,
 	}
 }

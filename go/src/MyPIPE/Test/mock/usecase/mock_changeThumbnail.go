@@ -34,7 +34,7 @@ func (m *MockIChangeThumbnail) EXPECT() *MockIChangeThumbnailMockRecorder {
 }
 
 // ChangeThumbnail mocks base method
-func (m *MockIChangeThumbnail) ChangeThumbnail(changeThumbnailDTO usecase.ChangeThumbnailDTO) error {
+func (m *MockIChangeThumbnail) ChangeThumbnail(changeThumbnailDTO *usecase.ChangeThumbnailDTO) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ChangeThumbnail", changeThumbnailDTO)
 	ret0, _ := ret[0].(error)
