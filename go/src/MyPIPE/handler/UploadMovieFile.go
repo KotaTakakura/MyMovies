@@ -55,6 +55,24 @@ func (uploadMovieFile UploadMovieFile) UploadMovieFile(c *gin.Context) {
 		}
 	}
 
+	//動画ファイル取得&バリデーション
+	file, header, fileErr := c.Request.FormFile("uploadMovie")
+	var movieFile *model.MovieFile
+	var movieFileErr error
+	if fileErr != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"result":   "MovieFileUpload Error.",
+			"messages": fileErr.Error(),
+		})
+		c.Abort()
+		return
+	} else {
+		movieFile, movieFileErr = model.NewMovieFile(file, *header)
+		if movieFileErr != nil {
+			validationErrors["movie_file"] = movieFileErr.Error()
+		}
+	}
+
 	//バリデーションチェック
 	if len(validationErrors) != 0 {
 		validationErrors, _ := json.Marshal(validationErrors)
@@ -66,19 +84,8 @@ func (uploadMovieFile UploadMovieFile) UploadMovieFile(c *gin.Context) {
 		return
 	}
 
-	//動画ファイル取得&バリデーション
-	file, header, fileErr := c.Request.FormFile("uploadMovie")
-	if fileErr != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"result":   "MovieFileUpload Error.",
-			"messages": fileErr.Error(),
-		})
-		c.Abort()
-		return
-	}
-
 	//動画投稿用のDTO
-	postMovieDTO := usecase.NewPostMovieDTO(file, *header, *thumbnail, userId)
+	postMovieDTO := usecase.NewPostMovieDTO(movieFile, thumbnail, userId)
 
 	newMovieModel, err := uploadMovieFile.PostMovieUsecase.PostMovie(postMovieDTO)
 	if err != nil {
