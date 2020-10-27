@@ -52,17 +52,17 @@ func (p *PostMovie) PostMovie(postMovieDTO *PostMovieDTO) (*model.Movie, error) 
 }
 
 type PostMovieDTO struct {
-	File            multipart.File
-	FileHeader      multipart.FileHeader
-	Thumbnail       model.MovieThumbnail
-	UserID          model.UserID
+	File       multipart.File
+	FileHeader multipart.FileHeader
+	Thumbnail  model.MovieThumbnail
+	UserID     model.UserID
 }
 
 func NewPostMovieDTO(file multipart.File, file_header multipart.FileHeader, thumbnail model.MovieThumbnail, userId model.UserID) *PostMovieDTO {
 	return &PostMovieDTO{
-		File:            file,
-		FileHeader:      file_header,
-		Thumbnail:       thumbnail,
-		UserID:          userId,
+		File:       file,
+		FileHeader: file_header,
+		Thumbnail:  thumbnail,
+		UserID:     userId,
 	}
 }

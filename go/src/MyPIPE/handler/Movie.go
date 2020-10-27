@@ -166,13 +166,12 @@ func (movie Movie) ChangeThumbnail(c *gin.Context) {
 	var thumbnailErr error
 	if thumbnailFileErr != nil {
 		validationErrors["thumbnail"] = thumbnailFileErr.Error()
-	}else{
-		thumbnail,thumbnailErr = model.NewMovieThumbnail(thumbnailFile,*thumbnailFileHeader)
-		if thumbnailErr != nil{
+	} else {
+		thumbnail, thumbnailErr = model.NewMovieThumbnail(thumbnailFile, *thumbnailFileHeader)
+		if thumbnailErr != nil {
 			validationErrors["thumbnail"] = thumbnailErr.Error()
 		}
 	}
-
 	if len(validationErrors) != 0 {
 		validationErrors, _ := json.Marshal(validationErrors)
 		c.JSON(http.StatusBadRequest, gin.H{

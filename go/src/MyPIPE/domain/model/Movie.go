@@ -41,28 +41,28 @@ func NewMovieThumbnailName(thumbnailHeader multipart.FileHeader) (MovieThumbnail
 	return MovieThumbnailName("_" + timestamp + extension), nil
 }
 
-type MovieThumbnail struct{
-	Name string
-	File multipart.File
+type MovieThumbnail struct {
+	Name       string
+	File       multipart.File
 	FileHeader multipart.FileHeader
 }
 
-func NewMovieThumbnail(file multipart.File,fileHeader multipart.FileHeader)(*MovieThumbnail,error){
+func NewMovieThumbnail(file multipart.File, fileHeader multipart.FileHeader) (*MovieThumbnail, error) {
 	extension := filepath.Ext(fileHeader.Filename)
-	if !(extension == ".jpg" || extension == ".JPG" || extension == ".png" || extension == ".PNG" || extension == ".bmp" || extension == ".BMP" || extension == ".gif" || extension == ".GIF"){
-		return nil,errors.New("Image File Only.")
+	if !(extension == ".jpg" || extension == ".JPG" || extension == ".png" || extension == ".PNG" || extension == ".bmp" || extension == ".BMP" || extension == ".gif" || extension == ".GIF") {
+		return nil, errors.New("Image File Only.")
 	}
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
 
 	if fileHeader.Size > 2000000 {
-		return nil,errors.New("Too Large File.")
+		return nil, errors.New("Too Large File.")
 	}
 
 	return &MovieThumbnail{
 		Name:       "_" + timestamp + extension,
 		File:       file,
 		FileHeader: fileHeader,
-	},nil
+	}, nil
 }
 
 type MoviePublic uint
@@ -90,14 +90,14 @@ func NewMovieDescription(description string) (MovieDescription, error) {
 }
 
 type Movie struct {
-	ID            MovieID            `json:"id" gorm:"primaryKey"`
-	StoreName     MovieStoreName     `gorm:"column:store_name"`
-	DisplayName   MovieDisplayName   `gorm:"column:display_name"`
-	Description   MovieDescription   `gorm:"column:description"`
-	ThumbnailName string `gorm:"column:thumbnail_name"`
-	UserID        UserID             `gorm:"column:user_id"`
-	Public        MoviePublic        `gorm:"column:public"`
-	Status        MovieStatus        `gorm:"column:status"`
+	ID            MovieID          `json:"id" gorm:"primaryKey"`
+	StoreName     MovieStoreName   `gorm:"column:store_name"`
+	DisplayName   MovieDisplayName `gorm:"column:display_name"`
+	Description   MovieDescription `gorm:"column:description"`
+	ThumbnailName string           `gorm:"column:thumbnail_name"`
+	UserID        UserID           `gorm:"column:user_id"`
+	Public        MoviePublic      `gorm:"column:public"`
+	Status        MovieStatus      `gorm:"column:status"`
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 }

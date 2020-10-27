@@ -46,13 +46,13 @@ func (c ChangeUserProfileImage) ChangeUserProfileImage(changeUserProfileImageDTO
 }
 
 type ChangeUserProfileImageDTO struct {
-	UserID             model.UserID
-	ProfileImage       model.UserProfileImage
+	UserID       model.UserID
+	ProfileImage model.UserProfileImage
 }
 
-func NewChangeUserProfileImageDTO(userId model.UserID,profileImage *model.UserProfileImage) *ChangeUserProfileImageDTO {
+func NewChangeUserProfileImageDTO(userId model.UserID, profileImage *model.UserProfileImage) *ChangeUserProfileImageDTO {
 	return &ChangeUserProfileImageDTO{
-		UserID:             userId,
-		ProfileImage:       *profileImage,
+		UserID:       userId,
+		ProfileImage: *profileImage,
 	}
 }

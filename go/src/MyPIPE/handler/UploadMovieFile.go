@@ -48,9 +48,9 @@ func (uploadMovieFile UploadMovieFile) UploadMovieFile(c *gin.Context) {
 	var thumbnailErr error
 	if thumbnailFileErr != nil {
 		validationErrors["thumbnail"] = thumbnailFileErr.Error()
-	}else{
-		thumbnail,thumbnailErr = model.NewMovieThumbnail(thumbnailFile,*thumbnailFileHeader)
-		if thumbnailErr != nil{
+	} else {
+		thumbnail, thumbnailErr = model.NewMovieThumbnail(thumbnailFile, *thumbnailFileHeader)
+		if thumbnailErr != nil {
 			validationErrors["thumbnail"] = thumbnailErr.Error()
 		}
 	}
