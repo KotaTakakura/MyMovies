@@ -349,7 +349,7 @@ func TestMovie_ChangeThumbnail(t *testing.T) {
 		}
 		file, fileHeader, _ := ginContext.Request.FormFile("uploadThumbnail")
 		movieThumbnail, _ := model.NewMovieThumbnail(file, *fileHeader)
-		if reflect.DeepEqual(data.(*usecase.ChangeThumbnailDTO).Thumbnail, movieThumbnail) {
+		if reflect.DeepEqual(data.(*usecase.ChangeThumbnailDTO).Thumbnail, *movieThumbnail) {
 			t.Fatal("Thumbnail Not Match,")
 		}
 		return nil

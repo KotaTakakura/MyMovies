@@ -85,7 +85,7 @@
 				
 				<option value="file14">MyPIPE/handler/IndexPlayListsInMyPage.go (57.9%)</option>
 				
-				<option value="file15">MyPIPE/handler/Movie.go (88.9%)</option>
+				<option value="file15">MyPIPE/handler/Movie.go (88.8%)</option>
 				
 				<option value="file16">MyPIPE/handler/PlayList.go (93.3%)</option>
 				
@@ -510,9 +510,9 @@ func (changeUserProfileImage ChangeUserProfileImage) ChangeUserProfileImage(c *g
         imageFile, imageHeader, imageFileErr := c.Request.FormFile("profileImage")
         if imageFileErr != nil </span><span class="cov8" title="1">{
                 validationErrors["profile_image"] = imageFileErr.Error()
-        }</span>else<span class="cov8" title="1">{
-                profileImage,profileImageErr = model.NewUserProfileImage(*imageHeader,imageFile)
-                if profileImageErr != nil</span><span class="cov8" title="1">{
+        }</span> else<span class="cov8" title="1"> {
+                profileImage, profileImageErr = model.NewUserProfileImage(*imageHeader, imageFile)
+                if profileImageErr != nil </span><span class="cov8" title="1">{
                         validationErrors["profile_image"] = profileImageErr.Error()
                 }</span>
         }
@@ -1241,7 +1241,6 @@ import (
         "github.com/gin-gonic/gin"
         "net/http"
         "strconv"
-        "fmt"
 )
 
 type Movie struct {
@@ -1398,14 +1397,13 @@ func (movie Movie) ChangeThumbnail(c *gin.Context) <span class="cov8" title="1">
         var thumbnailErr error
         if thumbnailFileErr != nil </span><span class="cov0" title="0">{
                 validationErrors["thumbnail"] = thumbnailFileErr.Error()
-        }</span>else<span class="cov8" title="1">{
-                thumbnail,thumbnailErr = model.NewMovieThumbnail(thumbnailFile,*thumbnailFileHeader)
-                if thumbnailErr != nil</span><span class="cov8" title="1">{
+        }</span> else<span class="cov8" title="1"> {
+                thumbnail, thumbnailErr = model.NewMovieThumbnail(thumbnailFile, *thumbnailFileHeader)
+                if thumbnailErr != nil </span><span class="cov8" title="1">{
                         validationErrors["thumbnail"] = thumbnailErr.Error()
                 }</span>
         }
-        <span class="cov8" title="1">fmt.Println(validationErrors)
-        if len(validationErrors) != 0 </span><span class="cov8" title="1">{
+        <span class="cov8" title="1">if len(validationErrors) != 0 </span><span class="cov8" title="1">{
                 validationErrors, _ := json.Marshal(validationErrors)
                 c.JSON(http.StatusBadRequest, gin.H{
                         "result":   "Validation Error.",
@@ -1415,7 +1413,7 @@ func (movie Movie) ChangeThumbnail(c *gin.Context) <span class="cov8" title="1">
                 return
         }</span>
 
-        <span class="cov8" title="1">changeThumbnailDTO := usecase.NewChangeThumbnailDTO(userId, movieId, *thumbnail)
+        <span class="cov8" title="1">changeThumbnailDTO := usecase.NewChangeThumbnailDTO(userId, movieId, thumbnail)
         changeThumbnailUsecaseErr := movie.ChangeThumbnailUsecase.ChangeThumbnail(changeThumbnailDTO)
         if changeThumbnailUsecaseErr != nil </span><span class="cov8" title="1">{
                 c.JSON(http.StatusInternalServerError, gin.H{
@@ -1806,10 +1804,28 @@ func (uploadMovieFile UploadMovieFile) UploadMovieFile(c *gin.Context) <span cla
         var thumbnailErr error
         if thumbnailFileErr != nil </span><span class="cov0" title="0">{
                 validationErrors["thumbnail"] = thumbnailFileErr.Error()
-        }</span>else<span class="cov0" title="0">{
-                thumbnail,thumbnailErr = model.NewMovieThumbnail(thumbnailFile,*thumbnailFileHeader)
-                if thumbnailErr != nil</span><span class="cov0" title="0">{
+        }</span> else<span class="cov0" title="0"> {
+                thumbnail, thumbnailErr = model.NewMovieThumbnail(thumbnailFile, *thumbnailFileHeader)
+                if thumbnailErr != nil </span><span class="cov0" title="0">{
                         validationErrors["thumbnail"] = thumbnailErr.Error()
+                }</span>
+        }
+
+        //動画ファイル取得&amp;バリデーション
+        <span class="cov0" title="0">file, header, fileErr := c.Request.FormFile("uploadMovie")
+        var movieFile *model.MovieFile
+        var movieFileErr error
+        if fileErr != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusBadRequest, gin.H{
+                        "result":   "MovieFileUpload Error.",
+                        "messages": fileErr.Error(),
+                })
+                c.Abort()
+                return
+        }</span> else<span class="cov0" title="0"> {
+                movieFile, movieFileErr = model.NewMovieFile(file, *header)
+                if movieFileErr != nil </span><span class="cov0" title="0">{
+                        validationErrors["movie_file"] = movieFileErr.Error()
                 }</span>
         }
 
@@ -1824,19 +1840,8 @@ func (uploadMovieFile UploadMovieFile) UploadMovieFile(c *gin.Context) <span cla
                 return
         }</span>
 
-        //動画ファイル取得&amp;バリデーション
-        <span class="cov0" title="0">file, header, fileErr := c.Request.FormFile("uploadMovie")
-        if fileErr != nil </span><span class="cov0" title="0">{
-                c.JSON(http.StatusBadRequest, gin.H{
-                        "result":   "MovieFileUpload Error.",
-                        "messages": fileErr.Error(),
-                })
-                c.Abort()
-                return
-        }</span>
-
         //動画投稿用のDTO
-        <span class="cov0" title="0">postMovieDTO := usecase.NewPostMovieDTO(file, *header, *thumbnail, userId)
+        <span class="cov0" title="0">postMovieDTO := usecase.NewPostMovieDTO(movieFile, thumbnail, userId)
 
         newMovieModel, err := uploadMovieFile.PostMovieUsecase.PostMovie(postMovieDTO)
         if err != nil </span><span class="cov0" title="0">{
