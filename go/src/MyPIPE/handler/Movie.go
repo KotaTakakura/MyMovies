@@ -182,7 +182,7 @@ func (movie Movie) ChangeThumbnail(c *gin.Context) {
 		return
 	}
 
-	changeThumbnailDTO := usecase.NewChangeThumbnailDTO(userId, movieId, *thumbnail)
+	changeThumbnailDTO := usecase.NewChangeThumbnailDTO(userId, movieId, thumbnail)
 	changeThumbnailUsecaseErr := movie.ChangeThumbnailUsecase.ChangeThumbnail(changeThumbnailDTO)
 	if changeThumbnailUsecaseErr != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{

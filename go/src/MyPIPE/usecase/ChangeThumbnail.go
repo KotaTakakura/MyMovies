@@ -48,10 +48,10 @@ func (c ChangeThumbnail) ChangeThumbnail(changeThumbnailDTO *ChangeThumbnailDTO)
 type ChangeThumbnailDTO struct {
 	UserID    model.UserID
 	MovieID   model.MovieID
-	Thumbnail model.MovieThumbnail
+	Thumbnail *model.MovieThumbnail
 }
 
-func NewChangeThumbnailDTO(userId model.UserID, movieId model.MovieID, thumbnail model.MovieThumbnail) *ChangeThumbnailDTO {
+func NewChangeThumbnailDTO(userId model.UserID, movieId model.MovieID, thumbnail *model.MovieThumbnail) *ChangeThumbnailDTO {
 	return &ChangeThumbnailDTO{
 		UserID:    userId,
 		MovieID:   movieId,
