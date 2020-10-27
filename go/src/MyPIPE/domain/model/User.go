@@ -79,27 +79,27 @@ func NewUserToken(userToken string) (UserToken, error) {
 	return UserToken(userToken), nil
 }
 
-type UserProfileImage struct{
-	Name string
+type UserProfileImage struct {
+	Name       string
 	FileHeader multipart.FileHeader
-	File multipart.File
+	File       multipart.File
 }
 
-func NewUserProfileImage(fileHeader multipart.FileHeader,file multipart.File)(*UserProfileImage,error){
+func NewUserProfileImage(fileHeader multipart.FileHeader, file multipart.File) (*UserProfileImage, error) {
 	extension := filepath.Ext(fileHeader.Filename)
-	if !(extension == ".jpg" || extension == ".JPG" || extension == ".png" || extension == ".PNG" || extension == ".bmp" || extension == ".BMP" || extension == ".gif" || extension == ".GIF"){
-		return nil,errors.New("Image File Only.")
+	if !(extension == ".jpg" || extension == ".JPG" || extension == ".png" || extension == ".PNG" || extension == ".bmp" || extension == ".BMP" || extension == ".gif" || extension == ".GIF") {
+		return nil, errors.New("Image File Only.")
 	}
 	if fileHeader.Size > 2000000 {
-		return nil,errors.New("Too Large File.")
+		return nil, errors.New("Too Large File.")
 	}
-		timestamp := strconv.FormatInt(time.Now().Unix(), 10)
+	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
 
 	return &UserProfileImage{
 		Name:       timestamp + extension,
 		FileHeader: fileHeader,
 		File:       file,
-	},nil
+	}, nil
 }
 
 type User struct {

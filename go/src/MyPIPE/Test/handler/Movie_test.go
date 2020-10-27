@@ -7,13 +7,17 @@ import (
 	"MyPIPE/domain/model"
 	"MyPIPE/handler"
 	"MyPIPE/usecase"
+	"bytes"
 	"errors"
 	"fmt"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
+	"io"
+	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"reflect"
 	"strings"
 	"testing"
@@ -284,5 +288,277 @@ func TestMovieUpdateMovie_UsecaseError(t *testing.T) {
 		if w.Code != http.StatusInternalServerError {
 			t.Fatal("Error.")
 		}
+	}
+}
+
+func TestMovie_ChangeThumbnail(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	uploadMoviesQueryService := mock_queryService.NewMockUploadedMovies(ctrl)
+	uploadMoviesUsecase := mock_usecase.NewMockIUploadedMovies(ctrl)
+	movieRepository := mock_repository.NewMockMovieRepository(ctrl)
+	updateMovieUsecase := mock_usecase.NewMockIUpdateMovie(ctrl)
+	thumbnailUploadRepository := mock_repository.NewMockThumbnailUploadRepository(ctrl)
+	changeThumbnailUsecase := mock_usecase.NewMockIChangeThumbnail(ctrl)
+	movieHandler := handler.NewMovie(uploadMoviesQueryService, uploadMoviesUsecase, movieRepository, updateMovieUsecase, thumbnailUploadRepository, changeThumbnailUsecase)
+
+	// ポストデータ
+	var buf bytes.Buffer
+	w := multipart.NewWriter(&buf)
+	f, e1 := os.Open("./../TestThumbnail.jpg")
+	if e1 != nil {
+		fmt.Println(e1)
+		return
+	}
+	defer f.Close()
+	fw, e2 := w.CreateFormFile("uploadThumbnail", "TestThumbnail.jpg")
+	if e2 != nil {
+		fmt.Println(e2)
+		return
+	}
+	_, e3 := io.Copy(fw, f)
+	if e3 != nil {
+		fmt.Println(e3)
+		return
+	}
+
+	w.WriteField("movie_id", "10")
+	w.Close()
+
+	// リクエスト生成
+	req := httptest.NewRequest("POST", "/", &buf)
+
+	// Content-Type 設定
+	req.Header.Set("Content-Type", w.FormDataContentType())
+
+	// Contextセット
+	recorder := httptest.NewRecorder()
+	ginContext, _ := gin.CreateTestContext(recorder)
+	ginContext.Request = req
+	ginContext.Set("JWT_PAYLOAD", jwt.MapClaims{
+		"id": float64(10),
+	})
+
+	changeThumbnailUsecase.EXPECT().ChangeThumbnail(gomock.Any()).DoAndReturn(func(data interface{}) error {
+		if reflect.TypeOf(data) != reflect.TypeOf(&(usecase.ChangeThumbnailDTO{})) {
+			t.Fatal("Type Not Match.")
+		}
+		if data.(*usecase.ChangeThumbnailDTO).MovieID != model.MovieID(10) {
+			t.Fatal("Movie Not Match,")
+		}
+		file, fileHeader, _ := ginContext.Request.FormFile("uploadThumbnail")
+		movieThumbnail, _ := model.NewMovieThumbnail(file, *fileHeader)
+		if reflect.DeepEqual(data.(*usecase.ChangeThumbnailDTO).Thumbnail, movieThumbnail) {
+			t.Fatal("Thumbnail Not Match,")
+		}
+		return nil
+	})
+
+	movieHandler.ChangeThumbnail(ginContext)
+
+	if recorder.Code != http.StatusOK {
+		t.Fatal("Usecase Error.")
+	}
+}
+
+func TestMovie_ChangeThumbnail_MovieID_Error(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	uploadMoviesQueryService := mock_queryService.NewMockUploadedMovies(ctrl)
+	uploadMoviesUsecase := mock_usecase.NewMockIUploadedMovies(ctrl)
+	movieRepository := mock_repository.NewMockMovieRepository(ctrl)
+	updateMovieUsecase := mock_usecase.NewMockIUpdateMovie(ctrl)
+	thumbnailUploadRepository := mock_repository.NewMockThumbnailUploadRepository(ctrl)
+	changeThumbnailUsecase := mock_usecase.NewMockIChangeThumbnail(ctrl)
+	movieHandler := handler.NewMovie(uploadMoviesQueryService, uploadMoviesUsecase, movieRepository, updateMovieUsecase, thumbnailUploadRepository, changeThumbnailUsecase)
+
+	// ポストデータ
+	var buf bytes.Buffer
+	w := multipart.NewWriter(&buf)
+	f, e1 := os.Open("./../TestThumbnail.jpg")
+	if e1 != nil {
+		fmt.Println(e1)
+		return
+	}
+	defer f.Close()
+	fw, e2 := w.CreateFormFile("uploadThumbnail", "TestThumbnail.jpg")
+	if e2 != nil {
+		fmt.Println(e2)
+		return
+	}
+	_, e3 := io.Copy(fw, f)
+	if e3 != nil {
+		fmt.Println(e3)
+		return
+	}
+
+	w.WriteField("movie_id", "INVALIDMOVIEID")
+	w.Close()
+
+	// リクエスト生成
+	req := httptest.NewRequest("POST", "/", &buf)
+
+	// Content-Type 設定
+	req.Header.Set("Content-Type", w.FormDataContentType())
+
+	// Contextセット
+	recorder := httptest.NewRecorder()
+	ginContext, _ := gin.CreateTestContext(recorder)
+	ginContext.Request = req
+	ginContext.Set("JWT_PAYLOAD", jwt.MapClaims{
+		"id": float64(10),
+	})
+
+	movieHandler.ChangeThumbnail(ginContext)
+
+	if recorder.Code != http.StatusBadRequest {
+		t.Fatal("Usecase Error.")
+	}
+}
+
+func TestMovie_ChangeThumbnail_ThumbnailInvalid_Error(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	uploadMoviesQueryService := mock_queryService.NewMockUploadedMovies(ctrl)
+	uploadMoviesUsecase := mock_usecase.NewMockIUploadedMovies(ctrl)
+	movieRepository := mock_repository.NewMockMovieRepository(ctrl)
+	updateMovieUsecase := mock_usecase.NewMockIUpdateMovie(ctrl)
+	thumbnailUploadRepository := mock_repository.NewMockThumbnailUploadRepository(ctrl)
+	changeThumbnailUsecase := mock_usecase.NewMockIChangeThumbnail(ctrl)
+	movieHandler := handler.NewMovie(uploadMoviesQueryService, uploadMoviesUsecase, movieRepository, updateMovieUsecase, thumbnailUploadRepository, changeThumbnailUsecase)
+
+	// ポストデータ
+	var tooLargeFileBuffer bytes.Buffer
+	tooLargeFile := multipart.NewWriter(&tooLargeFileBuffer)
+	f1, e11 := os.Open("./../TestThumbnailTooLarge.png")
+	if e11 != nil {
+		return
+	}
+	defer f1.Close()
+	fw1, e12 := tooLargeFile.CreateFormFile("uploadThumbnail", "TestThumbnailTooLarge.png")
+	if e12 != nil {
+		return
+	}
+	_, e13 := io.Copy(fw1, f1)
+	if e13 != nil {
+		return
+	}
+	tooLargeFile.WriteField("movie_id", "10")
+	tooLargeFile.Close()
+
+	// ポストデータ
+	var notImageFileBuffer bytes.Buffer
+	notImageFile := multipart.NewWriter(&notImageFileBuffer)
+	f2, e21 := os.Open("./../TestThumbnail.jpg")
+	if e21 != nil {
+		return
+	}
+	defer f2.Close()
+	fw2, e22 := notImageFile.CreateFormFile("uploadThumbnail", "TestThumbnailNotImage.mp4")
+	if e22 != nil {
+		return
+	}
+	_, e23 := io.Copy(fw2, f2)
+	if e23 != nil {
+		return
+	}
+	notImageFile.WriteField("movie_id", "10")
+	notImageFile.Close()
+
+	cases := []struct {
+		fileBuffer bytes.Buffer
+		fileWriter *multipart.Writer
+	}{
+		{
+			fileBuffer: tooLargeFileBuffer,
+			fileWriter: tooLargeFile,
+		},
+		{
+			fileBuffer: notImageFileBuffer,
+			fileWriter: notImageFile,
+		},
+	}
+
+	for _, Case := range cases {
+		// リクエスト生成
+		req := httptest.NewRequest("POST", "/", &Case.fileBuffer)
+
+		// Content-Type 設定
+		req.Header.Set("Content-Type", Case.fileWriter.FormDataContentType())
+
+		// Contextセット
+		recorder := httptest.NewRecorder()
+		ginContext, _ := gin.CreateTestContext(recorder)
+		ginContext.Request = req
+		ginContext.Set("JWT_PAYLOAD", jwt.MapClaims{
+			"id": float64(10),
+		})
+
+		movieHandler.ChangeThumbnail(ginContext)
+
+		if recorder.Code != http.StatusBadRequest {
+			t.Fatal("Usecase Error.")
+		}
+	}
+}
+
+func TestMovie_ChangeThumbnail_Usecase_Error(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	uploadMoviesQueryService := mock_queryService.NewMockUploadedMovies(ctrl)
+	uploadMoviesUsecase := mock_usecase.NewMockIUploadedMovies(ctrl)
+	movieRepository := mock_repository.NewMockMovieRepository(ctrl)
+	updateMovieUsecase := mock_usecase.NewMockIUpdateMovie(ctrl)
+	thumbnailUploadRepository := mock_repository.NewMockThumbnailUploadRepository(ctrl)
+	changeThumbnailUsecase := mock_usecase.NewMockIChangeThumbnail(ctrl)
+	movieHandler := handler.NewMovie(uploadMoviesQueryService, uploadMoviesUsecase, movieRepository, updateMovieUsecase, thumbnailUploadRepository, changeThumbnailUsecase)
+
+	// ポストデータ
+	var buf bytes.Buffer
+	w := multipart.NewWriter(&buf)
+	f, e1 := os.Open("./../TestThumbnail.jpg")
+	if e1 != nil {
+		fmt.Println(e1)
+		return
+	}
+	defer f.Close()
+	fw, e2 := w.CreateFormFile("uploadThumbnail", "TestThumbnail.jpg")
+	if e2 != nil {
+		fmt.Println(e2)
+		return
+	}
+	_, e3 := io.Copy(fw, f)
+	if e3 != nil {
+		fmt.Println(e3)
+		return
+	}
+
+	w.WriteField("movie_id", "10")
+	w.Close()
+
+	// リクエスト生成
+	req := httptest.NewRequest("POST", "/", &buf)
+
+	// Content-Type 設定
+	req.Header.Set("Content-Type", w.FormDataContentType())
+
+	// Contextセット
+	recorder := httptest.NewRecorder()
+	ginContext, _ := gin.CreateTestContext(recorder)
+	ginContext.Request = req
+	ginContext.Set("JWT_PAYLOAD", jwt.MapClaims{
+		"id": float64(10),
+	})
+
+	changeThumbnailUsecase.EXPECT().ChangeThumbnail(gomock.Any()).Return(errors.New("ERROR"))
+
+	movieHandler.ChangeThumbnail(ginContext)
+
+	if recorder.Code != http.StatusInternalServerError {
+		t.Fatal("Usecase Error.")
 	}
 }

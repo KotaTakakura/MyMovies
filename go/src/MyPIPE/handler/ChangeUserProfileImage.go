@@ -38,9 +38,9 @@ func (changeUserProfileImage ChangeUserProfileImage) ChangeUserProfileImage(c *g
 	imageFile, imageHeader, imageFileErr := c.Request.FormFile("profileImage")
 	if imageFileErr != nil {
 		validationErrors["profile_image"] = imageFileErr.Error()
-	}else{
-		profileImage,profileImageErr = model.NewUserProfileImage(*imageHeader,imageFile)
-		if profileImageErr != nil{
+	} else {
+		profileImage, profileImageErr = model.NewUserProfileImage(*imageHeader, imageFile)
+		if profileImageErr != nil {
 			validationErrors["profile_image"] = profileImageErr.Error()
 		}
 	}
