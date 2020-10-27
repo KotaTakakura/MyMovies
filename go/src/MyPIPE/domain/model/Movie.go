@@ -168,7 +168,7 @@ func (m *Movie) ChangeStatus(status MovieStatus) error {
 	return nil
 }
 
-func (m *Movie) ChangeThumbnailName(thumbnail MovieThumbnail) error {
+func (m *Movie) ChangeThumbnailName(thumbnail *MovieThumbnail) error {
 	m.ThumbnailName = thumbnail.Name
 	return nil
 }
