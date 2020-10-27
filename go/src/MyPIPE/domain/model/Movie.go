@@ -89,9 +89,32 @@ func NewMovieDescription(description string) (MovieDescription, error) {
 	return MovieDescription(description), nil
 }
 
+type MovieFile struct {
+	StoreName  string
+	File       multipart.File
+	FileHeader multipart.FileHeader
+}
+
+func NewMovieFile(file multipart.File, fileHeader multipart.FileHeader) (*MovieFile, error) {
+	extension := filepath.Ext(fileHeader.Filename)
+	if !(extension == ".mp4" || extension == ".mov") {
+		return nil, errors.New("Movie File Only.")
+	}
+
+	if fileHeader.Size > 1000000000 {
+		return nil, errors.New("Too Large File.")
+	}
+
+	return &MovieFile{
+		StoreName:  extension,
+		File:       file,
+		FileHeader: fileHeader,
+	}, nil
+}
+
 type Movie struct {
 	ID            MovieID          `json:"id" gorm:"primaryKey"`
-	StoreName     MovieStoreName   `gorm:"column:store_name"`
+	StoreName     string           `gorm:"column:store_name"`
 	DisplayName   MovieDisplayName `gorm:"column:display_name"`
 	Description   MovieDescription `gorm:"column:description"`
 	ThumbnailName string           `gorm:"column:thumbnail_name"`
@@ -102,9 +125,9 @@ type Movie struct {
 	UpdatedAt     time.Time
 }
 
-func NewMovie(uploaderID UserID, storeName MovieStoreName, displayName MovieDisplayName, thumbnail MovieThumbnail) *Movie {
+func NewMovie(uploaderID UserID, movieFile *MovieFile, displayName MovieDisplayName, thumbnail *MovieThumbnail) *Movie {
 	return &Movie{
-		StoreName:     storeName,
+		StoreName:     movieFile.StoreName,
 		DisplayName:   displayName,
 		UserID:        uploaderID,
 		Description:   MovieDescription(""),

@@ -4,7 +4,6 @@ import (
 	"MyPIPE/domain/factory"
 	"MyPIPE/domain/model"
 	"MyPIPE/domain/repository"
-	"mime/multipart"
 )
 
 type IPostMovie interface {
@@ -28,7 +27,7 @@ func NewPostMovie(fr repository.FileUpload, tu repository.ThumbnailUploadReposit
 }
 
 func (p *PostMovie) PostMovie(postMovieDTO *PostMovieDTO) (*model.Movie, error) {
-	newMovie, createError := p.MovieModelFactory.CreateMovieModel(postMovieDTO.UserID, postMovieDTO.FileHeader, postMovieDTO.Thumbnail)
+	newMovie, createError := p.MovieModelFactory.CreateMovieModel(postMovieDTO.UserID, postMovieDTO.MovieFile, postMovieDTO.Thumbnail)
 	if createError != nil {
 		return nil, createError
 	}
@@ -38,7 +37,7 @@ func (p *PostMovie) PostMovie(postMovieDTO *PostMovieDTO) (*model.Movie, error) 
 		return nil, saveError
 	}
 
-	err := p.FileUploadRepository.Upload(postMovieDTO.File, postMovieDTO.FileHeader, savedNewMovie.ID)
+	err := p.FileUploadRepository.Upload(postMovieDTO.MovieFile.File, postMovieDTO.MovieFile.FileHeader, savedNewMovie.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -52,17 +51,15 @@ func (p *PostMovie) PostMovie(postMovieDTO *PostMovieDTO) (*model.Movie, error) 
 }
 
 type PostMovieDTO struct {
-	File       multipart.File
-	FileHeader multipart.FileHeader
-	Thumbnail  model.MovieThumbnail
-	UserID     model.UserID
+	MovieFile *model.MovieFile
+	Thumbnail *model.MovieThumbnail
+	UserID    model.UserID
 }
 
-func NewPostMovieDTO(file multipart.File, file_header multipart.FileHeader, thumbnail model.MovieThumbnail, userId model.UserID) *PostMovieDTO {
+func NewPostMovieDTO(movieFile *model.MovieFile, thumbnail *model.MovieThumbnail, userId model.UserID) *PostMovieDTO {
 	return &PostMovieDTO{
-		File:       file,
-		FileHeader: file_header,
-		Thumbnail:  thumbnail,
-		UserID:     userId,
+		MovieFile: movieFile,
+		Thumbnail: thumbnail,
+		UserID:    userId,
 	}
 }
