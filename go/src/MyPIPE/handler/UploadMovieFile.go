@@ -32,7 +32,6 @@ func NewUploadMovieFile(
 }
 
 func (uploadMovieFile UploadMovieFile) UploadMovieFile(c *gin.Context) {
-
 	//バリデーションエラー格納
 	validationErrors := make(map[string]string)
 	//ユーザーID取得
@@ -60,12 +59,7 @@ func (uploadMovieFile UploadMovieFile) UploadMovieFile(c *gin.Context) {
 	var movieFile *model.MovieFile
 	var movieFileErr error
 	if fileErr != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"result":   "MovieFileUpload Error.",
-			"messages": fileErr.Error(),
-		})
-		c.Abort()
-		return
+		validationErrors["movie_file"] = fileErr.Error()
 	} else {
 		movieFile, movieFileErr = model.NewMovieFile(file, *header)
 		if movieFileErr != nil {
@@ -89,7 +83,7 @@ func (uploadMovieFile UploadMovieFile) UploadMovieFile(c *gin.Context) {
 
 	newMovieModel, err := uploadMovieFile.PostMovieUsecase.PostMovie(postMovieDTO)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"result":   "PostMovie Error.",
 			"messages": err.Error(),
 		})
