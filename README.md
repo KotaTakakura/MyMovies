@@ -21,7 +21,9 @@ CircleCI・・・テスト・デプロイの自動化
 ### 再生リスト一覧  
 ![再生リスト一覧](ReadmeImages/PlayLists.png)  
 ### 投稿動画一覧  
-![投稿動画一覧](ReadmeImages/UploadMoviesList.png)
+![投稿動画一覧](ReadmeImages/UploadMoviesList.png)  
+### 再生画面
+![動画再生画面](ReadmeImages/MoviePlay.png)  
 
 
 ## 設計方針(ディレクトリ構造)
