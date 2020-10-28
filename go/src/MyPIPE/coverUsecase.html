@@ -1,0 +1,1407 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>usecase: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">MyPIPE/usecase/AddPlayListItem.go (100.0%)</option>
+				
+				<option value="file1">MyPIPE/usecase/ChangeOrderOfPlayListMovies.go (100.0%)</option>
+				
+				<option value="file2">MyPIPE/usecase/ChangePassword.go (83.3%)</option>
+				
+				<option value="file3">MyPIPE/usecase/ChangeThumbnail.go (0.0%)</option>
+				
+				<option value="file4">MyPIPE/usecase/ChangeUserName.go (83.3%)</option>
+				
+				<option value="file5">MyPIPE/usecase/ChangeUserProfileImage.go (0.0%)</option>
+				
+				<option value="file6">MyPIPE/usecase/CheckUserAlreadyLikedMovie.go (85.7%)</option>
+				
+				<option value="file7">MyPIPE/usecase/CreatePlayList.go (85.7%)</option>
+				
+				<option value="file8">MyPIPE/usecase/DeletePlayList.go (83.3%)</option>
+				
+				<option value="file9">MyPIPE/usecase/DeletePlayListMovie.go (92.9%)</option>
+				
+				<option value="file10">MyPIPE/usecase/EvaluateMovie.go (90.5%)</option>
+				
+				<option value="file11">MyPIPE/usecase/FollowUser.go (0.0%)</option>
+				
+				<option value="file12">MyPIPE/usecase/GetLoggedInUserData.go (66.7%)</option>
+				
+				<option value="file13">MyPIPE/usecase/GetMovieAndComments.go (66.7%)</option>
+				
+				<option value="file14">MyPIPE/usecase/IndexMovie.go (80.0%)</option>
+				
+				<option value="file15">MyPIPE/usecase/IndexPlayListInMovieListPage.go (66.7%)</option>
+				
+				<option value="file16">MyPIPE/usecase/IndexPlayListItem.go (66.7%)</option>
+				
+				<option value="file17">MyPIPE/usecase/IndexPlayListsInMyPage.go (66.7%)</option>
+				
+				<option value="file18">MyPIPE/usecase/PostComment.go (91.7%)</option>
+				
+				<option value="file19">MyPIPE/usecase/PostMovie.go (0.0%)</option>
+				
+				<option value="file20">MyPIPE/usecase/UpdateMovie.go (56.7%)</option>
+				
+				<option value="file21">MyPIPE/usecase/UploadedMovies.go (100.0%)</option>
+				
+				<option value="file22">MyPIPE/usecase/UserExistsForAuth.go (100.0%)</option>
+				
+				<option value="file23">MyPIPE/usecase/UserRegister.go (100.0%)</option>
+				
+				<option value="file24">MyPIPE/usecase/UserTemporaryRegistration.go (90.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package usecase
+
+import (
+        "MyPIPE/domain/factory"
+        "MyPIPE/domain/model"
+        "MyPIPE/domain/repository"
+        "errors"
+)
+
+type IAddPlayListItem interface {
+        AddPlayListItem(playListItemAddJson *AddPlayListItemAddJson) error
+}
+
+type AddPlayListItem struct {
+        PlayListRepository      repository.PlayListRepository
+        PlayListMovieRepository repository.PlayListMovieRepository
+        PlaylistMovieFactory    factory.IPlayListMovie
+}
+
+func NewAddPlayListItem(p repository.PlayListRepository, plmr repository.PlayListMovieRepository, plmf factory.IPlayListMovie) *AddPlayListItem <span class="cov8" title="1">{
+        return &amp;AddPlayListItem{
+                PlayListRepository:      p,
+                PlayListMovieRepository: plmr,
+                PlaylistMovieFactory:    plmf,
+        }
+}</span>
+
+func (a AddPlayListItem) AddPlayListItem(playListItemAddJson *AddPlayListItemAddJson) error <span class="cov8" title="1">{
+
+        playList, playListFindErr := a.PlayListRepository.FindByID(playListItemAddJson.PlayListID)
+        if playList == nil || playList.UserID != playListItemAddJson.UserID </span><span class="cov8" title="1">{
+                return errors.New("No Such PlayList.")
+        }</span>
+        <span class="cov8" title="1">if playListFindErr != nil </span><span class="cov8" title="1">{
+                return playListFindErr
+        }</span>
+
+        <span class="cov8" title="1">playListMovie, err := a.PlaylistMovieFactory.CreatePlayListMovie(playListItemAddJson.PlayListID, playListItemAddJson.MovieID)
+        if err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+        <span class="cov8" title="1">savePlayListMovieErr := a.PlayListMovieRepository.Save(playListMovie)
+        if savePlayListMovieErr != nil </span><span class="cov8" title="1">{
+                return savePlayListMovieErr
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+
+}
+
+type AddPlayListItemAddJson struct {
+        PlayListID model.PlayListID
+        UserID     model.UserID
+        MovieID    model.MovieID
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package usecase
+
+import (
+        "MyPIPE/domain/model"
+        "MyPIPE/domain/repository"
+)
+
+type IChangeOrderOfPlayListMovies interface {
+        ChangeOrderOfPlayListMovies(changeOrderOfPlayListMoviesDTO *ChangeOrderOfPlayListMoviesDTO) error
+}
+
+type ChangeOrderOfPlayListMovies struct {
+        PlayListMovieRepository repository.PlayListMovieRepository
+}
+
+func NewChangeOrderOfPlayListMovies(p repository.PlayListMovieRepository) *ChangeOrderOfPlayListMovies <span class="cov8" title="1">{
+        return &amp;ChangeOrderOfPlayListMovies{
+                PlayListMovieRepository: p,
+        }
+}</span>
+
+func (c ChangeOrderOfPlayListMovies) ChangeOrderOfPlayListMovies(changeOrderOfPlayListMoviesDTO *ChangeOrderOfPlayListMoviesDTO) error <span class="cov8" title="1">{
+        playListMovies := c.PlayListMovieRepository.FindAll(changeOrderOfPlayListMoviesDTO.UserID, changeOrderOfPlayListMoviesDTO.PlayListID)
+        movieIdAndOrderMap := make(map[model.MovieID]model.PlayListMovieOrder)
+
+        for _, movieAndOrder := range changeOrderOfPlayListMoviesDTO.MovieIDAndOrder </span><span class="cov8" title="1">{
+                movieIdAndOrderMap[movieAndOrder.MovieID] = movieAndOrder.Order
+        }</span>
+
+        <span class="cov8" title="1">for i := 0; i &lt; len(playListMovies); i++ </span><span class="cov8" title="1">{
+                playListMovies[i].ChangeOrder(movieIdAndOrderMap[playListMovies[i].MovieID])
+        }</span>
+
+        <span class="cov8" title="1">saveErr := c.PlayListMovieRepository.SaveAll(playListMovies)
+        if saveErr != nil </span><span class="cov8" title="1">{
+                return saveErr
+        }</span>
+        <span class="cov8" title="1">return nil</span>
+}
+
+type ChangeOrderOfPlayListMoviesDTO struct {
+        UserID          model.UserID
+        PlayListID      model.PlayListID
+        MovieIDAndOrder []MovieIdAndOrderForChangeOrderOfPlayListMoviesDTO
+}
+
+type MovieIdAndOrderForChangeOrderOfPlayListMoviesDTO struct {
+        MovieID model.MovieID
+        Order   model.PlayListMovieOrder
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package usecase
+
+import (
+        "MyPIPE/domain/model"
+        "MyPIPE/domain/repository"
+)
+
+type IChangePassword interface {
+        ChangePassword(changePasswordDTO *ChangePasswordDTO) error
+}
+
+type ChangePassword struct {
+        UserRepository repository.UserRepository
+}
+
+func NewChangePassword(u repository.UserRepository) *ChangePassword <span class="cov8" title="1">{
+        return &amp;ChangePassword{
+                UserRepository: u,
+        }
+}</span>
+
+func (c ChangePassword) ChangePassword(changePasswordDTO *ChangePasswordDTO) error <span class="cov8" title="1">{
+        user, findUserErr := c.UserRepository.FindById(changePasswordDTO.UserID)
+        if findUserErr != nil </span><span class="cov8" title="1">{
+                return findUserErr
+        }</span>
+
+        <span class="cov8" title="1">changePasswordErr := user.ChangePassword(changePasswordDTO.Password)
+        if changePasswordErr != nil </span><span class="cov0" title="0">{
+                return changePasswordErr
+        }</span>
+
+        <span class="cov8" title="1">updateUserErr := c.UserRepository.UpdateUser(user)
+        if updateUserErr != nil </span><span class="cov8" title="1">{
+                return updateUserErr
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+type ChangePasswordDTO struct {
+        UserID   model.UserID
+        Password model.UserPassword
+}
+
+func NewChangePasswordDTO(userId model.UserID, password model.UserPassword) *ChangePasswordDTO <span class="cov0" title="0">{
+        return &amp;ChangePasswordDTO{
+                UserID:   userId,
+                Password: password,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package usecase
+
+import (
+        "MyPIPE/domain/model"
+        "MyPIPE/domain/repository"
+)
+
+type IChangeThumbnail interface {
+        ChangeThumbnail(changeThumbnailDTO *ChangeThumbnailDTO) error
+}
+
+type ChangeThumbnail struct {
+        MovieRepository           repository.MovieRepository
+        ThumbnailUploadRepository repository.ThumbnailUploadRepository
+}
+
+func NewChangeThumbnail(m repository.MovieRepository, t repository.ThumbnailUploadRepository) *ChangeThumbnail <span class="cov0" title="0">{
+        return &amp;ChangeThumbnail{
+                MovieRepository:           m,
+                ThumbnailUploadRepository: t,
+        }
+}</span>
+
+func (c ChangeThumbnail) ChangeThumbnail(changeThumbnailDTO *ChangeThumbnailDTO) error <span class="cov0" title="0">{
+        movie, findMovieErr := c.MovieRepository.FindByUserIdAndMovieId(changeThumbnailDTO.UserID, changeThumbnailDTO.MovieID)
+        if findMovieErr != nil </span><span class="cov0" title="0">{
+                return findMovieErr
+        }</span>
+
+        <span class="cov0" title="0">changeThumbnailNameErr := movie.ChangeThumbnailName(changeThumbnailDTO.Thumbnail)
+        if changeThumbnailNameErr != nil </span><span class="cov0" title="0">{
+                return changeThumbnailNameErr
+        }</span>
+
+        <span class="cov0" title="0">_, updateErr := c.MovieRepository.Update(*movie)
+        if updateErr != nil </span><span class="cov0" title="0">{
+                return updateErr
+        }</span>
+
+        <span class="cov0" title="0">thumbnailUploadErr := c.ThumbnailUploadRepository.Upload(changeThumbnailDTO.Thumbnail.File, *movie)
+        if thumbnailUploadErr != nil </span><span class="cov0" title="0">{
+                return thumbnailUploadErr
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+
+type ChangeThumbnailDTO struct {
+        UserID    model.UserID
+        MovieID   model.MovieID
+        Thumbnail *model.MovieThumbnail
+}
+
+func NewChangeThumbnailDTO(userId model.UserID, movieId model.MovieID, thumbnail *model.MovieThumbnail) *ChangeThumbnailDTO <span class="cov0" title="0">{
+        return &amp;ChangeThumbnailDTO{
+                UserID:    userId,
+                MovieID:   movieId,
+                Thumbnail: thumbnail,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package usecase
+
+import (
+        "MyPIPE/domain/model"
+        "MyPIPE/domain/repository"
+)
+
+type IChangeUserName interface {
+        ChangeUserName(changeUserNameDTO *ChangeUserNameDTO) error
+}
+
+type ChangeUserName struct {
+        UserRepository repository.UserRepository
+}
+
+func NewChangeUserName(u repository.UserRepository) *ChangeUserName <span class="cov8" title="1">{
+        return &amp;ChangeUserName{
+                UserRepository: u,
+        }
+}</span>
+
+func (c ChangeUserName) ChangeUserName(changeUserNameDTO *ChangeUserNameDTO) error <span class="cov8" title="1">{
+        user, findUserErr := c.UserRepository.FindById(changeUserNameDTO.UserID)
+        if findUserErr != nil </span><span class="cov8" title="1">{
+                return findUserErr
+        }</span>
+
+        <span class="cov8" title="1">changeUserNameErr := user.ChangeName(changeUserNameDTO.UserName)
+        if changeUserNameErr != nil </span><span class="cov0" title="0">{
+                return changeUserNameErr
+        }</span>
+
+        <span class="cov8" title="1">updateUserErr := c.UserRepository.UpdateUser(user)
+        if updateUserErr != nil </span><span class="cov8" title="1">{
+                return updateUserErr
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+type ChangeUserNameDTO struct {
+        UserID   model.UserID
+        UserName model.UserName
+}
+
+func NewChangeUserNameDTO(userId model.UserID, userName model.UserName) *ChangeUserNameDTO <span class="cov0" title="0">{
+        return &amp;ChangeUserNameDTO{
+                UserID:   userId,
+                UserName: userName,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package usecase
+
+import (
+        "MyPIPE/domain/model"
+        "MyPIPE/domain/repository"
+)
+
+type IChangeUserProfilieImage interface {
+        ChangeUserProfileImage(changeUserProfileImageDTO *ChangeUserProfileImageDTO) error
+}
+
+type ChangeUserProfileImage struct {
+        UserRepository             repository.UserRepository
+        UserProfileImageRepository repository.UserProfileImageRepository
+}
+
+func NewChangeUserProfileImage(userRepo repository.UserRepository, userProfileImageRepo repository.UserProfileImageRepository) *ChangeUserProfileImage <span class="cov0" title="0">{
+        return &amp;ChangeUserProfileImage{
+                UserRepository:             userRepo,
+                UserProfileImageRepository: userProfileImageRepo,
+        }
+}</span>
+
+func (c ChangeUserProfileImage) ChangeUserProfileImage(changeUserProfileImageDTO *ChangeUserProfileImageDTO) error <span class="cov0" title="0">{
+        user, findUserErr := c.UserRepository.FindById(changeUserProfileImageDTO.UserID)
+        if findUserErr != nil </span><span class="cov0" title="0">{
+                return findUserErr
+        }</span>
+
+        <span class="cov0" title="0">setProfileImageErr := user.SetProfileImage(changeUserProfileImageDTO.ProfileImage)
+        if setProfileImageErr != nil </span><span class="cov0" title="0">{
+                return setProfileImageErr
+        }</span>
+
+        <span class="cov0" title="0">uploadErr := c.UserProfileImageRepository.Upload(changeUserProfileImageDTO.ProfileImage.File, user)
+        if uploadErr != nil </span><span class="cov0" title="0">{
+                return uploadErr
+        }</span>
+
+        <span class="cov0" title="0">updateUserErr := c.UserRepository.UpdateUser(user)
+        if updateUserErr != nil </span><span class="cov0" title="0">{
+                return updateUserErr
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+
+type ChangeUserProfileImageDTO struct {
+        UserID       model.UserID
+        ProfileImage model.UserProfileImage
+}
+
+func NewChangeUserProfileImageDTO(userId model.UserID, profileImage *model.UserProfileImage) *ChangeUserProfileImageDTO <span class="cov0" title="0">{
+        return &amp;ChangeUserProfileImageDTO{
+                UserID:       userId,
+                ProfileImage: *profileImage,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package usecase
+
+import (
+        "MyPIPE/domain/model"
+        "MyPIPE/domain/repository"
+)
+
+type ICheckUserAlreadyLikedMovie interface {
+        Find(checkUserAlreadyLikedMovieFindDTO *CheckUserAlreadyLikedMovieFindDTO) bool
+}
+
+type CheckUserAlreadyLikedMovie struct {
+        MovieEvaluationRepository repository.MovieEvaluationRepository
+}
+
+func NewCheckUserAlreadyLikedMovie(mer repository.MovieEvaluationRepository) *CheckUserAlreadyLikedMovie <span class="cov8" title="1">{
+        return &amp;CheckUserAlreadyLikedMovie{
+                MovieEvaluationRepository: mer,
+        }
+}</span>
+
+func (c CheckUserAlreadyLikedMovie) Find(checkUserAlreadyLikedMovieFindDTO *CheckUserAlreadyLikedMovieFindDTO) bool <span class="cov8" title="1">{
+        evaluation, _ := model.NewEvaluation("good")
+        movieEvaluation := c.MovieEvaluationRepository.FindByUserIdAndMovieIdAndEvaluation(checkUserAlreadyLikedMovieFindDTO.UserID, checkUserAlreadyLikedMovieFindDTO.MovieID, evaluation)
+        if movieEvaluation == nil </span><span class="cov8" title="1">{
+                return false
+        }</span>
+        <span class="cov8" title="1">return true</span>
+}
+
+type CheckUserAlreadyLikedMovieFindDTO struct {
+        UserID  model.UserID
+        MovieID model.MovieID
+}
+
+func NewCheckUserAlreadyLikedMovieFindDTO(userId model.UserID, movieId model.MovieID) *CheckUserAlreadyLikedMovieFindDTO <span class="cov0" title="0">{
+        return &amp;CheckUserAlreadyLikedMovieFindDTO{
+                UserID:  userId,
+                MovieID: movieId,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package usecase
+
+import (
+        "MyPIPE/domain/model"
+        "MyPIPE/domain/repository"
+)
+
+type ICreatePlayList interface {
+        CreatePlayList(createPlayList *CreatePlayListDTO) error
+}
+
+type CreatePlayList struct {
+        UserRepository     repository.UserRepository
+        PlayListRepository repository.PlayListRepository
+}
+
+func NewCreatePlayList(u repository.UserRepository, p repository.PlayListRepository) *CreatePlayList <span class="cov8" title="1">{
+        return &amp;CreatePlayList{
+                UserRepository:     u,
+                PlayListRepository: p,
+        }
+}</span>
+
+func (c CreatePlayList) CreatePlayList(createPlayList *CreatePlayListDTO) error <span class="cov8" title="1">{
+        playList := model.NewPlayList(createPlayList.UserID, createPlayList.PlayListName, createPlayList.PlayListDescription)
+
+        saveErr := c.PlayListRepository.Save(playList)
+        if saveErr != nil </span><span class="cov8" title="1">{
+                return saveErr
+        }</span>
+        <span class="cov8" title="1">return nil</span>
+}
+
+type CreatePlayListDTO struct {
+        UserID              model.UserID
+        PlayListName        model.PlayListName
+        PlayListDescription model.PlayListDescription
+}
+
+func NewCreatePlayListDTO(userId model.UserID, playListName model.PlayListName, playListDescription model.PlayListDescription) *CreatePlayListDTO <span class="cov0" title="0">{
+        return &amp;CreatePlayListDTO{
+                UserID:              userId,
+                PlayListName:        playListName,
+                PlayListDescription: playListDescription,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package usecase
+
+import (
+        "MyPIPE/domain/model"
+        "MyPIPE/domain/repository"
+)
+
+type IDeletePlayList interface {
+        Delete(deletePlayListDTO *DeletePlayListDTO) error
+}
+
+type DeletePlayList struct {
+        PlayListRepository repository.PlayListRepository
+}
+
+func NewDeletePlayList(p repository.PlayListRepository) *DeletePlayList <span class="cov8" title="1">{
+        return &amp;DeletePlayList{
+                PlayListRepository: p,
+        }
+}</span>
+
+func (d DeletePlayList) Delete(deletePlayListDTO *DeletePlayListDTO) error <span class="cov8" title="1">{
+        result := d.PlayListRepository.Remove(deletePlayListDTO.UserID, deletePlayListDTO.PlaylistID)
+        if result != nil </span><span class="cov8" title="1">{
+                return result
+        }</span>
+        <span class="cov8" title="1">return nil</span>
+}
+
+type DeletePlayListDTO struct {
+        UserID     model.UserID
+        PlaylistID model.PlayListID
+}
+
+func NewDeletePlayListDTO(userId model.UserID, playListId model.PlayListID) *DeletePlayListDTO <span class="cov0" title="0">{
+        return &amp;DeletePlayListDTO{
+                UserID:     userId,
+                PlaylistID: playListId,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package usecase
+
+import (
+        "MyPIPE/domain/model"
+        "MyPIPE/domain/repository"
+        "errors"
+)
+
+type IDeletePlayListMovie interface {
+        DeletePlayListItem(playListItemDeleteJson *DeletePlayListMovieDTO) error
+}
+
+type DeletePlayListMovie struct {
+        PlayListRepository      repository.PlayListRepository
+        PlayListMovieRepository repository.PlayListMovieRepository
+}
+
+func NewDeletePlayListMovie(p repository.PlayListRepository, plmr repository.PlayListMovieRepository) *DeletePlayListMovie <span class="cov8" title="1">{
+        return &amp;DeletePlayListMovie{
+                PlayListRepository:      p,
+                PlayListMovieRepository: plmr,
+        }
+}</span>
+
+func (a DeletePlayListMovie) DeletePlayListItem(playListItemDeleteJson *DeletePlayListMovieDTO) error <span class="cov8" title="1">{
+
+        playList, playListFindErr := a.PlayListRepository.FindByID(playListItemDeleteJson.PlayListID)
+        if playList == nil || playList.UserID != playListItemDeleteJson.UserID </span><span class="cov8" title="1">{
+                return errors.New("No Such PlayList.")
+        }</span>
+        <span class="cov8" title="1">if playListFindErr != nil </span><span class="cov8" title="1">{
+                return playListFindErr
+        }</span>
+
+        <span class="cov8" title="1">playListMovie := a.PlayListMovieRepository.Find(playListItemDeleteJson.UserID, playListItemDeleteJson.PlayListID, playListItemDeleteJson.MovieID)
+        if playListMovie == nil </span><span class="cov8" title="1">{
+                return errors.New("No Such PlayListMovie.")
+        }</span>
+
+        <span class="cov8" title="1">removePlayListMovieErr := a.PlayListMovieRepository.Remove(playListMovie)
+        if removePlayListMovieErr != nil </span><span class="cov8" title="1">{
+                return removePlayListMovieErr
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+
+}
+
+type DeletePlayListMovieDTO struct {
+        PlayListID model.PlayListID
+        UserID     model.UserID
+        MovieID    model.MovieID
+}
+
+func NewDeletePlayListMovieJson(playListID model.PlayListID, userId model.UserID, movieId model.MovieID) *DeletePlayListMovieDTO <span class="cov0" title="0">{
+        return &amp;DeletePlayListMovieDTO{
+                PlayListID: playListID,
+                UserID:     userId,
+                MovieID:    movieId,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">package usecase
+
+import (
+        "MyPIPE/domain/model"
+        "MyPIPE/domain/repository"
+        "errors"
+)
+
+type IEvaluateMovie interface {
+        EvaluateMovie(evaluateMovieDTO *EvaluateMovieDTO) error
+}
+
+type EvaluateMovie struct {
+        MovieRepository           repository.MovieRepository
+        MovieEvaluationRepository repository.MovieEvaluationRepository
+}
+
+func NewEvaluateUsecase(m repository.MovieRepository, me repository.MovieEvaluationRepository) *EvaluateMovie <span class="cov8" title="1">{
+        return &amp;EvaluateMovie{
+                MovieRepository:           m,
+                MovieEvaluationRepository: me,
+        }
+}</span>
+
+func (e EvaluateMovie) EvaluateMovie(evaluateMovieDTO *EvaluateMovieDTO) error <span class="cov8" title="1">{
+        movie, movieErr := e.MovieRepository.FindById(evaluateMovieDTO.MovieID)
+        if movieErr != nil </span><span class="cov8" title="1">{
+                return movieErr
+        }</span>
+
+        <span class="cov8" title="1">if movie == nil </span><span class="cov8" title="1">{
+                return errors.New("No Such Movie.")
+        }</span>
+
+        <span class="cov8" title="1">movieEvaluation := e.MovieEvaluationRepository.FindByUserIdAndMovieId(evaluateMovieDTO.UserID, evaluateMovieDTO.MovieID)
+
+        if movieEvaluation == nil </span><span class="cov8" title="1">{
+                newMovieEvaluation := model.NewMovieEvaluation(evaluateMovieDTO.UserID, evaluateMovieDTO.MovieID, evaluateMovieDTO.Evaluation)
+                evaluationSaveErr := e.MovieEvaluationRepository.Save(newMovieEvaluation)
+                if evaluationSaveErr != nil </span><span class="cov8" title="1">{
+                        return evaluationSaveErr
+                }</span>
+                <span class="cov8" title="1">return nil</span>
+        }
+
+        <span class="cov8" title="1">evaluationErr := movieEvaluation.EvaluateMovie(evaluateMovieDTO.Evaluation)
+        if evaluationErr != nil </span><span class="cov0" title="0">{
+                return evaluationErr
+        }</span>
+
+        <span class="cov8" title="1">evaluationSaveErr := e.MovieEvaluationRepository.Save(movieEvaluation)
+        if evaluationSaveErr != nil </span><span class="cov8" title="1">{
+                return evaluationSaveErr
+        }</span>
+        <span class="cov8" title="1">return nil</span>
+}
+
+type EvaluateMovieDTO struct {
+        UserID     model.UserID
+        MovieID    model.MovieID
+        Evaluation model.Evaluation
+}
+
+func NewEvaluateMovieDTO(userId model.UserID, movieId model.MovieID, evaluation model.Evaluation) *EvaluateMovieDTO <span class="cov0" title="0">{
+        return &amp;EvaluateMovieDTO{
+                UserID:     userId,
+                MovieID:    movieId,
+                Evaluation: evaluation,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">package usecase
+
+import (
+        "MyPIPE/domain/model"
+        "MyPIPE/domain/repository"
+        "errors"
+)
+
+type FollowUser struct {
+        UserRepository       repository.UserRepository
+        FollowUserRepository repository.FollowUserRepository
+}
+
+func NewFollowUser(u repository.UserRepository, f repository.FollowUserRepository) *FollowUser <span class="cov0" title="0">{
+        return &amp;FollowUser{
+                UserRepository:       u,
+                FollowUserRepository: f,
+        }
+}</span>
+
+func (f FollowUser) Follow(followDTO FollowDTO) error <span class="cov0" title="0">{
+        followUser := f.FollowUserRepository.FindByUserIdAndFollowId(followDTO.UserID, followDTO.FollowID)
+        if followUser != nil </span><span class="cov0" title="0">{
+                return errors.New("Already Followed.")
+        }</span>
+
+        <span class="cov0" title="0">existUser, _ := f.UserRepository.FindById(followDTO.UserID)
+        if existUser == nil </span><span class="cov0" title="0">{
+                return errors.New("No Such User.")
+        }</span>
+
+        <span class="cov0" title="0">existFollowUser, _ := f.UserRepository.FindById(followDTO.FollowID)
+        if existFollowUser == nil </span><span class="cov0" title="0">{
+                return errors.New("No Such User To Follow.")
+        }</span>
+
+        <span class="cov0" title="0">newFollowUser := model.NewFollowUser(followDTO.UserID, followDTO.FollowID)
+        saveErr := f.FollowUserRepository.Save(newFollowUser)
+        if saveErr != nil </span><span class="cov0" title="0">{
+                return saveErr
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+type FollowDTO struct {
+        UserID   model.UserID
+        FollowID model.UserID
+}
+
+func NewFollowDTO(userId model.UserID, followId model.UserID) FollowDTO <span class="cov0" title="0">{
+        return FollowDTO{
+                UserID:   userId,
+                FollowID: followId,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">package usecase
+
+import (
+        "MyPIPE/domain/model"
+        "MyPIPE/domain/queryService"
+)
+
+type IGetLoggedInUserData interface {
+        Find(getLoggedInUserDataDTO *GetLoggedInUserDataDTO) *queryService.GetLoggedInUserDataDTO
+}
+
+type GetLoggedInUserData struct {
+        GetLoggedInUserDataQueryService queryService.GetLoggedInUserDataQueryService
+}
+
+func NewGetLoggedInUserData(g queryService.GetLoggedInUserDataQueryService) *GetLoggedInUserData <span class="cov8" title="1">{
+        return &amp;GetLoggedInUserData{
+                GetLoggedInUserDataQueryService: g,
+        }
+}</span>
+
+func (g GetLoggedInUserData) Find(getLoggedInUserDataDTO *GetLoggedInUserDataDTO) *queryService.GetLoggedInUserDataDTO <span class="cov8" title="1">{
+        return g.GetLoggedInUserDataQueryService.FindByUserId(getLoggedInUserDataDTO.UserID)
+}</span>
+
+type GetLoggedInUserDataDTO struct {
+        UserID model.UserID
+}
+
+func NewGetLoggedInUserDataDTO(userId model.UserID) *GetLoggedInUserDataDTO <span class="cov0" title="0">{
+        return &amp;GetLoggedInUserDataDTO{
+                UserID: userId,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file13" style="display: none">package usecase
+
+import (
+        "MyPIPE/domain/model"
+        "MyPIPE/domain/queryService"
+)
+
+type IGetMovieAndComments interface {
+        Get(getDTO *MovieAndGetCommentsDTO) queryService.FindByMovieIdDTO
+}
+
+type GetMovieAndComments struct {
+        CommentQueryService queryService.CommentQueryService
+}
+
+func NewGetMovieAndComments(cqs queryService.CommentQueryService) *GetMovieAndComments <span class="cov8" title="1">{
+        return &amp;GetMovieAndComments{
+                CommentQueryService: cqs,
+        }
+}</span>
+
+func (g GetMovieAndComments) Get(getDTO *MovieAndGetCommentsDTO) queryService.FindByMovieIdDTO <span class="cov8" title="1">{
+        return g.CommentQueryService.FindByMovieId(getDTO.MovieID)
+}</span>
+
+type MovieAndGetCommentsDTO struct {
+        MovieID model.MovieID
+}
+
+func NewGetMovieAndCommentsDTO(movieId model.MovieID) *MovieAndGetCommentsDTO <span class="cov0" title="0">{
+        return &amp;MovieAndGetCommentsDTO{
+                MovieID: movieId,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file14" style="display: none">package usecase
+
+import "MyPIPE/domain/queryService"
+
+type IIndexMovie interface {
+        Search(indexMovieSearchDTO *IndexMovieSearchDTO) queryService.IndexMovieDTO
+}
+
+type IndexMovie struct {
+        IndexMovieQueryService queryService.IndexMovieQueryService
+}
+
+func NewIndexMovie(imq queryService.IndexMovieQueryService) *IndexMovie <span class="cov8" title="1">{
+        return &amp;IndexMovie{
+                IndexMovieQueryService: imq,
+        }
+}</span>
+
+func (i IndexMovie) Search(indexMovieSearchDTO *IndexMovieSearchDTO) queryService.IndexMovieDTO <span class="cov8" title="1">{
+        if indexMovieSearchDTO.KeyWord == "" </span><span class="cov8" title="1">{
+                return i.IndexMovieQueryService.All(indexMovieSearchDTO.Page, indexMovieSearchDTO.Order)
+        }</span>
+        <span class="cov8" title="1">return i.IndexMovieQueryService.Search(indexMovieSearchDTO.Page, indexMovieSearchDTO.KeyWord, indexMovieSearchDTO.Order)</span>
+}
+
+type IndexMovieSearchDTO struct {
+        Page    queryService.IndexMovieQueryServicePage
+        KeyWord string
+        Order   queryService.IndexMovieQueryServiceOrder
+}
+
+func NewIndexMovieSearchDTO(page queryService.IndexMovieQueryServicePage, keyWord string, order queryService.IndexMovieQueryServiceOrder) *IndexMovieSearchDTO <span class="cov0" title="0">{
+        return &amp;IndexMovieSearchDTO{
+                Page:    page,
+                KeyWord: keyWord,
+                Order:   order,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file15" style="display: none">package usecase
+
+import (
+        "MyPIPE/domain/model"
+        "MyPIPE/domain/queryService"
+)
+
+type IIndexPlayListInMovieListPage interface {
+        Find(findDTO *FindDTO) *queryService.IndexPlayListInMovieListPageDTO
+}
+
+type IndexPlayListInMovieListPage struct {
+        IndexPlayListInMovieListPageQueryService queryService.IndexPlayListInMovieListPageQueryService
+}
+
+func NewIndexPlayListInMovieListPage(indexPlayListInMovieListPage queryService.IndexPlayListInMovieListPageQueryService) *IndexPlayListInMovieListPage <span class="cov8" title="1">{
+        return &amp;IndexPlayListInMovieListPage{
+                IndexPlayListInMovieListPageQueryService: indexPlayListInMovieListPage,
+        }
+}</span>
+
+func (i IndexPlayListInMovieListPage) Find(findDTO *FindDTO) *queryService.IndexPlayListInMovieListPageDTO <span class="cov8" title="1">{
+        return i.IndexPlayListInMovieListPageQueryService.Find(findDTO.UserID, findDTO.MovieID)
+}</span>
+
+type FindDTO struct {
+        UserID  model.UserID
+        MovieID model.MovieID
+}
+
+func NewFindDTO(userId model.UserID, movieId model.MovieID) *FindDTO <span class="cov0" title="0">{
+        return &amp;FindDTO{
+                UserID:  userId,
+                MovieID: movieId,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file16" style="display: none">package usecase
+
+import (
+        "MyPIPE/domain/model"
+        "MyPIPE/domain/queryService"
+)
+
+type IIndexPlaylistItemInMyPage interface {
+        Find(indexPlayListMoviesInMyPageDTO *IndexPlayListItemInMyPageDTO) *queryService.IndexPlayListMovieInMyPageDTO
+}
+
+type IndexPlayListItemInMyPage struct {
+        IndexPlayListMovieInMyPage queryService.IndexPlayListMovieQueryService
+}
+
+func NewIndexPlayListItemInMyPage(i queryService.IndexPlayListMovieQueryService) *IndexPlayListItemInMyPage <span class="cov8" title="1">{
+        return &amp;IndexPlayListItemInMyPage{
+                IndexPlayListMovieInMyPage: i,
+        }
+}</span>
+
+func (i IndexPlayListItemInMyPage) Find(indexPlayListMoviesInMyPageDTO *IndexPlayListItemInMyPageDTO) *queryService.IndexPlayListMovieInMyPageDTO <span class="cov8" title="1">{
+        return i.IndexPlayListMovieInMyPage.Find(indexPlayListMoviesInMyPageDTO.UserID, indexPlayListMoviesInMyPageDTO.PlayListID)
+}</span>
+
+type IndexPlayListItemInMyPageDTO struct {
+        UserID     model.UserID
+        PlayListID model.PlayListID
+}
+
+func NewIndexPlayListItemInMyPageDTO(userId model.UserID, playListId model.PlayListID) *IndexPlayListItemInMyPageDTO <span class="cov0" title="0">{
+        return &amp;IndexPlayListItemInMyPageDTO{
+                UserID:     userId,
+                PlayListID: playListId,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file17" style="display: none">package usecase
+
+import (
+        "MyPIPE/domain/model"
+        "MyPIPE/domain/queryService"
+)
+
+type IIndexPlayListsInMyPage interface {
+        All(indexPlayListsInMyPageDTO *IndexPlayListsInMyPageDTO) *queryService.IndexPlayListsInMyPageDTO
+}
+
+type IndexPlayListsInMyPage struct {
+        IndexPlayListsInMyPageQueryService queryService.IndexPlayListsInMyPageQueryService
+}
+
+func NewIndexPlayListsInMyPage(ipq queryService.IndexPlayListsInMyPageQueryService) *IndexPlayListsInMyPage <span class="cov8" title="1">{
+        return &amp;IndexPlayListsInMyPage{
+                IndexPlayListsInMyPageQueryService: ipq,
+        }
+}</span>
+
+func (i IndexPlayListsInMyPage) All(indexPlayListsInMyPageDTO *IndexPlayListsInMyPageDTO) *queryService.IndexPlayListsInMyPageDTO <span class="cov8" title="1">{
+        return i.IndexPlayListsInMyPageQueryService.All(indexPlayListsInMyPageDTO.UserID)
+}</span>
+
+type IndexPlayListsInMyPageDTO struct {
+        UserID model.UserID
+}
+
+func NewIndexPlayListsInMyPageDTO(userId model.UserID) *IndexPlayListsInMyPageDTO <span class="cov0" title="0">{
+        return &amp;IndexPlayListsInMyPageDTO{
+                UserID: userId,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file18" style="display: none">package usecase
+
+import (
+        "MyPIPE/domain/model"
+        "MyPIPE/domain/repository"
+        "errors"
+)
+
+type IPostComment interface {
+        PostComment(postCommentDTO *PostCommentDTO) error
+}
+
+type PostComment struct {
+        CommentRepository repository.CommentRepository
+        MovieRepository   repository.MovieRepository
+}
+
+func NewPostComment(c repository.CommentRepository, m repository.MovieRepository) *PostComment <span class="cov8" title="1">{
+        return &amp;PostComment{
+                CommentRepository: c,
+                MovieRepository:   m,
+        }
+}</span>
+
+func (p PostComment) PostComment(postCommentDTO *PostCommentDTO) error <span class="cov8" title="1">{
+
+        movie, movieFindErr := p.MovieRepository.FindById(postCommentDTO.MovieID)
+        if movieFindErr != nil </span><span class="cov8" title="1">{
+                return movieFindErr
+        }</span>
+        <span class="cov8" title="1">if movie == nil </span><span class="cov8" title="1">{
+                return errors.New("No Such Movie.")
+        }</span>
+
+        <span class="cov8" title="1">newComment := model.NewComment(postCommentDTO.UserID, postCommentDTO.MovieID, postCommentDTO.Body)
+
+        err := p.CommentRepository.Save(newComment)
+        if err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+        <span class="cov8" title="1">return nil</span>
+}
+
+type PostCommentDTO struct {
+        UserID  model.UserID
+        MovieID model.MovieID
+        Body    model.CommentBody
+}
+
+func NewPostCommentDTO(userId model.UserID, movieId model.MovieID, body model.CommentBody) *PostCommentDTO <span class="cov0" title="0">{
+        return &amp;PostCommentDTO{
+                UserID:  userId,
+                MovieID: movieId,
+                Body:    body,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file19" style="display: none">package usecase
+
+import (
+        "MyPIPE/domain/factory"
+        "MyPIPE/domain/model"
+        "MyPIPE/domain/repository"
+)
+
+type IPostMovie interface {
+        PostMovie(postMovieDTO *PostMovieDTO) (*model.Movie, error)
+}
+
+type PostMovie struct {
+        FileUploadRepository      repository.FileUpload
+        ThumbnailUploadRepository repository.ThumbnailUploadRepository
+        MovieRepository           repository.MovieRepository
+        MovieModelFactory         factory.IMovieModelFactory
+}
+
+func NewPostMovie(fr repository.FileUpload, tu repository.ThumbnailUploadRepository, mr repository.MovieRepository, mf factory.IMovieModelFactory) *PostMovie <span class="cov0" title="0">{
+        return &amp;PostMovie{
+                FileUploadRepository:      fr,
+                ThumbnailUploadRepository: tu,
+                MovieRepository:           mr,
+                MovieModelFactory:         mf,
+        }
+}</span>
+
+func (p *PostMovie) PostMovie(postMovieDTO *PostMovieDTO) (*model.Movie, error) <span class="cov0" title="0">{
+        newMovie, createError := p.MovieModelFactory.CreateMovieModel(postMovieDTO.UserID, postMovieDTO.MovieFile, postMovieDTO.Thumbnail)
+        if createError != nil </span><span class="cov0" title="0">{
+                return nil, createError
+        }</span>
+
+        <span class="cov0" title="0">savedNewMovie, saveError := p.MovieRepository.Save(*newMovie)
+        if saveError != nil </span><span class="cov0" title="0">{
+                return nil, saveError
+        }</span>
+
+        <span class="cov0" title="0">err := p.FileUploadRepository.Upload(postMovieDTO.MovieFile.File, postMovieDTO.MovieFile.FileHeader, savedNewMovie.ID)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">thumbnailUploadErr := p.ThumbnailUploadRepository.Upload(postMovieDTO.Thumbnail.File, *savedNewMovie)
+        if thumbnailUploadErr != nil </span><span class="cov0" title="0">{
+                return nil, thumbnailUploadErr
+        }</span>
+
+        <span class="cov0" title="0">return savedNewMovie, nil</span>
+}
+
+type PostMovieDTO struct {
+        MovieFile *model.MovieFile
+        Thumbnail *model.MovieThumbnail
+        UserID    model.UserID
+}
+
+func NewPostMovieDTO(movieFile *model.MovieFile, thumbnail *model.MovieThumbnail, userId model.UserID) *PostMovieDTO <span class="cov0" title="0">{
+        return &amp;PostMovieDTO{
+                MovieFile: movieFile,
+                Thumbnail: thumbnail,
+                UserID:    userId,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file20" style="display: none">package usecase
+
+import (
+        "MyPIPE/domain/model"
+        "MyPIPE/domain/repository"
+)
+
+type IUpdateMovie interface {
+        Update(updateDTO *UpdateDTO) (*model.Movie, error)
+        UpdateStatus(updateStatusDTO UpdateStatusDTO) (*model.Movie, error)
+}
+
+type UpdateMovie struct {
+        MovieRepository repository.MovieRepository
+}
+
+func NewUpdateMovie(m repository.MovieRepository) *UpdateMovie <span class="cov8" title="1">{
+        return &amp;UpdateMovie{
+                MovieRepository: m,
+        }
+}</span>
+
+func (u UpdateMovie) Update(updateDTO *UpdateDTO) (*model.Movie, error) <span class="cov8" title="1">{
+        movie, findMovieErr := u.MovieRepository.FindByUserIdAndMovieId(updateDTO.UserID, updateDTO.MovieID)
+        if findMovieErr != nil </span><span class="cov8" title="1">{
+                return nil, findMovieErr
+        }</span>
+        <span class="cov8" title="1">changeDisplayNameErr := movie.ChangeDisplayName(updateDTO.DisplayName)
+        if changeDisplayNameErr != nil </span><span class="cov0" title="0">{
+                return nil, changeDisplayNameErr
+        }</span>
+
+        <span class="cov8" title="1">changeDescriptionErr := movie.ChangeDescription(updateDTO.Description)
+        if changeDescriptionErr != nil </span><span class="cov0" title="0">{
+                return nil, changeDescriptionErr
+        }</span>
+
+        <span class="cov8" title="1">changeStatusErr := movie.ChangeStatus(updateDTO.Status)
+        if changeStatusErr != nil </span><span class="cov0" title="0">{
+                return nil, changeStatusErr
+        }</span>
+
+        <span class="cov8" title="1">changePublicErr := movie.ChangePublic(updateDTO.Public)
+        if changePublicErr != nil </span><span class="cov8" title="1">{
+                return nil, changePublicErr
+        }</span>
+
+        <span class="cov8" title="1">updatedMovie, updateMovieErr := u.MovieRepository.Update(*movie)
+        if updateMovieErr != nil </span><span class="cov8" title="1">{
+                return nil, updateMovieErr
+        }</span>
+
+        <span class="cov8" title="1">return updatedMovie, nil</span>
+}
+
+type UpdateDTO struct {
+        UserID      model.UserID
+        MovieID     model.MovieID
+        DisplayName model.MovieDisplayName
+        Description model.MovieDescription
+        Public      model.MoviePublic
+        Status      model.MovieStatus
+}
+
+func (u UpdateMovie) UpdateStatus(updateStatusDTO UpdateStatusDTO) (*model.Movie, error) <span class="cov0" title="0">{
+        movie, findMovieErr := u.MovieRepository.FindByUserIdAndMovieId(updateStatusDTO.UserID, updateStatusDTO.MovieID)
+        if findMovieErr != nil </span><span class="cov0" title="0">{
+                return nil, findMovieErr
+        }</span>
+
+        <span class="cov0" title="0">changeStatusErr := movie.ChangeStatus(updateStatusDTO.Status)
+        if changeStatusErr != nil </span><span class="cov0" title="0">{
+                return nil, changeStatusErr
+        }</span>
+
+        <span class="cov0" title="0">updatedMovie, updateMovieErr := u.MovieRepository.Update(*movie)
+        if updateMovieErr != nil </span><span class="cov0" title="0">{
+                return nil, updateMovieErr
+        }</span>
+
+        <span class="cov0" title="0">return updatedMovie, nil</span>
+}
+
+type UpdateStatusDTO struct {
+        UserID  model.UserID
+        MovieID model.MovieID
+        Status  model.MovieStatus
+}
+</pre>
+		
+		<pre class="file" id="file21" style="display: none">package usecase
+
+import (
+        "MyPIPE/domain/model"
+        queryService "MyPIPE/domain/queryService/UploadedMovies"
+)
+
+type IUploadedMovies interface {
+        Get(userId model.UserID) []queryService.UploadedMoviesDTO
+}
+
+type UploadedMovies struct {
+        UploadedMoviesQueryService queryService.UploadedMovies
+}
+
+func NewUploadedMovies(umq queryService.UploadedMovies) *UploadedMovies <span class="cov8" title="1">{
+        return &amp;UploadedMovies{
+                UploadedMoviesQueryService: umq,
+        }
+}</span>
+
+func (u UploadedMovies) Get(userId model.UserID) []queryService.UploadedMoviesDTO <span class="cov8" title="1">{
+        result := u.UploadedMoviesQueryService.Get(userId)
+        return result
+}</span>
+</pre>
+		
+		<pre class="file" id="file22" style="display: none">package usecase
+
+import (
+        "MyPIPE/domain/model"
+        "MyPIPE/domain/repository"
+)
+
+type UserExists struct {
+        UserRepository repository.UserRepository
+}
+
+func NewUserExists(u repository.UserRepository) *UserExists <span class="cov8" title="1">{
+        return &amp;UserExists{
+                UserRepository: u,
+        }
+}</span>
+
+func (u UserExists) CheckUserExistsForAuth(email model.UserEmail, password string) (*model.User, error) <span class="cov8" title="1">{
+        user, err := u.UserRepository.FindByEmail(email)
+
+        if user != nil &amp;&amp; user.CheckPassword(password) &amp;&amp; err == nil </span><span class="cov8" title="1">{
+                return user, nil
+        }</span>
+
+        <span class="cov8" title="1">return nil, err</span>
+
+}
+</pre>
+		
+		<pre class="file" id="file23" style="display: none">package usecase
+
+import (
+        "MyPIPE/domain/model"
+        "MyPIPE/domain/repository"
+        "errors"
+)
+
+type IUserRegister interface {
+        RegisterUser(newUser *model.User) error
+}
+
+type UserRegister struct {
+        UserRepository repository.UserRepository
+}
+
+func NewUserRegister(u repository.UserRepository) *UserRegister <span class="cov8" title="1">{
+        return &amp;UserRegister{
+                UserRepository: u,
+        }
+}</span>
+
+func (u UserRegister) RegisterUser(newUser *model.User) error <span class="cov8" title="1">{
+        registeredUserWithToken, findUserErr := u.UserRepository.FindByToken(newUser.Token)
+        if findUserErr != nil </span><span class="cov8" title="1">{
+                return findUserErr
+        }</span>
+
+        <span class="cov8" title="1">if registeredUserWithToken == nil </span><span class="cov8" title="1">{
+                return errors.New("Invalid Token.")
+        }</span>
+
+        <span class="cov8" title="1">registerErr := registeredUserWithToken.Register(newUser.Name, newUser.Password, newUser.Birthday)
+        if registerErr != nil </span><span class="cov8" title="1">{
+                return registerErr
+        }</span>
+        <span class="cov8" title="1">e := u.UserRepository.UpdateUser(registeredUserWithToken)
+
+        if e != nil </span><span class="cov8" title="1">{
+                return e
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file24" style="display: none">package usecase
+
+import (
+        "MyPIPE/domain/model"
+        "MyPIPE/domain/repository"
+        "errors"
+        "time"
+)
+
+type IUserTemporaryRegistration interface {
+        TemporaryRegister(user *model.User) error
+}
+
+type UserTemporaryRegistration struct {
+        UserRepository repository.UserRepository
+}
+
+func NewUserTemporaryRegistration(userRepository repository.UserRepository) *UserTemporaryRegistration <span class="cov8" title="1">{
+        return &amp;UserTemporaryRegistration{
+                UserRepository: userRepository,
+        }
+}</span>
+
+func (u *UserTemporaryRegistration) TemporaryRegister(user *model.User) error <span class="cov8" title="1">{
+        registeredUser, _ := u.UserRepository.FindByEmail(user.Email)
+        //本登録済み
+        if registeredUser != nil &amp;&amp; registeredUser.Token == "" </span><span class="cov8" title="1">{
+                return nil
+        }</span>
+
+        //仮登録済み・本登録前
+        <span class="cov8" title="1">if registeredUser != nil &amp;&amp; registeredUser.Token != "" </span><span class="cov8" title="1">{
+                setTokenErr := registeredUser.SetNewToken()
+                if setTokenErr != nil </span><span class="cov0" title="0">{
+                        return setTokenErr
+                }</span>
+                <span class="cov8" title="1">updateError := u.UserRepository.UpdateUser(registeredUser)
+                if updateError != nil </span><span class="cov8" title="1">{
+                        return errors.New("Update Error.")
+                }</span>
+                <span class="cov8" title="1">return nil</span>
+        }
+        <span class="cov8" title="1">newUser := model.NewUser(user.Email, time.Date(1000, 1, 1, 0, 0, 0, 0, time.Local))
+        setTokenErr := newUser.SetNewToken()
+        if setTokenErr != nil </span><span class="cov0" title="0">{
+                return setTokenErr
+        }</span>
+        <span class="cov8" title="1">err2 := u.UserRepository.SetUser(newUser)
+        if err2 != nil </span><span class="cov8" title="1">{
+                return err2
+        }</span>
+        <span class="cov8" title="1">return nil</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
