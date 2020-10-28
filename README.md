@@ -15,6 +15,15 @@ SNS・・・動画処理の完了・失敗の通知をAPIサーバーに用意�
 AuroraDB(MySQL互換)・・・データの保存  
 CircleCI・・・テスト・デプロイの自動化
 
+## 進捗
+動画一覧  
+![動画一覧](ReadmeImages/Movies.png)  
+再生リスト一覧  
+![再生リスト一覧](ReadmeImages/PlayLists.png)  
+投稿動画一覧  
+![投稿動画一覧](ReadmeImages/UploadMoviesList.png)
+
+
 ## 設計方針(ディレクトリ構造)
 goのソースコードは、 /go/src/MyPIPEに作成していく  
 main.goにルーティングを作成していく。
