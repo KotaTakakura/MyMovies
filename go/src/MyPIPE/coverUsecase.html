@@ -61,7 +61,7 @@
 				
 				<option value="file2">MyPIPE/usecase/ChangePassword.go (83.3%)</option>
 				
-				<option value="file3">MyPIPE/usecase/ChangeThumbnail.go (0.0%)</option>
+				<option value="file3">MyPIPE/usecase/ChangeThumbnail.go (86.7%)</option>
 				
 				<option value="file4">MyPIPE/usecase/ChangeUserName.go (83.3%)</option>
 				
@@ -295,35 +295,35 @@ type ChangeThumbnail struct {
         ThumbnailUploadRepository repository.ThumbnailUploadRepository
 }
 
-func NewChangeThumbnail(m repository.MovieRepository, t repository.ThumbnailUploadRepository) *ChangeThumbnail <span class="cov0" title="0">{
+func NewChangeThumbnail(m repository.MovieRepository, t repository.ThumbnailUploadRepository) *ChangeThumbnail <span class="cov8" title="1">{
         return &amp;ChangeThumbnail{
                 MovieRepository:           m,
                 ThumbnailUploadRepository: t,
         }
 }</span>
 
-func (c ChangeThumbnail) ChangeThumbnail(changeThumbnailDTO *ChangeThumbnailDTO) error <span class="cov0" title="0">{
+func (c ChangeThumbnail) ChangeThumbnail(changeThumbnailDTO *ChangeThumbnailDTO) error <span class="cov8" title="1">{
         movie, findMovieErr := c.MovieRepository.FindByUserIdAndMovieId(changeThumbnailDTO.UserID, changeThumbnailDTO.MovieID)
-        if findMovieErr != nil </span><span class="cov0" title="0">{
+        if findMovieErr != nil </span><span class="cov8" title="1">{
                 return findMovieErr
         }</span>
 
-        <span class="cov0" title="0">changeThumbnailNameErr := movie.ChangeThumbnailName(changeThumbnailDTO.Thumbnail)
+        <span class="cov8" title="1">changeThumbnailNameErr := movie.ChangeThumbnailName(changeThumbnailDTO.Thumbnail)
         if changeThumbnailNameErr != nil </span><span class="cov0" title="0">{
                 return changeThumbnailNameErr
         }</span>
 
-        <span class="cov0" title="0">_, updateErr := c.MovieRepository.Update(*movie)
-        if updateErr != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">_, updateErr := c.MovieRepository.Update(*movie)
+        if updateErr != nil </span><span class="cov8" title="1">{
                 return updateErr
         }</span>
 
-        <span class="cov0" title="0">thumbnailUploadErr := c.ThumbnailUploadRepository.Upload(changeThumbnailDTO.Thumbnail.File, *movie)
-        if thumbnailUploadErr != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">thumbnailUploadErr := c.ThumbnailUploadRepository.Upload(changeThumbnailDTO.Thumbnail.File, *movie)
+        if thumbnailUploadErr != nil </span><span class="cov8" title="1">{
                 return thumbnailUploadErr
         }</span>
 
-        <span class="cov0" title="0">return nil</span>
+        <span class="cov8" title="1">return nil</span>
 }
 
 type ChangeThumbnailDTO struct {
