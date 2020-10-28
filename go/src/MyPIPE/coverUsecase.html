@@ -65,7 +65,7 @@
 				
 				<option value="file4">MyPIPE/usecase/ChangeUserName.go (83.3%)</option>
 				
-				<option value="file5">MyPIPE/usecase/ChangeUserProfileImage.go (0.0%)</option>
+				<option value="file5">MyPIPE/usecase/ChangeUserProfileImage.go (86.7%)</option>
 				
 				<option value="file6">MyPIPE/usecase/CheckUserAlreadyLikedMovie.go (85.7%)</option>
 				
@@ -410,35 +410,35 @@ type ChangeUserProfileImage struct {
         UserProfileImageRepository repository.UserProfileImageRepository
 }
 
-func NewChangeUserProfileImage(userRepo repository.UserRepository, userProfileImageRepo repository.UserProfileImageRepository) *ChangeUserProfileImage <span class="cov0" title="0">{
+func NewChangeUserProfileImage(userRepo repository.UserRepository, userProfileImageRepo repository.UserProfileImageRepository) *ChangeUserProfileImage <span class="cov8" title="1">{
         return &amp;ChangeUserProfileImage{
                 UserRepository:             userRepo,
                 UserProfileImageRepository: userProfileImageRepo,
         }
 }</span>
 
-func (c ChangeUserProfileImage) ChangeUserProfileImage(changeUserProfileImageDTO *ChangeUserProfileImageDTO) error <span class="cov0" title="0">{
+func (c ChangeUserProfileImage) ChangeUserProfileImage(changeUserProfileImageDTO *ChangeUserProfileImageDTO) error <span class="cov8" title="1">{
         user, findUserErr := c.UserRepository.FindById(changeUserProfileImageDTO.UserID)
-        if findUserErr != nil </span><span class="cov0" title="0">{
+        if findUserErr != nil </span><span class="cov8" title="1">{
                 return findUserErr
         }</span>
 
-        <span class="cov0" title="0">setProfileImageErr := user.SetProfileImage(changeUserProfileImageDTO.ProfileImage)
+        <span class="cov8" title="1">setProfileImageErr := user.SetProfileImage(changeUserProfileImageDTO.ProfileImage)
         if setProfileImageErr != nil </span><span class="cov0" title="0">{
                 return setProfileImageErr
         }</span>
 
-        <span class="cov0" title="0">uploadErr := c.UserProfileImageRepository.Upload(changeUserProfileImageDTO.ProfileImage.File, user)
-        if uploadErr != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">uploadErr := c.UserProfileImageRepository.Upload(changeUserProfileImageDTO.ProfileImage.File, user)
+        if uploadErr != nil </span><span class="cov8" title="1">{
                 return uploadErr
         }</span>
 
-        <span class="cov0" title="0">updateUserErr := c.UserRepository.UpdateUser(user)
-        if updateUserErr != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">updateUserErr := c.UserRepository.UpdateUser(user)
+        if updateUserErr != nil </span><span class="cov8" title="1">{
                 return updateUserErr
         }</span>
 
-        <span class="cov0" title="0">return nil</span>
+        <span class="cov8" title="1">return nil</span>
 }
 
 type ChangeUserProfileImageDTO struct {
