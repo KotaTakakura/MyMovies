@@ -97,13 +97,15 @@
 				
 				<option value="file20">MyPIPE/usecase/UpdateMovie.go (56.7%)</option>
 				
-				<option value="file21">MyPIPE/usecase/UploadedMovies.go (100.0%)</option>
+				<option value="file21">MyPIPE/usecase/UpdatePlayList.go (0.0%)</option>
 				
-				<option value="file22">MyPIPE/usecase/UserExistsForAuth.go (100.0%)</option>
+				<option value="file22">MyPIPE/usecase/UploadedMovies.go (100.0%)</option>
 				
-				<option value="file23">MyPIPE/usecase/UserRegister.go (100.0%)</option>
+				<option value="file23">MyPIPE/usecase/UserExistsForAuth.go (100.0%)</option>
 				
-				<option value="file24">MyPIPE/usecase/UserTemporaryRegistration.go (90.0%)</option>
+				<option value="file24">MyPIPE/usecase/UserRegister.go (100.0%)</option>
+				
+				<option value="file25">MyPIPE/usecase/UserTemporaryRegistration.go (90.0%)</option>
 				
 				</select>
 			</div>
@@ -1222,6 +1224,89 @@ type UpdateStatusDTO struct {
 
 import (
         "MyPIPE/domain/model"
+        "MyPIPE/domain/repository"
+        "errors"
+)
+
+type IUpdatePlayList interface {
+        Update(updatePlayListDTO *UpdatePlayListDTO) error
+}
+
+type UpdatePlayList struct {
+        PlayListRepository repository.PlayListRepository
+        MovieRepository    repository.MovieRepository
+}
+
+func NewUpdatePlayList(playListRepository repository.PlayListRepository, movieRepository repository.MovieRepository) *UpdatePlayList <span class="cov0" title="0">{
+        return &amp;UpdatePlayList{
+                PlayListRepository: playListRepository,
+                MovieRepository:    movieRepository,
+        }
+}</span>
+
+func (u UpdatePlayList) Update(updatePlayListDTO *UpdatePlayListDTO) error <span class="cov0" title="0">{
+        playList, playListFindErr := u.PlayListRepository.FindByIDAndUserID(updatePlayListDTO.PlayListID, updatePlayListDTO.UserID)
+        if playListFindErr != nil </span><span class="cov0" title="0">{
+                return playListFindErr
+        }</span>
+        <span class="cov0" title="0">if playList == nil </span><span class="cov0" title="0">{
+                return errors.New("No Such PlayList.")
+        }</span>
+
+        <span class="cov0" title="0">thumbnailMovie, thumbnailMovieErr := u.MovieRepository.FindById(updatePlayListDTO.ThumbnanilMovieID)
+        if thumbnailMovieErr != nil </span><span class="cov0" title="0">{
+                return thumbnailMovieErr
+        }</span>
+        <span class="cov0" title="0">if thumbnailMovie == nil </span><span class="cov0" title="0">{
+                return errors.New("No Such Movie.")
+        }</span>
+
+        <span class="cov0" title="0">changePlayListNameErr := playList.ChangeName(updatePlayListDTO.PlayListName)
+        if changePlayListNameErr != nil </span><span class="cov0" title="0">{
+                return changePlayListNameErr
+        }</span>
+
+        <span class="cov0" title="0">changePlayListDescriptionErr := playList.ChangeDescription(updatePlayListDTO.PlayListDescription)
+        if changePlayListDescriptionErr != nil </span><span class="cov0" title="0">{
+                return changePlayListDescriptionErr
+        }</span>
+
+        <span class="cov0" title="0">changeThumbnailMovieErr := playList.ChangeThumbnailMovie(updatePlayListDTO.ThumbnanilMovieID)
+        if changeThumbnailMovieErr != nil </span><span class="cov0" title="0">{
+                return changeThumbnailMovieErr
+        }</span>
+
+        <span class="cov0" title="0">savePlayListErr := u.PlayListRepository.Save(playList)
+        if savePlayListErr != nil </span><span class="cov0" title="0">{
+                return savePlayListErr
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+
+type UpdatePlayListDTO struct {
+        UserID              model.UserID
+        PlayListID          model.PlayListID
+        PlayListName        model.PlayListName
+        PlayListDescription model.PlayListDescription
+        ThumbnanilMovieID   model.MovieID
+}
+
+func NewUpdatePlayListDTO(userId model.UserID, playListId model.PlayListID, playListName model.PlayListName, playListDescription model.PlayListDescription, thumbnailMovieId model.MovieID) *UpdatePlayListDTO <span class="cov0" title="0">{
+        return &amp;UpdatePlayListDTO{
+                UserID:              userId,
+                PlayListID:          playListId,
+                PlayListName:        playListName,
+                PlayListDescription: playListDescription,
+                ThumbnanilMovieID:   thumbnailMovieId,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file22" style="display: none">package usecase
+
+import (
+        "MyPIPE/domain/model"
         queryService "MyPIPE/domain/queryService/UploadedMovies"
 )
 
@@ -1245,7 +1330,7 @@ func (u UploadedMovies) Get(userId model.UserID) []queryService.UploadedMoviesDT
 }</span>
 </pre>
 		
-		<pre class="file" id="file22" style="display: none">package usecase
+		<pre class="file" id="file23" style="display: none">package usecase
 
 import (
         "MyPIPE/domain/model"
@@ -1274,7 +1359,7 @@ func (u UserExists) CheckUserExistsForAuth(email model.UserEmail, password strin
 }
 </pre>
 		
-		<pre class="file" id="file23" style="display: none">package usecase
+		<pre class="file" id="file24" style="display: none">package usecase
 
 import (
         "MyPIPE/domain/model"
@@ -1320,7 +1405,7 @@ func (u UserRegister) RegisterUser(newUser *model.User) error <span class="cov8"
 }
 </pre>
 		
-		<pre class="file" id="file24" style="display: none">package usecase
+		<pre class="file" id="file25" style="display: none">package usecase
 
 import (
         "MyPIPE/domain/model"

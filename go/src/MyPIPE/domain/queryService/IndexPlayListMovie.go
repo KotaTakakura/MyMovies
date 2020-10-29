@@ -8,9 +8,13 @@ type IndexPlayListMovieInMyPageDTO struct {
 }
 
 type PlayListForIndexPlayListMovieInMyPageDTO struct {
-	PlayListID          uint64 `json:"play_list_id"`
-	PlayListName        string `json:"play_list_name"`
-	PlaylistDescription string `json:"play_list_description"`
+	PlayListID                      uint64 `json:"play_list_id"`
+	PlayListName                    string `json:"play_list_name"`
+	PlaylistDescription             string `json:"play_list_description"`
+	PlayListFirstMovieID            uint64 `json:"play_list_first_movie_id"`
+	PlayListFirstMovieThumbnailName string `json:"play_list_first_movie_thumbnail_name"`
+	PlayListThumbnailMovieID        uint64 `json:"play_list_thumbnail_movie_id"`
+	PlayListThumbnailName           string `json:"play_list_thumbnail_name"`
 }
 
 type PlayListMovieForIndexPlayListMovieInMyPageDTO struct {
