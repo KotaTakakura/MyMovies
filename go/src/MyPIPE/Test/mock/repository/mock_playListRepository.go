@@ -78,6 +78,21 @@ func (mr *MockPlayListRepositoryMockRecorder) FindByUserID(playListUserID interf
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByUserID", reflect.TypeOf((*MockPlayListRepository)(nil).FindByUserID), playListUserID)
 }
 
+// FindByIDAndUserID mocks base method
+func (m *MockPlayListRepository) FindByIDAndUserID(playListID model.PlayListID, userId model.UserID) (*model.PlayList, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByIDAndUserID", playListID, userId)
+	ret0, _ := ret[0].(*model.PlayList)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByIDAndUserID indicates an expected call of FindByIDAndUserID
+func (mr *MockPlayListRepositoryMockRecorder) FindByIDAndUserID(playListID, userId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByIDAndUserID", reflect.TypeOf((*MockPlayListRepository)(nil).FindByIDAndUserID), playListID, userId)
+}
+
 // FindByUserIDAndName mocks base method
 func (m *MockPlayListRepository) FindByUserIDAndName(playListUserID model.UserID, playListName model.PlayListName) ([]model.PlayList, error) {
 	m.ctrl.T.Helper()
