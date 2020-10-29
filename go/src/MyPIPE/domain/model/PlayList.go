@@ -67,3 +67,13 @@ func (p *PlayList) AddItem(movieId MovieID) error {
 	p.PlayListMovies = append(p.PlayListMovies, movieId)
 	return nil
 }
+
+func (p *PlayList) ChangeName(playListName PlayListName) error {
+	p.Name = playListName
+	return nil
+}
+
+func (p *PlayList) ChangeDescription(playListDescription PlayListDescription) error {
+	p.Description = playListDescription
+	return nil
+}

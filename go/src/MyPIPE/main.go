@@ -72,7 +72,7 @@ func main() {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"POST", "PUT", "PATCH", "DELETE"},
 		AllowHeaders:     []string{"Origin", "Access-Control-Allow-Origin", "Content-type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
@@ -159,6 +159,19 @@ func main() {
 		createPlayListHandler := handler.NewCreatePlayList(userRepository, playListRepository, createPlayListUsecase)
 		auth.POST("/play-lists", createPlayListHandler.CreatePlayList)
 
+		indexPlayListsInMyPageQueryService := queryService_infra.NewIndexPlayListsInMyPage()
+		indexPlayListsInMyPageUsecase := usecase.NewIndexPlayListsInMyPage(indexPlayListsInMyPageQueryService)
+		indexPlayListsInMyPageHandler := handler.NewIndexPlayListsInMyPage(indexPlayListsInMyPageQueryService, indexPlayListsInMyPageUsecase)
+		auth.GET("/play-lists", indexPlayListsInMyPageHandler.IndexPlayListsInMyPage)
+
+		updatePlayListUsecase := usecase.NewUpdatePlayList(playListRepository)
+		updatePlayListHandler := handler.NewUpdatePlayListHandler(updatePlayListUsecase)
+		auth.PUT("/play-lists", updatePlayListHandler.Update)
+
+		deletePlayListUsecase := usecase.NewDeletePlayList(playListRepository)
+		deletePlayListHandler := handler.NewDeletePlayList(playListRepository, deletePlayListUsecase)
+		auth.DELETE("/play-lists", deletePlayListHandler.DeletePlayList)
+
 		playListMovieFactory := factory.NewPlayListMovieFactory()
 		addPlayListItemUsecase := usecase.NewAddPlayListItem(playListRepository, playListMovieRepository, playListMovieFactory)
 		deletePlayListMovieUsecase := usecase.NewDeletePlayListMovie(playListRepository, playListMovieRepository)
@@ -172,11 +185,6 @@ func main() {
 
 		auth.POST("/follows", handler.FollowUser)
 
-		indexPlayListsInMyPageQueryService := queryService_infra.NewIndexPlayListsInMyPage()
-		indexPlayListsInMyPageUsecase := usecase.NewIndexPlayListsInMyPage(indexPlayListsInMyPageQueryService)
-		indexPlayListsInMyPageHandler := handler.NewIndexPlayListsInMyPage(indexPlayListsInMyPageQueryService, indexPlayListsInMyPageUsecase)
-		auth.GET("/play-lists", indexPlayListsInMyPageHandler.IndexPlayListsInMyPage)
-
 		indexPlaylistMoviesQueryService := queryService_infra.NewIndexPlayListMovieInMyPage()
 		indexPlaylistMoviesUsecase := usecase.NewIndexPlayListItemInMyPage(indexPlaylistMoviesQueryService)
 		indexPlayListMoviesHandler := handler.NewIndexPlaylistMovies(indexPlaylistMoviesQueryService, indexPlaylistMoviesUsecase)
@@ -186,10 +194,6 @@ func main() {
 		indexPlayListInMovieListPageUsecase := usecase.NewIndexPlayListInMovieListPage(indexPlayListInMovieListPageQueryService)
 		indexPlayListInMovieListPageHandler := handler.NewIndexPlayListInMovieListPage(indexPlayListInMovieListPageQueryService, indexPlayListInMovieListPageUsecase)
 		auth.GET("play-lists/:movie_id", indexPlayListInMovieListPageHandler.IndexPlayListInMovieListPage)
-
-		deletePlayListUsecase := usecase.NewDeletePlayList(playListRepository)
-		deletePlayListHandler := handler.NewDeletePlayList(playListRepository, deletePlayListUsecase)
-		auth.DELETE("/play-lists", deletePlayListHandler.DeletePlayList)
 	}
 
 	router.GET("/health", func(c *gin.Context) {
