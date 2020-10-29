@@ -21,14 +21,16 @@ type MovieForFindByMovieIdDTO struct {
 }
 
 type UserForFindByMovieIdDTO struct {
-	ID   uint64
-	Name string
+	ID               uint64
+	Name             string
+	ProfileImageName string
 }
 
 type CommentsFoundByMovieId struct {
-	CommentID   uint64 `json:"comment_id"`
-	CommentBody string `json:"comment_body"`
-	UserName    string `json:"user_name"`
-	UserID      uint64 `json:"user_id"`
-	MovieID     uint64 `json:"movie_id"`
+	CommentID            uint64 `json:"comment_id"`
+	CommentBody          string `json:"comment_body"`
+	UserName             string `json:"user_name"`
+	UserProfileImageName string `json:"user_profile_image_name"`
+	UserID               uint64 `json:"user_id"`
+	MovieID              uint64 `json:"movie_id"`
 }

@@ -16,7 +16,7 @@ func (i IndexMovie) Search(page queryService.IndexMovieQueryServicePage, keyWord
 	defer db.Close()
 	var movies []queryService.MoviesForIndexMovieDTO
 	db.Table("movies").
-		Select("movies.id as movie_id, movies.display_name as movie_display_name,movies.thumbnail_name as thumbnail_name,users.id as user_id,users.name as user_name").
+		Select("movies.id as movie_id, movies.display_name as movie_display_name,movies.thumbnail_name as thumbnail_name,users.id as user_id,users.name as user_name, users.profile_image_name as user_profile_image_name").
 		Joins("inner join users on movies.user_id = users.id").
 		Where("match(movies.display_name) against(? IN BOOLEAN MODE) and movies.public = 1", keyWord).
 		Limit(24).
@@ -26,7 +26,7 @@ func (i IndexMovie) Search(page queryService.IndexMovieQueryServicePage, keyWord
 
 	var count uint64
 	db.Table("movies").
-		Select("movies.id as movie_id, movies.display_name as movie_display_name,movies.thumbnail_name as thumbnail_name,users.id as user_id,users.name as user_name").
+		Select("movies.id as movie_id, movies.display_name as movie_display_name,movies.thumbnail_name as thumbnail_name,users.id as user_id,users.name as user_name, users.profile_image_name as user_profile_image_name").
 		Joins("inner join users on movies.user_id = users.id").
 		Where("match(movies.display_name) against(? IN BOOLEAN MODE) and movies.public = 1", keyWord).
 		Count(&count)
@@ -44,7 +44,7 @@ func (i IndexMovie) All(page queryService.IndexMovieQueryServicePage, order quer
 	defer db.Close()
 	var movies []queryService.MoviesForIndexMovieDTO
 	db.Table("movies").
-		Select("movies.id as movie_id, movies.display_name as movie_display_name,movies.thumbnail_name as thumbnail_name,users.id as user_id,users.name as user_name").
+		Select("movies.id as movie_id, movies.display_name as movie_display_name,movies.thumbnail_name as thumbnail_name,users.id as user_id,users.name as user_name, users.profile_image_name as user_profile_image_name").
 		Joins("inner join users on movies.user_id = users.id").
 		Where("movies.public = 1").
 		Limit(24).
@@ -54,7 +54,7 @@ func (i IndexMovie) All(page queryService.IndexMovieQueryServicePage, order quer
 
 	var count uint64
 	db.Table("movies").
-		Select("movies.id as movie_id, movies.display_name as movie_display_name,movies.thumbnail_name as thumbnail_name,users.id as user_id,users.name as user_name").
+		Select("movies.id as movie_id, movies.display_name as movie_display_name,movies.thumbnail_name as thumbnail_name,users.id as user_id,users.name as user_name, users.profile_image_name as user_profile_image_name").
 		Where("movies.public = 1").
 		Joins("inner join users on movies.user_id = users.id").
 		Count(&count)
