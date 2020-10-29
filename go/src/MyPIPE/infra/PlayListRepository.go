@@ -36,6 +36,21 @@ func (p PlayListPersistence) FindByUserID(playListUserID model.UserID) ([]model.
 	panic("implement me")
 }
 
+func (p PlayListPersistence) FindByIDAndUserID(playListID model.PlayListID, userId model.UserID) (*model.PlayList, error) {
+	db := ConnectGorm()
+	defer db.Close()
+	var playList model.PlayList
+	var count int
+	resultFindPlayList := db.Where("id = ? and user_id = ?", playListID, userId).Take(&playList).Count(&count)
+	if resultFindPlayList.Error != nil {
+		return nil, resultFindPlayList.Error
+	}
+	if count == 0 {
+		return nil, nil
+	}
+	return &playList, nil
+}
+
 func (p PlayListPersistence) FindByUserIDAndName(playListUserID model.UserID, playListName model.PlayListName) ([]model.PlayList, error) {
 	db := ConnectGorm()
 	defer db.Close()
