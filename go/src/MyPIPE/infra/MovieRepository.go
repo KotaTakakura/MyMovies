@@ -26,9 +26,13 @@ func (m *MoviePersistence) FindById(id model.MovieID) (*model.Movie, error) {
 	db := ConnectGorm()
 	defer db.Close()
 	var movies model.Movie
-	result := db.First(&movies, uint64(id))
+	var count int
+	result := db.First(&movies, uint64(id)).Count(&count)
 	if result.Error != nil {
 		return nil, result.Error
+	}
+	if count == 0 {
+		return nil, nil
 	}
 	return &movies, nil
 }

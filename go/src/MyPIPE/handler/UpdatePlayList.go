@@ -46,6 +46,11 @@ func (u UpdatePlayList) Update(c *gin.Context) {
 		validationErrors["play_list_description"] = playListDescriptionErr.Error()
 	}
 
+	thumbnailMovieId, thumbnailMovieIdErr := model.NewMovieID(updatePlayListJson.PlayListThumbnailMovieID)
+	if thumbnailMovieIdErr != nil {
+		validationErrors["thumbnail_movie_id"] = thumbnailMovieIdErr.Error()
+	}
+
 	if len(validationErrors) != 0 {
 		validationErrors, _ := json.Marshal(validationErrors)
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -56,7 +61,7 @@ func (u UpdatePlayList) Update(c *gin.Context) {
 		return
 	}
 
-	updatePlayListDTO := usecase.NewUpdatePlayListDTO(userId, playListId, playListName, playListDescription)
+	updatePlayListDTO := usecase.NewUpdatePlayListDTO(userId, playListId, playListName, playListDescription, thumbnailMovieId)
 	usecaseError := u.UpdatePlayListUsecase.Update(updatePlayListDTO)
 
 	if usecaseError != nil {
@@ -74,7 +79,8 @@ func (u UpdatePlayList) Update(c *gin.Context) {
 }
 
 type UpdatePlayListJson struct {
-	PlayListID          uint64 `json:"play_list_id"`
-	PlayListName        string `json:"play_list_name"`
-	PlayListDescription string `json:"play_list_description"`
+	PlayListID               uint64 `json:"play_list_id"`
+	PlayListName             string `json:"play_list_name"`
+	PlayListDescription      string `json:"play_list_description"`
+	PlayListThumbnailMovieID uint64 `json:"play_list_thumbnail_movie_id"`
 }

@@ -37,13 +37,14 @@ func NewPlayListDescription(playListDescription string) (PlayListDescription, er
 }
 
 type PlayList struct {
-	ID             PlayListID   `json:"id" gorm:"primaryKey"`
-	UserID         UserID       `gorm:"column:user_id"`
-	Name           PlayListName `gorm:"column:name"`
-	Description    PlayListDescription
-	PlayListMovies []MovieID `gorm:"-"`
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
+	ID               PlayListID   `json:"id" gorm:"primaryKey"`
+	UserID           UserID       `gorm:"column:user_id"`
+	Name             PlayListName `gorm:"column:name"`
+	Description      PlayListDescription
+	PlayListMovies   []MovieID `gorm:"-"`
+	ThumbnailMovieID MovieID
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
 }
 
 func NewPlayList(userId UserID, name PlayListName, description PlayListDescription) *PlayList {
@@ -75,5 +76,10 @@ func (p *PlayList) ChangeName(playListName PlayListName) error {
 
 func (p *PlayList) ChangeDescription(playListDescription PlayListDescription) error {
 	p.Description = playListDescription
+	return nil
+}
+
+func (p *PlayList) ChangeThumbnailMovie(thumbnailMovieId MovieID) error {
+	p.ThumbnailMovieID = thumbnailMovieId
 	return nil
 }

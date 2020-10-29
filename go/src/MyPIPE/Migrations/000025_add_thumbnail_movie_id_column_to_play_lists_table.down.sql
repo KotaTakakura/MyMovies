@@ -1,0 +1,1 @@
+ALTER TABLE play_lists DROP COLUMN thumbnail_movie_id;

@@ -164,7 +164,7 @@ func main() {
 		indexPlayListsInMyPageHandler := handler.NewIndexPlayListsInMyPage(indexPlayListsInMyPageQueryService, indexPlayListsInMyPageUsecase)
 		auth.GET("/play-lists", indexPlayListsInMyPageHandler.IndexPlayListsInMyPage)
 
-		updatePlayListUsecase := usecase.NewUpdatePlayList(playListRepository)
+		updatePlayListUsecase := usecase.NewUpdatePlayList(playListRepository, movieRepository)
 		updatePlayListHandler := handler.NewUpdatePlayListHandler(updatePlayListUsecase)
 		auth.PUT("/play-lists", updatePlayListHandler.Update)
 
