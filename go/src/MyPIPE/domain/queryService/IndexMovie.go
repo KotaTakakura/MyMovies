@@ -6,11 +6,12 @@ type IndexMovieDTO struct {
 }
 
 type MoviesForIndexMovieDTO struct {
-	MovieID          uint64 `json:"movie_id"`
-	MovieDisplayName string `json:"movie_title"`
-	UserID           uint64 `json:"user_id"`
-	UserName         string `json:"user_name"`
-	ThumbnailName    string `json:"movie_thumbnail_name"`
+	MovieID              uint64 `json:"movie_id"`
+	MovieDisplayName     string `json:"movie_title"`
+	UserID               uint64 `json:"user_id"`
+	UserName             string `json:"user_name"`
+	UserProfileImageName string `json:"user_profile_image_name"`
+	ThumbnailName        string `json:"movie_thumbnail_name"`
 }
 
 type IndexMovieQueryService interface {
