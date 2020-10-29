@@ -1,0 +1,1 @@
+ALTER TABLE play_lists ADD COLUMN thumbnail_movie_id BIGINT UNSIGNED NULL AFTER user_id;

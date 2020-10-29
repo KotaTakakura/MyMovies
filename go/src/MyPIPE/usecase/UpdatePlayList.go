@@ -12,10 +12,14 @@ type IUpdatePlayList interface {
 
 type UpdatePlayList struct {
 	PlayListRepository repository.PlayListRepository
+	MovieRepository    repository.MovieRepository
 }
 
-func NewUpdatePlayList(playListRepository repository.PlayListRepository) *UpdatePlayList {
-	return &UpdatePlayList{PlayListRepository: playListRepository}
+func NewUpdatePlayList(playListRepository repository.PlayListRepository, movieRepository repository.MovieRepository) *UpdatePlayList {
+	return &UpdatePlayList{
+		PlayListRepository: playListRepository,
+		MovieRepository:    movieRepository,
+	}
 }
 
 func (u UpdatePlayList) Update(updatePlayListDTO *UpdatePlayListDTO) error {
@@ -27,6 +31,14 @@ func (u UpdatePlayList) Update(updatePlayListDTO *UpdatePlayListDTO) error {
 		return errors.New("No Such PlayList.")
 	}
 
+	thumbnailMovie, thumbnailMovieErr := u.MovieRepository.FindById(updatePlayListDTO.ThumbnanilMovieID)
+	if thumbnailMovieErr != nil {
+		return thumbnailMovieErr
+	}
+	if thumbnailMovie == nil {
+		return errors.New("No Such Movie.")
+	}
+
 	changePlayListNameErr := playList.ChangeName(updatePlayListDTO.PlayListName)
 	if changePlayListNameErr != nil {
 		return changePlayListNameErr
@@ -35,6 +47,11 @@ func (u UpdatePlayList) Update(updatePlayListDTO *UpdatePlayListDTO) error {
 	changePlayListDescriptionErr := playList.ChangeDescription(updatePlayListDTO.PlayListDescription)
 	if changePlayListDescriptionErr != nil {
 		return changePlayListDescriptionErr
+	}
+
+	changeThumbnailMovieErr := playList.ChangeThumbnailMovie(updatePlayListDTO.ThumbnanilMovieID)
+	if changeThumbnailMovieErr != nil {
+		return changeThumbnailMovieErr
 	}
 
 	savePlayListErr := u.PlayListRepository.Save(playList)
@@ -50,13 +67,15 @@ type UpdatePlayListDTO struct {
 	PlayListID          model.PlayListID
 	PlayListName        model.PlayListName
 	PlayListDescription model.PlayListDescription
+	ThumbnanilMovieID   model.MovieID
 }
 
-func NewUpdatePlayListDTO(userId model.UserID, playListId model.PlayListID, playListName model.PlayListName, playListDescription model.PlayListDescription) *UpdatePlayListDTO {
+func NewUpdatePlayListDTO(userId model.UserID, playListId model.PlayListID, playListName model.PlayListName, playListDescription model.PlayListDescription, thumbnailMovieId model.MovieID) *UpdatePlayListDTO {
 	return &UpdatePlayListDTO{
 		UserID:              userId,
 		PlayListID:          playListId,
 		PlayListName:        playListName,
 		PlayListDescription: playListDescription,
+		ThumbnanilMovieID:   thumbnailMovieId,
 	}
 }
