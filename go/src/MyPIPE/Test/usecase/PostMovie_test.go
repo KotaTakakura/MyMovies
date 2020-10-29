@@ -5,15 +5,15 @@ import (
 	mock_repository "MyPIPE/Test/mock/repository"
 	"MyPIPE/domain/model"
 	"MyPIPE/usecase"
+	"errors"
 	"fmt"
 	"github.com/golang/mock/gomock"
 	"os"
 	"reflect"
 	"testing"
-	"errors"
 )
 
-func TestPostMovie(t *testing.T){
+func TestPostMovie(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -21,19 +21,19 @@ func TestPostMovie(t *testing.T){
 	thumbnailUploadRepository := mock_repository.NewMockThumbnailUploadRepository(ctrl)
 	movieRepository := mock_repository.NewMockMovieRepository(ctrl)
 	movieFactory := mock_factory.NewMockIMovieModelFactory(ctrl)
-	postMovieUsecase := usecase.NewPostMovie(fileUploadRepository,thumbnailUploadRepository,movieRepository,movieFactory)
+	postMovieUsecase := usecase.NewPostMovie(fileUploadRepository, thumbnailUploadRepository, movieRepository, movieFactory)
 
-	cases := []struct{
+	cases := []struct {
 		ThumbnailFilePath string
-		MovieFilePath string
+		MovieFilePath     string
 	}{
 		{
 			ThumbnailFilePath: "./../TestThumbnail.jpg",
-			MovieFilePath: "./../TestMovie.mp4",
+			MovieFilePath:     "./../TestMovie.mp4",
 		},
 	}
 
-	for _,Case := range cases{
+	for _, Case := range cases {
 		thumbnailFile, thumbnailFileErr := os.Open(Case.ThumbnailFilePath)
 		if thumbnailFileErr != nil {
 			fmt.Println(thumbnailFileErr)
@@ -48,17 +48,17 @@ func TestPostMovie(t *testing.T){
 
 		postMovieDTO := &usecase.PostMovieDTO{
 			MovieFile: &model.MovieFile{
-				StoreName:  "MovieStoreName",
-				File:       movieFile,
+				StoreName: "MovieStoreName",
+				File:      movieFile,
 			},
 			Thumbnail: &model.MovieThumbnail{
-				Name:       "ThumbnailName",
-				File:       thumbnailFile,
+				Name: "ThumbnailName",
+				File: thumbnailFile,
 			},
-			UserID:    model.UserID(10),
+			UserID: model.UserID(10),
 		}
 
-		movieFactory.EXPECT().CreateMovieModel(postMovieDTO.UserID,postMovieDTO.MovieFile,postMovieDTO.Thumbnail).Return(&model.Movie{
+		movieFactory.EXPECT().CreateMovieModel(postMovieDTO.UserID, postMovieDTO.MovieFile, postMovieDTO.Thumbnail).Return(&model.Movie{
 			ID:            model.MovieID(0),
 			StoreName:     postMovieDTO.MovieFile.StoreName,
 			DisplayName:   "DisplayName",
@@ -67,9 +67,9 @@ func TestPostMovie(t *testing.T){
 			UserID:        postMovieDTO.UserID,
 			Public:        0,
 			Status:        0,
-		},nil)
+		}, nil)
 
-		movieRepository.EXPECT().Save(gomock.Any()).DoAndReturn(func(data interface{})(*model.Movie,error){
+		movieRepository.EXPECT().Save(gomock.Any()).DoAndReturn(func(data interface{}) (*model.Movie, error) {
 			if reflect.TypeOf(data) != reflect.TypeOf(model.Movie{}) {
 				t.Fatal("Type Movie Not Match.")
 			}
@@ -103,12 +103,12 @@ func TestPostMovie(t *testing.T){
 				UserID:        postMovieDTO.UserID,
 				Public:        0,
 				Status:        0,
-			},nil
+			}, nil
 		})
 
-		fileUploadRepository.EXPECT().Upload(postMovieDTO.MovieFile.File,postMovieDTO.MovieFile.FileHeader,model.MovieID(10))
+		fileUploadRepository.EXPECT().Upload(postMovieDTO.MovieFile.File, postMovieDTO.MovieFile.FileHeader, model.MovieID(10))
 
-		thumbnailUploadRepository.EXPECT().Upload(postMovieDTO.Thumbnail.File,gomock.Any()).DoAndReturn(func(data1 interface{},data2 interface{})error{
+		thumbnailUploadRepository.EXPECT().Upload(postMovieDTO.Thumbnail.File, gomock.Any()).DoAndReturn(func(data1 interface{}, data2 interface{}) error {
 			if reflect.TypeOf(data2) != reflect.TypeOf(model.Movie{}) {
 				t.Fatal("Type Movie Not Match.")
 			}
@@ -136,15 +136,15 @@ func TestPostMovie(t *testing.T){
 			return nil
 		})
 
-		_,err := postMovieUsecase.PostMovie(postMovieDTO)
-		if err != nil{
+		_, err := postMovieUsecase.PostMovie(postMovieDTO)
+		if err != nil {
 			t.Fatal("useccase Error")
 		}
 
 	}
 }
 
-func TestPostMovie_CreateMovieFactory_Error(t *testing.T){
+func TestPostMovie_CreateMovieFactory_Error(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -152,19 +152,19 @@ func TestPostMovie_CreateMovieFactory_Error(t *testing.T){
 	thumbnailUploadRepository := mock_repository.NewMockThumbnailUploadRepository(ctrl)
 	movieRepository := mock_repository.NewMockMovieRepository(ctrl)
 	movieFactory := mock_factory.NewMockIMovieModelFactory(ctrl)
-	postMovieUsecase := usecase.NewPostMovie(fileUploadRepository,thumbnailUploadRepository,movieRepository,movieFactory)
+	postMovieUsecase := usecase.NewPostMovie(fileUploadRepository, thumbnailUploadRepository, movieRepository, movieFactory)
 
-	cases := []struct{
+	cases := []struct {
 		ThumbnailFilePath string
-		MovieFilePath string
+		MovieFilePath     string
 	}{
 		{
 			ThumbnailFilePath: "./../TestThumbnail.jpg",
-			MovieFilePath: "./../TestMovie.mp4",
+			MovieFilePath:     "./../TestMovie.mp4",
 		},
 	}
 
-	for _,Case := range cases{
+	for _, Case := range cases {
 		thumbnailFile, thumbnailFileErr := os.Open(Case.ThumbnailFilePath)
 		if thumbnailFileErr != nil {
 			fmt.Println(thumbnailFileErr)
@@ -179,27 +179,27 @@ func TestPostMovie_CreateMovieFactory_Error(t *testing.T){
 
 		postMovieDTO := &usecase.PostMovieDTO{
 			MovieFile: &model.MovieFile{
-				StoreName:  "MovieStoreName",
-				File:       movieFile,
+				StoreName: "MovieStoreName",
+				File:      movieFile,
 			},
 			Thumbnail: &model.MovieThumbnail{
-				Name:       "ThumbnailName",
-				File:       thumbnailFile,
+				Name: "ThumbnailName",
+				File: thumbnailFile,
 			},
-			UserID:    model.UserID(10),
+			UserID: model.UserID(10),
 		}
 
-		movieFactory.EXPECT().CreateMovieModel(postMovieDTO.UserID,postMovieDTO.MovieFile,postMovieDTO.Thumbnail).Return(nil,errors.New("ERROR"))
+		movieFactory.EXPECT().CreateMovieModel(postMovieDTO.UserID, postMovieDTO.MovieFile, postMovieDTO.Thumbnail).Return(nil, errors.New("ERROR"))
 
-		_,err := postMovieUsecase.PostMovie(postMovieDTO)
-		if err == nil{
+		_, err := postMovieUsecase.PostMovie(postMovieDTO)
+		if err == nil {
 			t.Fatal("useccase Error")
 		}
 
 	}
 }
 
-func TestPostMovie_MovieRepository_Save_Error(t *testing.T){
+func TestPostMovie_MovieRepository_Save_Error(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -207,19 +207,19 @@ func TestPostMovie_MovieRepository_Save_Error(t *testing.T){
 	thumbnailUploadRepository := mock_repository.NewMockThumbnailUploadRepository(ctrl)
 	movieRepository := mock_repository.NewMockMovieRepository(ctrl)
 	movieFactory := mock_factory.NewMockIMovieModelFactory(ctrl)
-	postMovieUsecase := usecase.NewPostMovie(fileUploadRepository,thumbnailUploadRepository,movieRepository,movieFactory)
+	postMovieUsecase := usecase.NewPostMovie(fileUploadRepository, thumbnailUploadRepository, movieRepository, movieFactory)
 
-	cases := []struct{
+	cases := []struct {
 		ThumbnailFilePath string
-		MovieFilePath string
+		MovieFilePath     string
 	}{
 		{
 			ThumbnailFilePath: "./../TestThumbnail.jpg",
-			MovieFilePath: "./../TestMovie.mp4",
+			MovieFilePath:     "./../TestMovie.mp4",
 		},
 	}
 
-	for _,Case := range cases{
+	for _, Case := range cases {
 		thumbnailFile, thumbnailFileErr := os.Open(Case.ThumbnailFilePath)
 		if thumbnailFileErr != nil {
 			fmt.Println(thumbnailFileErr)
@@ -234,17 +234,17 @@ func TestPostMovie_MovieRepository_Save_Error(t *testing.T){
 
 		postMovieDTO := &usecase.PostMovieDTO{
 			MovieFile: &model.MovieFile{
-				StoreName:  "MovieStoreName",
-				File:       movieFile,
+				StoreName: "MovieStoreName",
+				File:      movieFile,
 			},
 			Thumbnail: &model.MovieThumbnail{
-				Name:       "ThumbnailName",
-				File:       thumbnailFile,
+				Name: "ThumbnailName",
+				File: thumbnailFile,
 			},
-			UserID:    model.UserID(10),
+			UserID: model.UserID(10),
 		}
 
-		movieFactory.EXPECT().CreateMovieModel(postMovieDTO.UserID,postMovieDTO.MovieFile,postMovieDTO.Thumbnail).Return(&model.Movie{
+		movieFactory.EXPECT().CreateMovieModel(postMovieDTO.UserID, postMovieDTO.MovieFile, postMovieDTO.Thumbnail).Return(&model.Movie{
 			ID:            model.MovieID(0),
 			StoreName:     postMovieDTO.MovieFile.StoreName,
 			DisplayName:   "DisplayName",
@@ -253,19 +253,19 @@ func TestPostMovie_MovieRepository_Save_Error(t *testing.T){
 			UserID:        postMovieDTO.UserID,
 			Public:        0,
 			Status:        0,
-		},nil)
+		}, nil)
 
-		movieRepository.EXPECT().Save(gomock.Any()).Return(nil,errors.New("ERROR"))
+		movieRepository.EXPECT().Save(gomock.Any()).Return(nil, errors.New("ERROR"))
 
-		_,err := postMovieUsecase.PostMovie(postMovieDTO)
-		if err == nil{
+		_, err := postMovieUsecase.PostMovie(postMovieDTO)
+		if err == nil {
 			t.Fatal("useccase Error")
 		}
 
 	}
 }
 
-func TestPostMovie_FileUploadRepository_Upload_Error(t *testing.T){
+func TestPostMovie_FileUploadRepository_Upload_Error(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -273,19 +273,19 @@ func TestPostMovie_FileUploadRepository_Upload_Error(t *testing.T){
 	thumbnailUploadRepository := mock_repository.NewMockThumbnailUploadRepository(ctrl)
 	movieRepository := mock_repository.NewMockMovieRepository(ctrl)
 	movieFactory := mock_factory.NewMockIMovieModelFactory(ctrl)
-	postMovieUsecase := usecase.NewPostMovie(fileUploadRepository,thumbnailUploadRepository,movieRepository,movieFactory)
+	postMovieUsecase := usecase.NewPostMovie(fileUploadRepository, thumbnailUploadRepository, movieRepository, movieFactory)
 
-	cases := []struct{
+	cases := []struct {
 		ThumbnailFilePath string
-		MovieFilePath string
+		MovieFilePath     string
 	}{
 		{
 			ThumbnailFilePath: "./../TestThumbnail.jpg",
-			MovieFilePath: "./../TestMovie.mp4",
+			MovieFilePath:     "./../TestMovie.mp4",
 		},
 	}
 
-	for _,Case := range cases{
+	for _, Case := range cases {
 		thumbnailFile, thumbnailFileErr := os.Open(Case.ThumbnailFilePath)
 		if thumbnailFileErr != nil {
 			fmt.Println(thumbnailFileErr)
@@ -300,17 +300,17 @@ func TestPostMovie_FileUploadRepository_Upload_Error(t *testing.T){
 
 		postMovieDTO := &usecase.PostMovieDTO{
 			MovieFile: &model.MovieFile{
-				StoreName:  "MovieStoreName",
-				File:       movieFile,
+				StoreName: "MovieStoreName",
+				File:      movieFile,
 			},
 			Thumbnail: &model.MovieThumbnail{
-				Name:       "ThumbnailName",
-				File:       thumbnailFile,
+				Name: "ThumbnailName",
+				File: thumbnailFile,
 			},
-			UserID:    model.UserID(10),
+			UserID: model.UserID(10),
 		}
 
-		movieFactory.EXPECT().CreateMovieModel(postMovieDTO.UserID,postMovieDTO.MovieFile,postMovieDTO.Thumbnail).Return(&model.Movie{
+		movieFactory.EXPECT().CreateMovieModel(postMovieDTO.UserID, postMovieDTO.MovieFile, postMovieDTO.Thumbnail).Return(&model.Movie{
 			ID:            model.MovieID(0),
 			StoreName:     postMovieDTO.MovieFile.StoreName,
 			DisplayName:   "DisplayName",
@@ -319,9 +319,9 @@ func TestPostMovie_FileUploadRepository_Upload_Error(t *testing.T){
 			UserID:        postMovieDTO.UserID,
 			Public:        0,
 			Status:        0,
-		},nil)
+		}, nil)
 
-		movieRepository.EXPECT().Save(gomock.Any()).DoAndReturn(func(data interface{})(*model.Movie,error){
+		movieRepository.EXPECT().Save(gomock.Any()).DoAndReturn(func(data interface{}) (*model.Movie, error) {
 			if reflect.TypeOf(data) != reflect.TypeOf(model.Movie{}) {
 				t.Fatal("Type Movie Not Match.")
 			}
@@ -355,20 +355,20 @@ func TestPostMovie_FileUploadRepository_Upload_Error(t *testing.T){
 				UserID:        postMovieDTO.UserID,
 				Public:        0,
 				Status:        0,
-			},nil
+			}, nil
 		})
 
-		fileUploadRepository.EXPECT().Upload(postMovieDTO.MovieFile.File,postMovieDTO.MovieFile.FileHeader,model.MovieID(10)).Return(errors.New("ERROR"))
+		fileUploadRepository.EXPECT().Upload(postMovieDTO.MovieFile.File, postMovieDTO.MovieFile.FileHeader, model.MovieID(10)).Return(errors.New("ERROR"))
 
-		_,err := postMovieUsecase.PostMovie(postMovieDTO)
-		if err == nil{
+		_, err := postMovieUsecase.PostMovie(postMovieDTO)
+		if err == nil {
 			t.Fatal("useccase Error")
 		}
 
 	}
 }
 
-func TestPostMovie_ThumbnailUploadRepository_Upload_Error(t *testing.T){
+func TestPostMovie_ThumbnailUploadRepository_Upload_Error(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -376,19 +376,19 @@ func TestPostMovie_ThumbnailUploadRepository_Upload_Error(t *testing.T){
 	thumbnailUploadRepository := mock_repository.NewMockThumbnailUploadRepository(ctrl)
 	movieRepository := mock_repository.NewMockMovieRepository(ctrl)
 	movieFactory := mock_factory.NewMockIMovieModelFactory(ctrl)
-	postMovieUsecase := usecase.NewPostMovie(fileUploadRepository,thumbnailUploadRepository,movieRepository,movieFactory)
+	postMovieUsecase := usecase.NewPostMovie(fileUploadRepository, thumbnailUploadRepository, movieRepository, movieFactory)
 
-	cases := []struct{
+	cases := []struct {
 		ThumbnailFilePath string
-		MovieFilePath string
+		MovieFilePath     string
 	}{
 		{
 			ThumbnailFilePath: "./../TestThumbnail.jpg",
-			MovieFilePath: "./../TestMovie.mp4",
+			MovieFilePath:     "./../TestMovie.mp4",
 		},
 	}
 
-	for _,Case := range cases{
+	for _, Case := range cases {
 		thumbnailFile, thumbnailFileErr := os.Open(Case.ThumbnailFilePath)
 		if thumbnailFileErr != nil {
 			fmt.Println(thumbnailFileErr)
@@ -403,17 +403,17 @@ func TestPostMovie_ThumbnailUploadRepository_Upload_Error(t *testing.T){
 
 		postMovieDTO := &usecase.PostMovieDTO{
 			MovieFile: &model.MovieFile{
-				StoreName:  "MovieStoreName",
-				File:       movieFile,
+				StoreName: "MovieStoreName",
+				File:      movieFile,
 			},
 			Thumbnail: &model.MovieThumbnail{
-				Name:       "ThumbnailName",
-				File:       thumbnailFile,
+				Name: "ThumbnailName",
+				File: thumbnailFile,
 			},
-			UserID:    model.UserID(10),
+			UserID: model.UserID(10),
 		}
 
-		movieFactory.EXPECT().CreateMovieModel(postMovieDTO.UserID,postMovieDTO.MovieFile,postMovieDTO.Thumbnail).Return(&model.Movie{
+		movieFactory.EXPECT().CreateMovieModel(postMovieDTO.UserID, postMovieDTO.MovieFile, postMovieDTO.Thumbnail).Return(&model.Movie{
 			ID:            model.MovieID(0),
 			StoreName:     postMovieDTO.MovieFile.StoreName,
 			DisplayName:   "DisplayName",
@@ -422,9 +422,9 @@ func TestPostMovie_ThumbnailUploadRepository_Upload_Error(t *testing.T){
 			UserID:        postMovieDTO.UserID,
 			Public:        0,
 			Status:        0,
-		},nil)
+		}, nil)
 
-		movieRepository.EXPECT().Save(gomock.Any()).DoAndReturn(func(data interface{})(*model.Movie,error){
+		movieRepository.EXPECT().Save(gomock.Any()).DoAndReturn(func(data interface{}) (*model.Movie, error) {
 			if reflect.TypeOf(data) != reflect.TypeOf(model.Movie{}) {
 				t.Fatal("Type Movie Not Match.")
 			}
@@ -458,15 +458,15 @@ func TestPostMovie_ThumbnailUploadRepository_Upload_Error(t *testing.T){
 				UserID:        postMovieDTO.UserID,
 				Public:        0,
 				Status:        0,
-			},nil
+			}, nil
 		})
 
-		fileUploadRepository.EXPECT().Upload(postMovieDTO.MovieFile.File,postMovieDTO.MovieFile.FileHeader,model.MovieID(10))
+		fileUploadRepository.EXPECT().Upload(postMovieDTO.MovieFile.File, postMovieDTO.MovieFile.FileHeader, model.MovieID(10))
 
-		thumbnailUploadRepository.EXPECT().Upload(postMovieDTO.Thumbnail.File,gomock.Any()).Return(errors.New("Error"))
+		thumbnailUploadRepository.EXPECT().Upload(postMovieDTO.Thumbnail.File, gomock.Any()).Return(errors.New("Error"))
 
-		_,err := postMovieUsecase.PostMovie(postMovieDTO)
-		if err == nil{
+		_, err := postMovieUsecase.PostMovie(postMovieDTO)
+		if err == nil {
 			t.Fatal("useccase Error")
 		}
 
