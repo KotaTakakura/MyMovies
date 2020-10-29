@@ -93,7 +93,7 @@
 				
 				<option value="file18">MyPIPE/usecase/PostComment.go (91.7%)</option>
 				
-				<option value="file19">MyPIPE/usecase/PostMovie.go (0.0%)</option>
+				<option value="file19">MyPIPE/usecase/PostMovie.go (93.3%)</option>
 				
 				<option value="file20">MyPIPE/usecase/UpdateMovie.go (56.7%)</option>
 				
@@ -1080,7 +1080,7 @@ type PostMovie struct {
         MovieModelFactory         factory.IMovieModelFactory
 }
 
-func NewPostMovie(fr repository.FileUpload, tu repository.ThumbnailUploadRepository, mr repository.MovieRepository, mf factory.IMovieModelFactory) *PostMovie <span class="cov0" title="0">{
+func NewPostMovie(fr repository.FileUpload, tu repository.ThumbnailUploadRepository, mr repository.MovieRepository, mf factory.IMovieModelFactory) *PostMovie <span class="cov8" title="1">{
         return &amp;PostMovie{
                 FileUploadRepository:      fr,
                 ThumbnailUploadRepository: tu,
@@ -1089,28 +1089,28 @@ func NewPostMovie(fr repository.FileUpload, tu repository.ThumbnailUploadReposit
         }
 }</span>
 
-func (p *PostMovie) PostMovie(postMovieDTO *PostMovieDTO) (*model.Movie, error) <span class="cov0" title="0">{
+func (p *PostMovie) PostMovie(postMovieDTO *PostMovieDTO) (*model.Movie, error) <span class="cov8" title="1">{
         newMovie, createError := p.MovieModelFactory.CreateMovieModel(postMovieDTO.UserID, postMovieDTO.MovieFile, postMovieDTO.Thumbnail)
-        if createError != nil </span><span class="cov0" title="0">{
+        if createError != nil </span><span class="cov8" title="1">{
                 return nil, createError
         }</span>
 
-        <span class="cov0" title="0">savedNewMovie, saveError := p.MovieRepository.Save(*newMovie)
-        if saveError != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">savedNewMovie, saveError := p.MovieRepository.Save(*newMovie)
+        if saveError != nil </span><span class="cov8" title="1">{
                 return nil, saveError
         }</span>
 
-        <span class="cov0" title="0">err := p.FileUploadRepository.Upload(postMovieDTO.MovieFile.File, postMovieDTO.MovieFile.FileHeader, savedNewMovie.ID)
-        if err != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">err := p.FileUploadRepository.Upload(postMovieDTO.MovieFile.File, postMovieDTO.MovieFile.FileHeader, savedNewMovie.ID)
+        if err != nil </span><span class="cov8" title="1">{
                 return nil, err
         }</span>
 
-        <span class="cov0" title="0">thumbnailUploadErr := p.ThumbnailUploadRepository.Upload(postMovieDTO.Thumbnail.File, *savedNewMovie)
-        if thumbnailUploadErr != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">thumbnailUploadErr := p.ThumbnailUploadRepository.Upload(postMovieDTO.Thumbnail.File, *savedNewMovie)
+        if thumbnailUploadErr != nil </span><span class="cov8" title="1">{
                 return nil, thumbnailUploadErr
         }</span>
 
-        <span class="cov0" title="0">return savedNewMovie, nil</span>
+        <span class="cov8" title="1">return savedNewMovie, nil</span>
 }
 
 type PostMovieDTO struct {
