@@ -12,7 +12,9 @@ type PlayListForIndexPlayListsInMyPageDTO struct {
 	PlayListName                    string `json:"play_list_name"`
 	PlayListDescription             string `json:"play_list_description"`
 	PlayListFirstMovieID            uint64 `json:"play_list_first_movie_id"`
-	PlayListFirstMovieThumbnailName string `json:"play_list_thumbnail_name"`
+	PlayListFirstMovieThumbnailName string `json:"play_list_first_movie_thumbnail_name"`
+	PlayListThumbnailMovieID        uint64 `json:"play_list_thumbnail_movie_id"`
+	PlayListThumbnailName           string `json:"play_list_thumbnail_name"`
 }
 
 type IndexPlayListsInMyPageQueryService interface {
