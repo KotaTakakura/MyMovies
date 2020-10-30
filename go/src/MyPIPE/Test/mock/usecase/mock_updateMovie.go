@@ -50,12 +50,11 @@ func (mr *MockIUpdateMovieMockRecorder) Update(updateDTO interface{}) *gomock.Ca
 }
 
 // UpdateStatus mocks base method
-func (m *MockIUpdateMovie) UpdateStatus(updateStatusDTO usecase.UpdateStatusDTO) (*model.Movie, error) {
+func (m *MockIUpdateMovie) UpdateStatus(updateStatusDTO *usecase.UpdateStatusDTO) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateStatus", updateStatusDTO)
-	ret0, _ := ret[0].(*model.Movie)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // UpdateStatus indicates an expected call of UpdateStatus
