@@ -108,10 +108,10 @@ func main() {
 	api.GET("/index-movies", indexMovieHandler.IndexMovie)
 
 	updateMovieStatus := handler.NewUpdateMovieStatus(updateMovieUsecase)
-	api.POST("/movie-status", updateMovieStatus.UpdateMovieStatus)
+	api.PUT("/movie-status", updateMovieStatus.UpdateMovieStatus)
 
 	updateMovieThumbnailStatusHandler := handler.NewUpdateMovieThumbnailStatus(updateMovieUsecase)
-	api.POST("/movie-thumbnail-status", updateMovieThumbnailStatusHandler.UpdateMovieThumbnailStatus)
+	api.PUT("/movie-thumbnail-status", updateMovieThumbnailStatusHandler.UpdateMovieThumbnailStatus)
 
 	auth := router.Group("/auth/api/v1")
 	auth.Use(authMiddleware.MiddlewareFunc())
