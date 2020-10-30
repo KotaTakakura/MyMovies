@@ -168,6 +168,11 @@ func (m *Movie) ChangeStatus(status MovieStatus) error {
 	return nil
 }
 
+func (m *Movie) Complete() error {
+	m.Status = MovieStatus(1)
+	return nil
+}
+
 func (m *Movie) ChangeThumbnailName(thumbnail *MovieThumbnail) error {
 	m.ThumbnailName = thumbnail.Name
 	return nil
