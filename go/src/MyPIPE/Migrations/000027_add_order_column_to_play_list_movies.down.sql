@@ -1,0 +1,1 @@
+ALTER TABLE play_list_movies DROP COLUMN `order`;
