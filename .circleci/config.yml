@@ -95,9 +95,9 @@ workflows:
           filters:
             branches:
               only: master
-#       - aws-ecs/deploy-service-update:
-#           requires:
-#             - aws-ecr/build-and-push-image
-#           family: 'MyMoviesApp'
-#           cluster-name: 'MyMovies'
-#           service-name: 'MyMovies'
+       - aws-ecs/deploy-service-update:
+           requires:
+             - aws-ecr/build-and-push-image
+           family: 'MyMoviesApp'
+           cluster-name: 'MyMovies'
+           service-name: 'MyMovies'
