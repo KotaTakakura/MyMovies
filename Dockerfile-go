@@ -4,5 +4,4 @@ ADD ./go /go
 EXPOSE 8080
 RUN go build
 RUN sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y curl gnupg2 vim && sudo curl -L https://github.com/golang-migrate/migrate/releases/download/v4.11.0/migrate.linux-amd64.tar.gz | tar xvz && sudo mv ./migrate.linux-amd64 /usr/bin/migrate
-RUN chmod 755 /go/src/MyPIPE/run.sh
-CMD ["/run.sh"]
+CMD ["/go/src/MyPIPE/MyPIPE"]
