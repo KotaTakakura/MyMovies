@@ -7,7 +7,7 @@ import (
 
 type IUpdateMovie interface {
 	Update(updateDTO *UpdateDTO) (*model.Movie, error)
-	UpdateStatus(updateStatusDTO UpdateStatusDTO) (*model.Movie, error)
+	UpdateStatus(updateStatusDTO *UpdateStatusDTO) error
 }
 
 type UpdateMovie struct {
@@ -62,27 +62,31 @@ type UpdateDTO struct {
 	Status      model.MovieStatus
 }
 
-func (u UpdateMovie) UpdateStatus(updateStatusDTO UpdateStatusDTO) (*model.Movie, error) {
-	movie, findMovieErr := u.MovieRepository.FindByUserIdAndMovieId(updateStatusDTO.UserID, updateStatusDTO.MovieID)
+func (u UpdateMovie) UpdateStatus(updateStatusDTO *UpdateStatusDTO)error {
+	movie, findMovieErr := u.MovieRepository.FindById(updateStatusDTO.MovieID)
 	if findMovieErr != nil {
-		return nil, findMovieErr
+		return findMovieErr
 	}
 
-	changeStatusErr := movie.ChangeStatus(updateStatusDTO.Status)
+	changeStatusErr := movie.Complete()
 	if changeStatusErr != nil {
-		return nil, changeStatusErr
+		return changeStatusErr
 	}
 
-	updatedMovie, updateMovieErr := u.MovieRepository.Update(*movie)
+	_, updateMovieErr := u.MovieRepository.Update(*movie)
 	if updateMovieErr != nil {
-		return nil, updateMovieErr
+		return updateMovieErr
 	}
 
-	return updatedMovie, nil
+	return nil
 }
 
 type UpdateStatusDTO struct {
-	UserID  model.UserID
 	MovieID model.MovieID
-	Status  model.MovieStatus
+}
+
+func NewUpdateStatusDTO(movieId model.MovieID)*UpdateStatusDTO{
+	return &UpdateStatusDTO{
+		MovieID: movieId,
+	}
 }

@@ -56,6 +56,8 @@ func main() {
 	thumbnailUploadRepository := uploadThumbnailRepository_infra.NewUploadThumbnailToAmazonS3()
 	movieUploadRepository := uploadMovieRepository_infra.NewUploadToAmazonS3()
 
+	updateMovieUsecase := usecase.NewUpdateMovie(movieRepository)
+
 	// the jwt middleware
 	authMiddleware, err := authMiddlewareByJWT()
 
@@ -105,6 +107,9 @@ func main() {
 	indexMovieHandler := handler.NewIndexMovie(indexMovieQueryService, indexMovieUsecase)
 	api.GET("/index-movies", indexMovieHandler.IndexMovie)
 
+	updateMovieStatus := handler.NewUpdateMovieStatus(updateMovieUsecase)
+	api.PUT("/movie-status",updateMovieStatus.UpdateMovieStatus)
+
 	auth := router.Group("/auth/api/v1")
 	auth.Use(authMiddleware.MiddlewareFunc())
 	{
@@ -136,7 +141,6 @@ func main() {
 
 		uploadedMoviesQueryService := queryService_infra.NewUploadedMovies()
 		uploadedMoviesUsecase := usecase.NewUploadedMovies(uploadedMoviesQueryService)
-		updateMovieUsecase := usecase.NewUpdateMovie(movieRepository)
 		thumbnailUploadRepository := support.NewUploadThumbnailToAmazonS3()
 		changeThumbnailUsecase := usecase.NewChangeThumbnail(movieRepository, thumbnailUploadRepository)
 		movieHandler := handler.NewMovie(
