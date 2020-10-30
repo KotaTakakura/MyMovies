@@ -205,7 +205,7 @@ func main() {
 
 	router.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"message": "Healthy."})
+			"message": "Health."})
 	})
 
 	router.Run()
