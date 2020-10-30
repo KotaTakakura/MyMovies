@@ -77,7 +77,7 @@ workflows:
           path: .
           region: AWS_REGION
           repo: my_movies_api_repo
-          tag: "$CIRCLE_SHA1"
+          tag: "latest"
           filters:
             branches:
               only: master
@@ -93,7 +93,7 @@ workflows:
           path: .
           region: AWS_REGION
           repo: my_movies_nginx_repo
-          tag: "$CIRCLE_SHA1"
+          tag: "latest"
           filters:
             branches:
               only: master
@@ -105,12 +105,3 @@ workflows:
           family: 'MyMoviesApp'
           cluster-name: 'MyMovies'
           service-name: 'MyMovies'
-          container-image-name-updates: 'container=app,tag=${CIRCLE_SHA1}'
-      - aws-ecs/deploy-service-update:
-          name: server-service-update
-          requires:
-            - app-service-update
-          family: 'MyMoviesApp'
-          cluster-name: 'MyMovies'
-          service-name: 'MyMovies'
-          container-image-name-updates: 'container=server,tag=${CIRCLE_SHA1}'
