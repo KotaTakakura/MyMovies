@@ -104,3 +104,6 @@ workflows:
           family: 'MyMoviesApp'
           cluster-name: 'MyMovies'
           service-name: 'MyMovies'
+          container-image-name-updates:
+            - 'container=app,tag=${CIRCLE_SHA1}'
+            - 'container=server,tag=${CIRCLE_SHA1}'
