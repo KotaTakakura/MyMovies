@@ -65,7 +65,8 @@ workflows:
   build-and-deploy:
     jobs:
       - test
-      - aws-ecr/build-and-push-image-api:
+      - aws-ecr/build-and-push-image:
+          name: api
           requires:
             - test
           account-url: AWS_ECR_ACCOUNT_URL
@@ -80,7 +81,8 @@ workflows:
           filters:
             branches:
               only: master
-      - aws-ecr/build-and-push-image-nginx:
+      - aws-ecr/build-and-push-image:
+          name: server
           requires:
             - test
           account-url: AWS_ECR_ACCOUNT_URL
@@ -97,8 +99,8 @@ workflows:
               only: master
       - aws-ecs/deploy-service-update:
           requires:
-            - aws-ecr/build-and-push-image-api
-            - aws-ecr/build-and-push-image-nginx
+            - api
+            - server
           family: 'MyMoviesApp'
           cluster-name: 'MyMovies'
           service-name: 'MyMovies'
