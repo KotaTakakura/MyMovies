@@ -106,11 +106,3 @@ workflows:
           cluster-name: 'MyMovies'
           service-name: 'MyMovies'
           container-image-name-updates: 'container=app,tag=${CIRCLE_SHA1}'
-      - aws-ecs/deploy-service-update:
-          name: server-service-update
-          requires:
-            - app-service-update
-          family: 'MyMoviesApp'
-          cluster-name: 'MyMovies'
-          service-name: 'MyMovies'
-          container-image-name-updates: 'container=server,tag=${CIRCLE_SHA1}'
