@@ -62,3 +62,17 @@ func (mr *MockIUpdateMovieMockRecorder) UpdateStatus(updateStatusDTO interface{}
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateStatus", reflect.TypeOf((*MockIUpdateMovie)(nil).UpdateStatus), updateStatusDTO)
 }
+
+// UpdateThumbnailStatus mocks base method
+func (m *MockIUpdateMovie) UpdateThumbnailStatus(updateThumbnailStatusDTO *usecase.UpdateThumbnailStatusDTO) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateThumbnailStatus", updateThumbnailStatusDTO)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateThumbnailStatus indicates an expected call of UpdateThumbnailStatus
+func (mr *MockIUpdateMovieMockRecorder) UpdateThumbnailStatus(updateThumbnailStatusDTO interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateThumbnailStatus", reflect.TypeOf((*MockIUpdateMovie)(nil).UpdateThumbnailStatus), updateThumbnailStatusDTO)
+}

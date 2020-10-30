@@ -112,28 +112,32 @@ func NewMovieFile(file multipart.File, fileHeader multipart.FileHeader) (*MovieF
 	}, nil
 }
 
+type MovieThumbnailStatus uint
+
 type Movie struct {
-	ID            MovieID          `json:"id" gorm:"primaryKey"`
-	StoreName     string           `gorm:"column:store_name"`
-	DisplayName   MovieDisplayName `gorm:"column:display_name"`
-	Description   MovieDescription `gorm:"column:description"`
-	ThumbnailName string           `gorm:"column:thumbnail_name"`
-	UserID        UserID           `gorm:"column:user_id"`
-	Public        MoviePublic      `gorm:"column:public"`
-	Status        MovieStatus      `gorm:"column:status"`
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
+	ID              MovieID          `json:"id" gorm:"primaryKey"`
+	StoreName       string           `gorm:"column:store_name"`
+	DisplayName     MovieDisplayName `gorm:"column:display_name"`
+	Description     MovieDescription `gorm:"column:description"`
+	ThumbnailName   string           `gorm:"column:thumbnail_name"`
+	UserID          UserID           `gorm:"column:user_id"`
+	Public          MoviePublic      `gorm:"column:public"`
+	Status          MovieStatus      `gorm:"column:status"`
+	ThumbnailStatus MovieThumbnailStatus
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
 }
 
 func NewMovie(uploaderID UserID, movieFile *MovieFile, displayName MovieDisplayName, thumbnail *MovieThumbnail) *Movie {
 	return &Movie{
-		StoreName:     movieFile.StoreName,
-		DisplayName:   displayName,
-		UserID:        uploaderID,
-		Description:   MovieDescription(""),
-		ThumbnailName: thumbnail.Name,
-		Public:        MoviePublic(0),
-		Status:        MovieStatus(0),
+		StoreName:       movieFile.StoreName,
+		DisplayName:     displayName,
+		UserID:          uploaderID,
+		Description:     MovieDescription(""),
+		ThumbnailName:   thumbnail.Name,
+		Public:          MoviePublic(0),
+		Status:          MovieStatus(0),
+		ThumbnailStatus: MovieThumbnailStatus(0),
 	}
 }
 
@@ -173,7 +177,18 @@ func (m *Movie) Complete() error {
 	return nil
 }
 
+func (m *Movie) ChangeThumbnailStatusComplete() error {
+	m.ThumbnailStatus = MovieThumbnailStatus(1)
+	return nil
+}
+
+func (m *Movie) ChangeThumbnailStatusInComplete() error {
+	m.ThumbnailStatus = MovieThumbnailStatus(0)
+	return nil
+}
+
 func (m *Movie) ChangeThumbnailName(thumbnail *MovieThumbnail) error {
 	m.ThumbnailName = thumbnail.Name
+	m.ThumbnailStatus = MovieThumbnailStatus(0)
 	return nil
 }

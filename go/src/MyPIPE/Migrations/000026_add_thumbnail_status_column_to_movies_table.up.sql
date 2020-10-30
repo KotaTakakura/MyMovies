@@ -1,0 +1,1 @@
+ALTER TABLE movies ADD COLUMN thumbnail_status  INTEGER UNSIGNED NULL AFTER status;
