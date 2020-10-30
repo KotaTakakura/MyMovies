@@ -8,6 +8,7 @@ import (
 type IUpdateMovie interface {
 	Update(updateDTO *UpdateDTO) (*model.Movie, error)
 	UpdateStatus(updateStatusDTO *UpdateStatusDTO) error
+	UpdateThumbnailStatus(updateThumbnailStatusDTO *UpdateThumbnailStatusDTO) error
 }
 
 type UpdateMovie struct {
@@ -62,7 +63,7 @@ type UpdateDTO struct {
 	Status      model.MovieStatus
 }
 
-func (u UpdateMovie) UpdateStatus(updateStatusDTO *UpdateStatusDTO)error {
+func (u UpdateMovie) UpdateStatus(updateStatusDTO *UpdateStatusDTO) error {
 	movie, findMovieErr := u.MovieRepository.FindById(updateStatusDTO.MovieID)
 	if findMovieErr != nil {
 		return findMovieErr
@@ -85,8 +86,37 @@ type UpdateStatusDTO struct {
 	MovieID model.MovieID
 }
 
-func NewUpdateStatusDTO(movieId model.MovieID)*UpdateStatusDTO{
+func NewUpdateStatusDTO(movieId model.MovieID) *UpdateStatusDTO {
 	return &UpdateStatusDTO{
+		MovieID: movieId,
+	}
+}
+
+func (u UpdateMovie) UpdateThumbnailStatus(updateThumbnailStatusDTO *UpdateThumbnailStatusDTO) error {
+	movie, findMovieErr := u.MovieRepository.FindById(updateThumbnailStatusDTO.MovieID)
+	if findMovieErr != nil {
+		return findMovieErr
+	}
+
+	changeStatusErr := movie.ChangeThumbnailStatusComplete()
+	if changeStatusErr != nil {
+		return changeStatusErr
+	}
+
+	_, updateMovieErr := u.MovieRepository.Update(*movie)
+	if updateMovieErr != nil {
+		return updateMovieErr
+	}
+
+	return nil
+}
+
+type UpdateThumbnailStatusDTO struct {
+	MovieID model.MovieID
+}
+
+func NewUpdateThumbnailStatusDTO(movieId model.MovieID) *UpdateThumbnailStatusDTO {
+	return &UpdateThumbnailStatusDTO{
 		MovieID: movieId,
 	}
 }

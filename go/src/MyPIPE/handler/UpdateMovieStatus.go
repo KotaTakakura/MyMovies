@@ -7,22 +7,22 @@ import (
 	"net/http"
 )
 
-type UpdateMovieStatus struct{
+type UpdateMovieStatus struct {
 	UpdateMovieStatusUsecase usecase.IUpdateMovie
 }
 
-func NewUpdateMovieStatus(updateMovieStatusUsecase usecase.IUpdateMovie)*UpdateMovieStatus{
+func NewUpdateMovieStatus(updateMovieStatusUsecase usecase.IUpdateMovie) *UpdateMovieStatus {
 	return &UpdateMovieStatus{
 		UpdateMovieStatusUsecase: updateMovieStatusUsecase,
 	}
 }
 
-func (u UpdateMovieStatus)UpdateMovieStatus(c *gin.Context){
+func (u UpdateMovieStatus) UpdateMovieStatus(c *gin.Context) {
 	var updateMovieStatusJson UpdateMovieStatusJson
 	c.Bind(&updateMovieStatusJson)
 
-	movieId,movieIdErr := model.NewMovieID(updateMovieStatusJson.MovieID)
-	if movieIdErr != nil{
+	movieId, movieIdErr := model.NewMovieID(updateMovieStatusJson.MovieID)
+	if movieIdErr != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"result":   "Change Status Failed.",
 			"messages": movieIdErr.Error(),
@@ -33,7 +33,7 @@ func (u UpdateMovieStatus)UpdateMovieStatus(c *gin.Context){
 
 	updateStatusDTO := usecase.NewUpdateStatusDTO(movieId)
 	result := u.UpdateMovieStatusUsecase.UpdateStatus(updateStatusDTO)
-	if result != nil{
+	if result != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"result":   "Change Status Failed.",
 			"messages": result.Error(),
@@ -48,5 +48,5 @@ func (u UpdateMovieStatus)UpdateMovieStatus(c *gin.Context){
 }
 
 type UpdateMovieStatusJson struct {
-	MovieID uint64	`json:"movie_id"`
+	MovieID uint64 `json:"movie_id"`
 }
