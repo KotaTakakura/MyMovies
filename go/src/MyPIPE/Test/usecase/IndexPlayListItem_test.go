@@ -27,7 +27,7 @@ func TestIndexPlayListItem(t *testing.T) {
 				PlayList: queryService.PlayListForIndexPlayListMovieInMyPageDTO{
 					PlayListID:          10,
 					PlayListName:        "PlayListName10",
-					PlaylistDescription: "PlayListDescription10",
+					PlayListDescription: "PlayListDescription10",
 				},
 				PlayListMovies: []queryService.PlayListMovieForIndexPlayListMovieInMyPageDTO{
 					queryService.PlayListMovieForIndexPlayListMovieInMyPageDTO{
