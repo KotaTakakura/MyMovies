@@ -16,6 +16,6 @@ func (u UploadedMovies) Get(userId model.UserID) []queryService.UploadedMoviesDT
 	db := infra.ConnectGorm()
 	defer db.Close()
 	var result []queryService.UploadedMoviesDTO
-	db.Table("movies").Where("user_id = ?", userId).Find(&result)
+	db.Table("movies").Where("user_id = ?", userId).Order("created_at desc").Find(&result)
 	return result
 }

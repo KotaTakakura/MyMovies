@@ -49,9 +49,9 @@ type PlayList struct {
 
 func NewPlayList(userId UserID, name PlayListName, description PlayListDescription) *PlayList {
 	return &PlayList{
-		UserID:      userId,
-		Name:        name,
-		Description: description,
+		UserID:           userId,
+		Name:             name,
+		Description:      description,
 		ThumbnailMovieID: MovieID(0),
 	}
 }
