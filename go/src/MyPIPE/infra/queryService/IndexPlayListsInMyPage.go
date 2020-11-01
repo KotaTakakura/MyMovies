@@ -28,7 +28,7 @@ func (i IndexPlayListsInMyPage) All(userId model.UserID) *queryService.IndexPlay
 			"left join (select play_list_id,movie_id,MAX(created_at) from play_list_movies group by play_list_id) as s on play_lists.id = s.play_list_id "+
 			"left join movies on s.movie_id = movies.id "+
 			"left join movies as thumbnail_movie on play_lists.thumbnail_movie_id = thumbnail_movie.id "+
-			"where play_lists.user_id = ?", userId).
+			"where play_lists.user_id = ? order by play_lists.updated_at desc", userId).
 		Scan(&playLists)
 	var count uint64
 	count = uint64(searchResult.RowsAffected)

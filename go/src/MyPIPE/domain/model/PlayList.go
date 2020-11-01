@@ -52,6 +52,7 @@ func NewPlayList(userId UserID, name PlayListName, description PlayListDescripti
 		UserID:      userId,
 		Name:        name,
 		Description: description,
+		ThumbnailMovieID: MovieID(0),
 	}
 }
 
