@@ -46,7 +46,7 @@ func (u UpdatePlayList) Update(c *gin.Context) {
 		validationErrors["play_list_description"] = playListDescriptionErr.Error()
 	}
 
-	thumbnailMovieId, thumbnailMovieIdErr := model.NewMovieID(updatePlayListJson.PlayListThumbnailMovieID)
+	thumbnailMovieId, thumbnailMovieIdErr := model.NewPlayListThumbnailMovieID(updatePlayListJson.PlayListThumbnailMovieID)
 	if thumbnailMovieIdErr != nil {
 		validationErrors["thumbnail_movie_id"] = thumbnailMovieIdErr.Error()
 	}

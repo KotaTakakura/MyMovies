@@ -31,12 +31,14 @@ func (u UpdatePlayList) Update(updatePlayListDTO *UpdatePlayListDTO) error {
 		return errors.New("No Such PlayList.")
 	}
 
-	thumbnailMovie, thumbnailMovieErr := u.MovieRepository.FindById(updatePlayListDTO.ThumbnanilMovieID)
-	if thumbnailMovieErr != nil {
-		return thumbnailMovieErr
-	}
-	if thumbnailMovie == nil {
-		return errors.New("No Such Movie.")
+	if updatePlayListDTO.ThumbnanilMovieID != model.PlayListThumbnailMovieID(0){
+		thumbnailMovie, thumbnailMovieErr := u.MovieRepository.FindById(model.MovieID(updatePlayListDTO.ThumbnanilMovieID))
+		if thumbnailMovieErr != nil {
+			return thumbnailMovieErr
+		}
+		if thumbnailMovie == nil {
+			return errors.New("No Such Movie.")
+		}
 	}
 
 	changePlayListNameErr := playList.ChangeName(updatePlayListDTO.PlayListName)
@@ -67,10 +69,10 @@ type UpdatePlayListDTO struct {
 	PlayListID          model.PlayListID
 	PlayListName        model.PlayListName
 	PlayListDescription model.PlayListDescription
-	ThumbnanilMovieID   model.MovieID
+	ThumbnanilMovieID   model.PlayListThumbnailMovieID
 }
 
-func NewUpdatePlayListDTO(userId model.UserID, playListId model.PlayListID, playListName model.PlayListName, playListDescription model.PlayListDescription, thumbnailMovieId model.MovieID) *UpdatePlayListDTO {
+func NewUpdatePlayListDTO(userId model.UserID, playListId model.PlayListID, playListName model.PlayListName, playListDescription model.PlayListDescription, thumbnailMovieId model.PlayListThumbnailMovieID) *UpdatePlayListDTO {
 	return &UpdatePlayListDTO{
 		UserID:              userId,
 		PlayListID:          playListId,
