@@ -21,7 +21,7 @@ func NewUpdateMovieStatus(updateMovieStatusUsecase usecase.IUpdateMovie) *Update
 func (u UpdateMovieStatus) UpdateMovieStatus(c *gin.Context) {
 	var updateMovieStatusJson UpdateMovieStatusJson
 	c.Bind(&updateMovieStatusJson)
-	fmt.Println("TEST")
+	fmt.Println(updateMovieStatusJson)
 
 	movieId, movieIdErr := model.NewMovieID(updateMovieStatusJson.MovieID)
 	if movieIdErr != nil {
@@ -51,4 +51,5 @@ func (u UpdateMovieStatus) UpdateMovieStatus(c *gin.Context) {
 
 type UpdateMovieStatusJson struct {
 	MovieID uint64 `json:"movie_id"`
+	Type string `json:"Type"`
 }

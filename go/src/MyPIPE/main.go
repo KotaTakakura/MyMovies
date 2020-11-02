@@ -109,6 +109,7 @@ func main() {
 
 	updateMovieStatus := handler.NewUpdateMovieStatus(updateMovieUsecase)
 	api.PUT("/movie-status", updateMovieStatus.UpdateMovieStatus)
+	api.POST("/movie-status", updateMovieStatus.UpdateMovieStatus)
 
 	updateMovieThumbnailStatusHandler := handler.NewUpdateMovieThumbnailStatus(updateMovieUsecase)
 	api.PUT("/movie-thumbnail-status", updateMovieThumbnailStatusHandler.UpdateMovieThumbnailStatus)
