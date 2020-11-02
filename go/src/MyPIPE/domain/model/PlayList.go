@@ -36,13 +36,19 @@ func NewPlayListDescription(playListDescription string) (PlayListDescription, er
 	return PlayListDescription(playListDescription), nil
 }
 
+type PlayListThumbnailMovieID uint64
+
+func NewPlayListThumbnailMovieID(movieId uint64)(PlayListThumbnailMovieID,error){
+	return PlayListThumbnailMovieID(movieId),nil
+}
+
 type PlayList struct {
 	ID               PlayListID   `json:"id" gorm:"primaryKey"`
 	UserID           UserID       `gorm:"column:user_id"`
 	Name             PlayListName `gorm:"column:name"`
 	Description      PlayListDescription
 	PlayListMovies   []MovieID `gorm:"-"`
-	ThumbnailMovieID MovieID
+	ThumbnailMovieID PlayListThumbnailMovieID
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
 }
@@ -52,7 +58,7 @@ func NewPlayList(userId UserID, name PlayListName, description PlayListDescripti
 		UserID:           userId,
 		Name:             name,
 		Description:      description,
-		ThumbnailMovieID: MovieID(0),
+		ThumbnailMovieID: PlayListThumbnailMovieID(0),
 	}
 }
 
@@ -80,7 +86,7 @@ func (p *PlayList) ChangeDescription(playListDescription PlayListDescription) er
 	return nil
 }
 
-func (p *PlayList) ChangeThumbnailMovie(thumbnailMovieId MovieID) error {
+func (p *PlayList) ChangeThumbnailMovie(thumbnailMovieId PlayListThumbnailMovieID) error {
 	p.ThumbnailMovieID = thumbnailMovieId
 	return nil
 }
