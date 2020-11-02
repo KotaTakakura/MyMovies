@@ -3,6 +3,7 @@ package handler
 import (
 	"MyPIPE/domain/model"
 	"MyPIPE/usecase"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -20,6 +21,7 @@ func NewUpdateMovieStatus(updateMovieStatusUsecase usecase.IUpdateMovie) *Update
 func (u UpdateMovieStatus) UpdateMovieStatus(c *gin.Context) {
 	var updateMovieStatusJson UpdateMovieStatusJson
 	c.Bind(&updateMovieStatusJson)
+	fmt.Println("TEST")
 
 	movieId, movieIdErr := model.NewMovieID(updateMovieStatusJson.MovieID)
 	if movieIdErr != nil {

@@ -22,10 +22,10 @@ type IndexMovieQueryService interface {
 type IndexMovieQueryServiceOrder string
 
 func NewIndexMovieQueryServiceOrder(order string) (IndexMovieQueryServiceOrder, error) {
-	if order == "desc" {
-		return IndexMovieQueryServiceOrder(order), nil
+	if order == "asc" {
+		return IndexMovieQueryServiceOrder("asc"), nil
 	}
-	return IndexMovieQueryServiceOrder("asc"), nil
+	return IndexMovieQueryServiceOrder("desc"), nil
 }
 
 type IndexMovieQueryServicePage uint

@@ -31,7 +31,7 @@ func (u UpdatePlayList) Update(updatePlayListDTO *UpdatePlayListDTO) error {
 		return errors.New("No Such PlayList.")
 	}
 
-	if updatePlayListDTO.ThumbnanilMovieID != model.PlayListThumbnailMovieID(0){
+	if updatePlayListDTO.ThumbnanilMovieID != model.PlayListThumbnailMovieID(0) {
 		thumbnailMovie, thumbnailMovieErr := u.MovieRepository.FindById(model.MovieID(updatePlayListDTO.ThumbnanilMovieID))
 		if thumbnailMovieErr != nil {
 			return thumbnailMovieErr

@@ -38,8 +38,8 @@ func NewPlayListDescription(playListDescription string) (PlayListDescription, er
 
 type PlayListThumbnailMovieID uint64
 
-func NewPlayListThumbnailMovieID(movieId uint64)(PlayListThumbnailMovieID,error){
-	return PlayListThumbnailMovieID(movieId),nil
+func NewPlayListThumbnailMovieID(movieId uint64) (PlayListThumbnailMovieID, error) {
+	return PlayListThumbnailMovieID(movieId), nil
 }
 
 type PlayList struct {
