@@ -9,7 +9,7 @@ Nuxt(https://github.com/takatsu111/MyPIPE-front)
 Docker・・・コンテナを使って開発環境の構築・本番環境へデプロイ  
 Nginx・・・リクエストをAPIへ渡す・レスポンスをクライアントへ返す  
 VPC・ECR・ECS(Fargate)・ALB・・・デプロイする環境の構築  
-Lambda・・・MediaConvertでの動画処理を開始させる。動画処理の完了を通知する。
+Lambda・・・MediaConvertでの動画処理を開始させる。動画処理の完了を通知する。  
 MediaConvert・・・動画ファイル(mp4・mov)をHLS用のファイル(m3u8・ts)に変換する  
 AuroraDB(MySQL互換)・・・データの保存  
 CircleCI・・・テスト・デプロイの自動化
