@@ -3,9 +3,9 @@ package handler
 import (
 	"MyPIPE/domain/model"
 	"MyPIPE/usecase"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"fmt"
 )
 
 type UpdateMovieStatus struct {

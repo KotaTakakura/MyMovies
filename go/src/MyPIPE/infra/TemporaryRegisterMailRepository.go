@@ -7,13 +7,13 @@ import (
 	"github.com/aws/aws-sdk-go/service/ses"
 )
 
-type TemporaryRegisterMailRepository struct {}
+type TemporaryRegisterMailRepository struct{}
 
-func NewTemporaryRegisterMailRepository()*TemporaryRegisterMailRepository{
+func NewTemporaryRegisterMailRepository() *TemporaryRegisterMailRepository {
 	return &TemporaryRegisterMailRepository{}
 }
 
-func (t TemporaryRegisterMailRepository)Send(mail *model.TemporaryRegisterMail)error{
+func (t TemporaryRegisterMailRepository) Send(mail *model.TemporaryRegisterMail) error {
 	sess := session.Must(session.NewSession())
 	svc := ses.New(sess)
 	input := &ses.SendEmailInput{
@@ -27,9 +27,9 @@ func (t TemporaryRegisterMailRepository)Send(mail *model.TemporaryRegisterMail)e
 			Body: &ses.Body{
 				Text: &ses.Content{
 					Charset: aws.String("UTF-8"),
-					Data:    aws.String(
+					Data: aws.String(
 						"現在、仮登録の状態です。以下のURLにアクセスして情報を入力し、本登録を完了してください\nhttp:" +
-						"//drp25i52zjwj0.cloudfront.net/register?token=" + string(mail.Token)),
+							"//drp25i52zjwj0.cloudfront.net/register?token=" + string(mail.Token)),
 				},
 			},
 			Subject: &ses.Content{
@@ -37,11 +37,11 @@ func (t TemporaryRegisterMailRepository)Send(mail *model.TemporaryRegisterMail)e
 				Data:    aws.String("MyMovies仮登録のご案内"),
 			},
 		},
-		Source:        aws.String(string(mail.From)),
+		Source: aws.String(string(mail.From)),
 	}
 
-	_,sendMailErr := svc.SendEmail(input)
-	if sendMailErr != nil{
+	_, sendMailErr := svc.SendEmail(input)
+	if sendMailErr != nil {
 		return sendMailErr
 	}
 	return nil

@@ -12,14 +12,14 @@ type IUserTemporaryRegistration interface {
 }
 
 type UserTemporaryRegistration struct {
-	UserRepository repository.UserRepository
+	UserRepository                  repository.UserRepository
 	TemporaryRegisterMailRepository repository.TemporaryRegisterMailRepository
 }
 
-func NewUserTemporaryRegistration(userRepository repository.UserRepository,temporaryRegisterMailRepository repository.TemporaryRegisterMailRepository) *UserTemporaryRegistration {
+func NewUserTemporaryRegistration(userRepository repository.UserRepository, temporaryRegisterMailRepository repository.TemporaryRegisterMailRepository) *UserTemporaryRegistration {
 	return &UserTemporaryRegistration{
-		UserRepository: userRepository,
-		TemporaryRegisterMailRepository:	temporaryRegisterMailRepository,
+		UserRepository:                  userRepository,
+		TemporaryRegisterMailRepository: temporaryRegisterMailRepository,
 	}
 }
 
@@ -52,9 +52,9 @@ func (u *UserTemporaryRegistration) TemporaryRegister(user *model.User) error {
 		return err2
 	}
 
-	temporaryRegisterMail := model.NewTemporaryRegisterMail(newUser.Email,newUser.Token)
+	temporaryRegisterMail := model.NewTemporaryRegisterMail(newUser.Email, newUser.Token)
 	emailErr := u.TemporaryRegisterMailRepository.Send(temporaryRegisterMail)
-	if emailErr != nil{
+	if emailErr != nil {
 		return emailErr
 	}
 	return nil

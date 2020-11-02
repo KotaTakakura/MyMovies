@@ -85,7 +85,7 @@ func main() {
 	router.POST("/login", authMiddleware.LoginHandler)
 	router.GET("/refresh_token", authMiddleware.RefreshHandler)
 
-	userTemporaryRegistrationUsecase := usecase.NewUserTemporaryRegistration(userRepository,temporaryRegisterMailRepository)
+	userTemporaryRegistrationUsecase := usecase.NewUserTemporaryRegistration(userRepository, temporaryRegisterMailRepository)
 	userRegisterUsecase := usecase.NewUserRegister(userRepository)
 	authorizationHandler := handler.NewAuthorization(userRepository, userTemporaryRegistrationUsecase, userRegisterUsecase)
 	router.POST("/new", authorizationHandler.TemporaryRegisterUser)
