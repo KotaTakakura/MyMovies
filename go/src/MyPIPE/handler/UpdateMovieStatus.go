@@ -5,6 +5,7 @@ import (
 	"MyPIPE/usecase"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"fmt"
 )
 
 type UpdateMovieStatus struct {
@@ -20,6 +21,7 @@ func NewUpdateMovieStatus(updateMovieStatusUsecase usecase.IUpdateMovie) *Update
 func (u UpdateMovieStatus) UpdateMovieStatus(c *gin.Context) {
 	var updateMovieStatusJson UpdateMovieStatusJson
 	c.Bind(&updateMovieStatusJson)
+	fmt.Println("TEST")
 
 	movieId, movieIdErr := model.NewMovieID(updateMovieStatusJson.MovieID)
 	if movieIdErr != nil {

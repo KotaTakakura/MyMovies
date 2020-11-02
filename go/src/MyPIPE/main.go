@@ -55,6 +55,7 @@ func main() {
 	playListMovieRepository := infra.NewPlayListMoviePersistence()
 	thumbnailUploadRepository := uploadThumbnailRepository_infra.NewUploadThumbnailToAmazonS3()
 	movieUploadRepository := uploadMovieRepository_infra.NewUploadToAmazonS3()
+	temporaryRegisterMailRepository := infra.NewTemporaryRegisterMailRepository()
 
 	updateMovieUsecase := usecase.NewUpdateMovie(movieRepository)
 
@@ -84,8 +85,7 @@ func main() {
 	router.POST("/login", authMiddleware.LoginHandler)
 	router.GET("/refresh_token", authMiddleware.RefreshHandler)
 
-	userTemporaryRegistrationUsecase := usecase.NewUserTemporaryRegistration(userRepository)
-	//userService := domain_service.NewUserService(userRepository)
+	userTemporaryRegistrationUsecase := usecase.NewUserTemporaryRegistration(userRepository,temporaryRegisterMailRepository)
 	userRegisterUsecase := usecase.NewUserRegister(userRepository)
 	authorizationHandler := handler.NewAuthorization(userRepository, userTemporaryRegistrationUsecase, userRegisterUsecase)
 	router.POST("/new", authorizationHandler.TemporaryRegisterUser)
