@@ -14,6 +14,7 @@ func NewGetLoggedInUserData() *GetLoggedInUserData {
 
 func (g GetLoggedInUserData) FindByUserId(userId model.UserID) *queryService.GetLoggedInUserDataDTO {
 	db := infra.ConnectGorm()
+	defer db.Close()
 	var getLoggedInUserData queryService.GetLoggedInUserDataDTO
 	var count int
 	db.Table("users").Where("id = ?", userId).First(&getLoggedInUserData).Count(&count)
