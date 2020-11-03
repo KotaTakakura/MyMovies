@@ -9,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/sns"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 type UpdateMovieStatus struct {
@@ -52,6 +53,16 @@ func (u UpdateMovieStatus) UpdateMovieStatus(c *gin.Context) {
 		}
 	}
 
+	movieIdChangeToUint64err := updateMovieStatusJson.ChangeMovieIdStringToUint64()
+	if movieIdChangeToUint64err != nil{
+		c.JSON(http.StatusBadRequest, gin.H{
+			"result":   "Change Status Failed.",
+			"messages": movieIdChangeToUint64err.Error(),
+		})
+		c.Abort()
+		return
+	}
+	fmt.Println(updateMovieStatusJson)
 	movieId, movieIdErr := model.NewMovieID(updateMovieStatusJson.MovieID)
 	if movieIdErr != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -80,7 +91,17 @@ func (u UpdateMovieStatus) UpdateMovieStatus(c *gin.Context) {
 
 type UpdateMovieStatusJson struct {
 	MovieID uint64 `json:"movie_id"`
+	MovieIDString string `json:"Message"`
 	Type string `json:"Type"`
 	TopicArn string `json:"TopicArn"`
 	Token string `json:"Token"`
+}
+
+func (u *UpdateMovieStatusJson)ChangeMovieIdStringToUint64()error{
+	var err error
+	u.MovieID,err = strconv.ParseUint(u.MovieIDString, 10, 64)
+	if err != nil{
+		return err
+	}
+	return nil
 }
