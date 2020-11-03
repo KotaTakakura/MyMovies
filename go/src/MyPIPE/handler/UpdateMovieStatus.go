@@ -4,7 +4,6 @@ import (
 	"MyPIPE/domain/model"
 	"MyPIPE/usecase"
 	"encoding/json"
-	"fmt"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sns"
 	"github.com/gin-gonic/gin"
@@ -26,15 +25,12 @@ func (u UpdateMovieStatus) UpdateMovieStatus(c *gin.Context) {
 	requestBodyBuf := make([]byte, 2048)
 	n, _ := c.Request.Body.Read(requestBodyBuf)
 	request := string(requestBodyBuf[0:n])
-	fmt.Println(request)
 
 	var updateMovieStatusJson UpdateMovieStatusJson
 	err := json.Unmarshal([]byte(request), &updateMovieStatusJson)
 	if err != nil {
-		fmt.Println(err)
 		return
 	}
-	fmt.Println(updateMovieStatusJson)
 
 	if updateMovieStatusJson.Type == "SubscriptionConfirmation"{
 		sess := session.Must(session.NewSession())
@@ -62,7 +58,7 @@ func (u UpdateMovieStatus) UpdateMovieStatus(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	fmt.Println(updateMovieStatusJson)
+
 	movieId, movieIdErr := model.NewMovieID(updateMovieStatusJson.MovieID)
 	if movieIdErr != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
