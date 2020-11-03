@@ -25,6 +25,7 @@ func (u UpdateMovieStatus) UpdateMovieStatus(c *gin.Context) {
 	requestBodyBuf := make([]byte, 2048)
 	n, _ := c.Request.Body.Read(requestBodyBuf)
 	request := string(requestBodyBuf[0:n])
+	fmt.Println(request)
 
 	var updateMovieStatusJson UpdateMovieStatusJson
 	err := json.Unmarshal([]byte(request), &updateMovieStatusJson)
