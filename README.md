@@ -14,6 +14,9 @@ MediaConvert・・・動画ファイル(mp4・mov)をHLS用のファイル(m3u8�
 AuroraDB(MySQL互換)・・・データの保存  
 CircleCI・・・テスト・デプロイの自動化
 
+## AWS構成図
+![AWS構成図](AWS.png) 
+
 ## 進捗(スクリーンショット)
 ### 動画一覧  
 ![動画一覧](ReadmeImages/Movies.png)  
