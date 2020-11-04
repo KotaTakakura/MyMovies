@@ -137,6 +137,10 @@ func main() {
 		postCommentHandler := handler.NewPostComment(commentRepository, movieRepository, postCommentUsecase)
 		auth.POST("/comments", postCommentHandler.PostComment)
 
+		deleteCommentUsecase := usecase.NewDeleteComment(commentRepository)
+		deleteCommentHandler := handler.NewDeleteComment(deleteCommentUsecase)
+		auth.DELETE("/comments", deleteCommentHandler.DeleteComment)
+
 		movieFactory := factory.NewMovieModelFactory()
 		postMovieUsecase := usecase.NewPostMovie(movieUploadRepository, thumbnailUploadRepository, movieRepository, movieFactory)
 		uploadMovieHandler := handler.NewUploadMovieFile(movieRepository, thumbnailUploadRepository, movieUploadRepository, postMovieUsecase)

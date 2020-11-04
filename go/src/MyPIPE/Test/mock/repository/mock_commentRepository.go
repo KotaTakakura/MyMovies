@@ -63,6 +63,21 @@ func (mr *MockCommentRepositoryMockRecorder) FindById(commentID interface{}) *go
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindById", reflect.TypeOf((*MockCommentRepository)(nil).FindById), commentID)
 }
 
+// FindByIdAndUserID mocks base method
+func (m *MockCommentRepository) FindByIdAndUserID(commentID model.CommentID, userID model.UserID) (*model.Comment, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByIdAndUserID", commentID, userID)
+	ret0, _ := ret[0].(*model.Comment)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByIdAndUserID indicates an expected call of FindByIdAndUserID
+func (mr *MockCommentRepositoryMockRecorder) FindByIdAndUserID(commentID, userID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByIdAndUserID", reflect.TypeOf((*MockCommentRepository)(nil).FindByIdAndUserID), commentID, userID)
+}
+
 // FindByUserId mocks base method
 func (m *MockCommentRepository) FindByUserId(userId model.UserID) ([]model.Comment, error) {
 	m.ctrl.T.Helper()
@@ -105,4 +120,18 @@ func (m *MockCommentRepository) Save(arg0 *model.Comment) error {
 func (mr *MockCommentRepositoryMockRecorder) Save(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockCommentRepository)(nil).Save), arg0)
+}
+
+// Remove mocks base method
+func (m *MockCommentRepository) Remove(arg0 *model.Comment) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Remove", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Remove indicates an expected call of Remove
+func (mr *MockCommentRepositoryMockRecorder) Remove(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Remove", reflect.TypeOf((*MockCommentRepository)(nil).Remove), arg0)
 }
