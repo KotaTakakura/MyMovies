@@ -102,6 +102,10 @@ func NewUserProfileImage(fileHeader multipart.FileHeader, file multipart.File) (
 	}, nil
 }
 
+type UserPasswordRememberToken string
+
+type UserPasswordRememberTokenAt uint64
+
 type User struct {
 	ID               UserID   `json:"id" gorm:"primaryKey"`
 	Name             UserName `json:"name"`
@@ -110,6 +114,8 @@ type User struct {
 	Birthday         time.Time `json:"birthday"`
 	ProfileImageName string    `json:"profile_image_name"`
 	Token            UserToken `json:"token"`
+	PasswordRememberToken	UserPasswordRememberToken
+	PasswordRememberTokenAt UserPasswordRememberTokenAt
 	CreatedAt        time.Time `json:"created_at"`
 	UpdatedAt        time.Time `json:"updated_at"`
 }
@@ -222,4 +228,10 @@ func (u *User) Register(name UserName, password UserPassword, birthday time.Time
 	u.Password = password
 	u.Birthday = birthday
 	return nil
+}
+
+func (u *User) SetPasswordRememberToken()(UserPasswordRememberToken,error){
+	u.PasswordRememberToken = UserPasswordRememberToken(uuid.New().String())
+	u.PasswordRememberTokenAt = UserPasswordRememberTokenAt(time.Now().Unix())
+	return u.PasswordRememberToken,nil
 }

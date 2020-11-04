@@ -7,19 +7,19 @@ import (
 	"github.com/aws/aws-sdk-go/service/ses"
 )
 
-type TemporaryRegisterMailRepository struct{}
+type ResetPasswordEmail struct{}
 
-func NewTemporaryRegisterMailRepository() *TemporaryRegisterMailRepository {
-	return &TemporaryRegisterMailRepository{}
+func NewResetPasswordEmail()*ResetPasswordEmail{
+	return &ResetPasswordEmail{}
 }
 
-func (t TemporaryRegisterMailRepository) Send(mail *model.TemporaryRegisterMail) error {
+func (r ResetPasswordEmail)Send(email model.UserEmail,token model.UserPasswordRememberToken)error{
 	sess := session.Must(session.NewSession())
 	svc := ses.New(sess)
 	input := &ses.SendEmailInput{
 		Destination: &ses.Destination{
 			ToAddresses: []*string{
-				aws.String(string(mail.To)),
+				aws.String(string(email)),
 			},
 		},
 		Message: &ses.Message{
@@ -27,16 +27,16 @@ func (t TemporaryRegisterMailRepository) Send(mail *model.TemporaryRegisterMail)
 				Text: &ses.Content{
 					Charset: aws.String("UTF-8"),
 					Data: aws.String(
-						"現在、仮登録の状態です。以下のURLにアクセスして情報を入力し、本登録を完了してください\nhttps:" +
-							"//www.frommymovies/register?token=" + string(mail.Token)),
+						"パスワードを再発行します。以下のURLにアクセスして新しいパスワードを設定してください。\nhttps:" +
+							"//www.frommymovies.com/reset?token=" + string(token)),
 				},
 			},
 			Subject: &ses.Content{
 				Charset: aws.String("UTF-8"),
-				Data:    aws.String("MyMovies仮登録のご案内"),
+				Data:    aws.String("MyMoviesパスワード再設定のご案内"),
 			},
 		},
-		Source: aws.String(string(mail.From)),
+		Source: aws.String("reset@mail.frommymovies.com"),
 	}
 
 	_, sendMailErr := svc.SendEmail(input)
