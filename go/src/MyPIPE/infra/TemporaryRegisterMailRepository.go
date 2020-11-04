@@ -19,8 +19,7 @@ func (t TemporaryRegisterMailRepository) Send(mail *model.TemporaryRegisterMail)
 	input := &ses.SendEmailInput{
 		Destination: &ses.Destination{
 			ToAddresses: []*string{
-				//aws.String(string(mail.To)),
-				aws.String("complaint@simulator.amazonses.com"),
+				aws.String(string(mail.To)),
 			},
 		},
 		Message: &ses.Message{

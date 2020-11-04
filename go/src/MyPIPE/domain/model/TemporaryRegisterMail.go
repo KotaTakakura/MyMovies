@@ -26,7 +26,7 @@ type TemporaryRegisterMail struct {
 
 func NewTemporaryRegisterMail(to UserEmail, token UserToken) *TemporaryRegisterMail {
 	return &TemporaryRegisterMail{
-		From:  TemporaryRegisterMailFrom("info@frommymovies.com"),
+		From:  TemporaryRegisterMailFrom("info@mail.frommymovies.com"),
 		To:    to,
 		Token: token,
 	}
