@@ -18,6 +18,7 @@ type MovieForFindByMovieIdDTO struct {
 	UserID      uint64
 	DisplayName string
 	Description string
+	Public		uint64
 }
 
 type UserForFindByMovieIdDTO struct {
