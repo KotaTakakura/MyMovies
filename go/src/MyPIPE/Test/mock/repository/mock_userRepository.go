@@ -123,6 +123,21 @@ func (mr *MockUserRepositoryMockRecorder) FindByPasswordRememberToken(token inte
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByPasswordRememberToken", reflect.TypeOf((*MockUserRepository)(nil).FindByPasswordRememberToken), token)
 }
 
+// FindByEmailChangeToken mocks base method
+func (m *MockUserRepository) FindByEmailChangeToken(token model.UserEmailChangeToken) (*model.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByEmailChangeToken", token)
+	ret0, _ := ret[0].(*model.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByEmailChangeToken indicates an expected call of FindByEmailChangeToken
+func (mr *MockUserRepositoryMockRecorder) FindByEmailChangeToken(token interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByEmailChangeToken", reflect.TypeOf((*MockUserRepository)(nil).FindByEmailChangeToken), token)
+}
+
 // SetUser mocks base method
 func (m *MockUserRepository) SetUser(arg0 *model.User) error {
 	m.ctrl.T.Helper()

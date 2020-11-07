@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	validation "github.com/go-ozzo/ozzo-validation"
-	"github.com/go-ozzo/ozzo-validation/is"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"mime/multipart"
@@ -59,7 +58,7 @@ type UserEmail string
 func NewUserEmail(userEmail string) (UserEmail, error) {
 	err := validation.Validate(userEmail,
 		validation.Required,
-		is.Email,
+		validation.Match(regexp.MustCompile("^(([^<>()[\\]\\\\.,;:\\s@\"]+(\\.[^<>()[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$")),
 	)
 	if err != nil {
 		return UserEmail(""), err
@@ -110,6 +109,10 @@ func NewUserPasswordRememberToken(token string) (UserPasswordRememberToken, erro
 
 type UserPasswordRememberTokenAt uint64
 
+type UserEmailChangeToken string
+
+type UserEmailChangeTokenAt uint64
+
 type User struct {
 	ID                      UserID   `json:"id" gorm:"primaryKey"`
 	Name                    UserName `json:"name"`
@@ -120,6 +123,9 @@ type User struct {
 	Token                   UserToken `json:"token"`
 	PasswordRememberToken   UserPasswordRememberToken
 	PasswordRememberTokenAt UserPasswordRememberTokenAt
+	EmailChangeToken        UserEmailChangeToken
+	EmailChangeTokenAt      UserEmailChangeTokenAt
+	EmailToChange           UserEmail
 	CreatedAt               time.Time `json:"created_at"`
 	UpdatedAt               time.Time `json:"updated_at"`
 }
@@ -178,11 +184,6 @@ func (u User) CheckPassword(pass string) bool {
 
 func (u *User) ChangeName(name UserName) error {
 	u.Name = name
-	return nil
-}
-
-func (u *User) ChangeEmail(email UserEmail) error {
-	u.Email = email
 	return nil
 }
 
@@ -247,5 +248,22 @@ func (u *User) ResetPassword(password UserPassword) error {
 	}
 	u.Password = password
 	u.PasswordRememberToken = UserPasswordRememberToken("")
+	return nil
+}
+
+func (u *User) SetChangeEmailToken(newEmail UserEmail) (UserEmailChangeToken, error) {
+	u.EmailChangeToken = UserEmailChangeToken(uuid.New().String())
+	u.EmailChangeTokenAt = UserEmailChangeTokenAt(time.Now().Unix())
+	u.EmailToChange = newEmail
+	return u.EmailChangeToken, nil
+}
+
+func (u *User) ChangeEmail() error {
+	now := time.Now().Unix()
+	if (now-int64(u.EmailChangeTokenAt)) > 1800 || u.EmailChangeToken == UserEmailChangeToken("") {
+		return errors.New("Change Token Expired.")
+	}
+	u.Email = u.EmailToChange
+	u.EmailChangeToken = UserEmailChangeToken("")
 	return nil
 }

@@ -92,6 +92,21 @@ func (u UserPersistence) FindByPasswordRememberToken(token model.UserPasswordRem
 	return &user, nil
 }
 
+func (u UserPersistence) FindByEmailChangeToken(token model.UserEmailChangeToken) (*model.User, error) {
+	db := ConnectGorm()
+	defer db.Close()
+	var user model.User
+	result := db.Where("email_change_token = ?", token).Take(&user)
+	if result.RowsAffected == 0 {
+		return nil, nil
+	}
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &user, nil
+}
+
 func (u UserPersistence) SetUser(newUser *model.User) error {
 	db := ConnectGorm()
 	defer db.Close()
