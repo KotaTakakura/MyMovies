@@ -28,7 +28,7 @@ func (c ChangeEmailMail) Send(email model.UserEmail, token model.UserEmailChange
 					Charset: aws.String("UTF-8"),
 					Data: aws.String(
 						"パスワードを変更するために、以下のURLにアクセスしてください。\nURLの有効期限は30分間です。\nhttps:" +
-							"//www.frommymovies/password?token=" + string(token)),
+							"//www.frommymovies.com/password?token=" + string(token)),
 				},
 			},
 			Subject: &ses.Content{

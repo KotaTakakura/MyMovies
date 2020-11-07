@@ -37,7 +37,7 @@ func (r ResetPasswordEmail) Send(email model.UserEmail, token model.UserPassword
 				Data:    aws.String("MyMoviesパスワード再設定のご案内"),
 			},
 		},
-		Source: aws.String("reset@mail.frommymovies.com"),
+		Source: aws.String("info@mail.frommymovies.com"),
 	}
 
 	_, sendMailErr := svc.SendEmail(input)

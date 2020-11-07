@@ -111,6 +111,10 @@ type UserPasswordRememberTokenAt uint64
 
 type UserEmailChangeToken string
 
+func NewUserEmailChangeToken(token string) (UserEmailChangeToken, error) {
+	return UserEmailChangeToken(token), nil
+}
+
 type UserEmailChangeTokenAt uint64
 
 type User struct {
