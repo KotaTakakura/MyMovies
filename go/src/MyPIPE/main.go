@@ -102,6 +102,10 @@ func main() {
 	setPasswordRememberTokenHandler := handler.NewSetPasswordRememberToken(setPasswordRememberTokenUsecase)
 	api.POST("/remember", setPasswordRememberTokenHandler.SetPasswordRememberToken)
 
+	resetPasswordusecase := usecase.NewResetPassword(userRepository)
+	resetPasswordHandler := handler.NewResetPassword(resetPasswordusecase)
+	api.POST("/reset", resetPasswordHandler.ResetPassword)
+
 	commentQueryService := queryService_infra.NewCommentQueryService()
 	getCommentsUsecase := usecase.NewGetMovieAndComments(commentQueryService)
 	getMovieAndCommentsHandler := handler.NewGetMovieAndComments(commentQueryService, getCommentsUsecase)

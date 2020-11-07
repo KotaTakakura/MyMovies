@@ -6,24 +6,22 @@ import (
 	"errors"
 )
 
-type ISetPasswordRememberToken interface {
-	SetPasswordRememberToken(setPasswordRememberTokenDTO *SetPasswordRememberTokenDTO)error
+type IResetPassword interface {
+	ResetPassword(resetPasswordDTO *ResetPasswordDTO)error
 }
 
-type SetPasswordRememberToken struct{
+type ResetPassword struct{
 	UserRepository repository.UserRepository
-	ResetPasswordEmailRepository repository.ResetPasswordEmail
 }
 
-func NewSetPasswordRememberToken(userRepository repository.UserRepository, resetPasswordEmailRepository repository.ResetPasswordEmail)*SetPasswordRememberToken{
-	return &SetPasswordRememberToken{
+func NewResetPassword(userRepository repository.UserRepository)*ResetPassword{
+	return &ResetPassword{
 		UserRepository: userRepository,
-		ResetPasswordEmailRepository: resetPasswordEmailRepository,
 	}
 }
 
-func (r SetPasswordRememberToken)SetPasswordRememberToken(setPasswordRememberTokenDTO *SetPasswordRememberTokenDTO)error{
-	user,findUserErr := r.UserRepository.FindByEmail(setPasswordRememberTokenDTO.Email)
+func (r ResetPassword)ResetPassword(resetPasswordDTO *ResetPasswordDTO)error{
+	user,findUserErr := r.UserRepository.FindByPasswordRememberToken(resetPasswordDTO.PasswordRememberToken)
 	if findUserErr != nil{
 		return findUserErr
 	}
@@ -31,30 +29,27 @@ func (r SetPasswordRememberToken)SetPasswordRememberToken(setPasswordRememberTok
 		return errors.New("No Such User.")
 	}
 
-	rememberPasswordToken,rememberPasswordTokenErr := user.SetPasswordRememberToken()
-	if rememberPasswordTokenErr != nil{
-		return rememberPasswordTokenErr
+	resetPasswordErr := user.ResetPassword(resetPasswordDTO.Password)
+	if resetPasswordErr != nil{
+		return resetPasswordErr
 	}
 
-	setUserErr := r.UserRepository.UpdateUser(user)
-	if setUserErr != nil{
-		return setUserErr
+	updateUserErr := r.UserRepository.UpdateUser(user)
+	if updateUserErr != nil{
+		return updateUserErr
 	}
-
-	sendMailErr := r.ResetPasswordEmailRepository.Send(user.Email,rememberPasswordToken)
-	if sendMailErr != nil{
-		return sendMailErr
-	}
-
+	
 	return nil
 }
 
-type SetPasswordRememberTokenDTO struct{
-	Email	model.UserEmail
+type ResetPasswordDTO struct{
+	PasswordRememberToken model.UserPasswordRememberToken
+	Password	model.UserPassword
 }
 
-func NewSetPasswordRememberTokenDTO(email model.UserEmail)*SetPasswordRememberTokenDTO{
-	return &SetPasswordRememberTokenDTO{
-		Email: email,
+func NewResetPasswordDTO(passwordRememberToken model.UserPasswordRememberToken,password model.UserPassword)*ResetPasswordDTO{
+	return &ResetPasswordDTO{
+		PasswordRememberToken: passwordRememberToken,
+		Password:	password,
 	}
 }

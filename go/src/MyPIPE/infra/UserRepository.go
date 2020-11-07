@@ -3,6 +3,7 @@ package infra
 import (
 	"MyPIPE/domain/model"
 	"github.com/jinzhu/gorm"
+	"errors"
 )
 
 type UserPersistence struct{}
@@ -39,6 +40,9 @@ func (u UserPersistence) FindByEmail(email model.UserEmail) (*model.User, error)
 	defer db.Close()
 	var user model.User
 	e := db.Where("email = ?", email).Take(&user)
+	if e.RowsAffected == 0 {
+		return nil, nil
+	}
 	if e.Error != nil {
 		return nil, e.Error
 	}
@@ -51,11 +55,11 @@ func (u UserPersistence) FindById(id model.UserID) (*model.User, error) {
 	defer db.Close()
 	var user model.User
 	e := db.First(&user, uint64(id))
-	if e.Error != nil {
-		return nil, e.Error
-	}
 	if e.RowsAffected == 0 {
 		return nil, nil
+	}
+	if e.Error != nil {
+		return nil, e.Error
 	}
 
 	return &user, nil
@@ -66,6 +70,21 @@ func (u UserPersistence) FindByName(name model.UserName) (*model.User, error) {
 	defer db.Close()
 	var user model.User
 	e := db.Where("name = ?", name).Take(&user)
+	if e.Error != nil {
+		return nil, e.Error
+	}
+
+	return &user, nil
+}
+
+func (u UserPersistence) FindByPasswordRememberToken(token model.UserPasswordRememberToken) (*model.User, error){
+	db := ConnectGorm()
+	defer db.Close()
+	var user model.User
+	e := db.Where("password_remember_token = ?", token).Take(&user)
+	if e.RowsAffected == 0{
+		return nil,errors.New("No Such User.")
+	}
 	if e.Error != nil {
 		return nil, e.Error
 	}

@@ -104,6 +104,10 @@ func NewUserProfileImage(fileHeader multipart.FileHeader, file multipart.File) (
 
 type UserPasswordRememberToken string
 
+func NewUserPasswordRememberToken(token string)(UserPasswordRememberToken,error){
+	return UserPasswordRememberToken(token),nil
+}
+
 type UserPasswordRememberTokenAt uint64
 
 type User struct {
@@ -234,4 +238,14 @@ func (u *User) SetPasswordRememberToken()(UserPasswordRememberToken,error){
 	u.PasswordRememberToken = UserPasswordRememberToken(uuid.New().String())
 	u.PasswordRememberTokenAt = UserPasswordRememberTokenAt(time.Now().Unix())
 	return u.PasswordRememberToken,nil
+}
+
+func (u *User) ResetPassword(password UserPassword)error{
+	now := time.Now().Unix()
+	if (now - int64(u.PasswordRememberTokenAt)) > 1800 || u.PasswordRememberToken == UserPasswordRememberToken(""){
+		return errors.New("Remember Token Expired.")
+	}
+	u.Password = password
+	u.PasswordRememberToken = UserPasswordRememberToken("")
+	return nil
 }
