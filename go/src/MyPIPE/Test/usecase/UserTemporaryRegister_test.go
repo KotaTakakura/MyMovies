@@ -144,7 +144,22 @@ func TestUserTemporaryRegister_User_Already_Temporary_Registered(t *testing.T) {
 		userRepository.EXPECT().FindByEmail(Case.User.Email).Return(&model.User{
 			ID:    model.UserID(20),
 			Token: "1234-5678-910",
+			Email: "test@email.com",
 		}, nil)
+
+		temporaryRegisterMailRepository.EXPECT().Send(gomock.Any()).DoAndReturn(func(data interface{}) error {
+			if reflect.TypeOf(data) != reflect.TypeOf(&(model.TemporaryRegisterMail{})) {
+				t.Fatal("Type Not Match.")
+			}
+			if data.(*model.TemporaryRegisterMail).To != "test@email.com" {
+				t.Fatal("Email Not Match,")
+			}
+			fmt.Println(data.(*model.TemporaryRegisterMail).Token)
+			if data.(*model.TemporaryRegisterMail).Token == "" {
+				t.Fatal("Token Not Match,")
+			}
+			return nil
+		})
 
 		userRepository.EXPECT().UpdateUser(gomock.Any()).DoAndReturn(func(data interface{}) error {
 			if reflect.TypeOf(data) != reflect.TypeOf(&(model.User{})) {
@@ -187,6 +202,20 @@ func TestUserTemporaryRegister_User_Already_Temporary_Registered(t *testing.T) {
 			}
 			if data.(*model.User).Token == "1234-5678-910" || data.(*model.User).Token == "" {
 				t.Fatal("Token Error,")
+			}
+			return nil
+		})
+
+		temporaryRegisterMailRepository.EXPECT().Send(gomock.Any()).DoAndReturn(func(data interface{}) error {
+			if reflect.TypeOf(data) != reflect.TypeOf(&(model.TemporaryRegisterMail{})) {
+				t.Fatal("Type Not Match.")
+			}
+			if data.(*model.TemporaryRegisterMail).To != Case.User.Email {
+				t.Fatal("Email Not Match,")
+			}
+			fmt.Println(data.(*model.TemporaryRegisterMail).Token)
+			if data.(*model.TemporaryRegisterMail).Token == "" {
+				t.Fatal("Token Not Match,")
 			}
 			return nil
 		})
