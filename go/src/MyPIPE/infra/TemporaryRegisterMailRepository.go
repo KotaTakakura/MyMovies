@@ -28,7 +28,7 @@ func (t TemporaryRegisterMailRepository) Send(mail *model.TemporaryRegisterMail)
 					Charset: aws.String("UTF-8"),
 					Data: aws.String(
 						"現在、仮登録の状態です。以下のURLにアクセスして情報を入力し、本登録を完了してください\nhttps:" +
-							"//www.frommymovies/register?token=" + string(mail.Token)),
+							"//www.frommymovies.com/register?token=" + string(mail.Token)),
 				},
 			},
 			Subject: &ses.Content{
@@ -36,7 +36,7 @@ func (t TemporaryRegisterMailRepository) Send(mail *model.TemporaryRegisterMail)
 				Data:    aws.String("MyMovies仮登録のご案内"),
 			},
 		},
-		Source: aws.String(string(mail.From)),
+		Source: aws.String("info@mail.frommymovies.com"),
 	}
 
 	_, sendMailErr := svc.SendEmail(input)
