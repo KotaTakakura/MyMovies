@@ -11,6 +11,7 @@ type UserRepository interface {
 	FindByEmail(email model.UserEmail) (*model.User, error)
 	FindByName(name model.UserName) (*model.User, error)
 	FindByPasswordRememberToken(token model.UserPasswordRememberToken) (*model.User, error)
+	FindByEmailChangeToken(token model.UserEmailChangeToken) (*model.User, error)
 	SetUser(*model.User) error
 	UpdateUser(*model.User) error
 }
