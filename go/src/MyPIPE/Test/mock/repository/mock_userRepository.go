@@ -108,6 +108,21 @@ func (mr *MockUserRepositoryMockRecorder) FindByName(name interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByName", reflect.TypeOf((*MockUserRepository)(nil).FindByName), name)
 }
 
+// FindByPasswordRememberToken mocks base method
+func (m *MockUserRepository) FindByPasswordRememberToken(token model.UserPasswordRememberToken) (*model.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByPasswordRememberToken", token)
+	ret0, _ := ret[0].(*model.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByPasswordRememberToken indicates an expected call of FindByPasswordRememberToken
+func (mr *MockUserRepositoryMockRecorder) FindByPasswordRememberToken(token interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByPasswordRememberToken", reflect.TypeOf((*MockUserRepository)(nil).FindByPasswordRememberToken), token)
+}
+
 // SetUser mocks base method
 func (m *MockUserRepository) SetUser(arg0 *model.User) error {
 	m.ctrl.T.Helper()

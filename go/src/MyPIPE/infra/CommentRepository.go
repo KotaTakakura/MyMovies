@@ -32,13 +32,13 @@ func (c *CommentPersistence) FindById(commentID model.CommentID) (*model.Comment
 	return comment, nil
 }
 
-func (c *CommentPersistence) FindByIdAndUserID(commentID model.CommentID,userID model.UserID) (*model.Comment, error){
+func (c *CommentPersistence) FindByIdAndUserID(commentID model.CommentID, userID model.UserID) (*model.Comment, error) {
 	db := ConnectGorm()
 	defer db.Close()
 	var comment model.Comment
-	result := db.Where("id = ? and user_id = ?",commentID,userID).Find(&comment)
-	if result.Error != nil{
-		return nil,result.Error
+	result := db.Where("id = ? and user_id = ?", commentID, userID).Find(&comment)
+	if result.Error != nil {
+		return nil, result.Error
 	}
 	return &comment, nil
 }
@@ -86,7 +86,7 @@ func (c *CommentPersistence) Remove(comment *model.Comment) error {
 	db := ConnectGorm()
 	defer db.Close()
 	result := db.Delete(comment)
-	if result.Error != nil{
+	if result.Error != nil {
 		return result.Error
 	}
 	return nil

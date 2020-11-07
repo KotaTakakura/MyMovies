@@ -98,9 +98,13 @@ func main() {
 	api := router.Group("/api/v1")
 
 	resetPasswordEmailRepository := infra.NewResetPasswordEmail()
-	setPasswordRememberTokenUsecase := usecase.NewSetPasswordRememberToken(userRepository,resetPasswordEmailRepository)
+	setPasswordRememberTokenUsecase := usecase.NewSetPasswordRememberToken(userRepository, resetPasswordEmailRepository)
 	setPasswordRememberTokenHandler := handler.NewSetPasswordRememberToken(setPasswordRememberTokenUsecase)
 	api.POST("/remember", setPasswordRememberTokenHandler.SetPasswordRememberToken)
+
+	resetPasswordusecase := usecase.NewResetPassword(userRepository)
+	resetPasswordHandler := handler.NewResetPassword(resetPasswordusecase)
+	api.POST("/reset", resetPasswordHandler.ResetPassword)
 
 	commentQueryService := queryService_infra.NewCommentQueryService()
 	getCommentsUsecase := usecase.NewGetMovieAndComments(commentQueryService)

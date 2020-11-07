@@ -104,20 +104,24 @@ func NewUserProfileImage(fileHeader multipart.FileHeader, file multipart.File) (
 
 type UserPasswordRememberToken string
 
+func NewUserPasswordRememberToken(token string) (UserPasswordRememberToken, error) {
+	return UserPasswordRememberToken(token), nil
+}
+
 type UserPasswordRememberTokenAt uint64
 
 type User struct {
-	ID               UserID   `json:"id" gorm:"primaryKey"`
-	Name             UserName `json:"name"`
-	Password         UserPassword
-	Email            UserEmail `json:"email"`
-	Birthday         time.Time `json:"birthday"`
-	ProfileImageName string    `json:"profile_image_name"`
-	Token            UserToken `json:"token"`
-	PasswordRememberToken	UserPasswordRememberToken
+	ID                      UserID   `json:"id" gorm:"primaryKey"`
+	Name                    UserName `json:"name"`
+	Password                UserPassword
+	Email                   UserEmail `json:"email"`
+	Birthday                time.Time `json:"birthday"`
+	ProfileImageName        string    `json:"profile_image_name"`
+	Token                   UserToken `json:"token"`
+	PasswordRememberToken   UserPasswordRememberToken
 	PasswordRememberTokenAt UserPasswordRememberTokenAt
-	CreatedAt        time.Time `json:"created_at"`
-	UpdatedAt        time.Time `json:"updated_at"`
+	CreatedAt               time.Time `json:"created_at"`
+	UpdatedAt               time.Time `json:"updated_at"`
 }
 
 func NewUser(email UserEmail, birthday time.Time) *User {
@@ -230,8 +234,18 @@ func (u *User) Register(name UserName, password UserPassword, birthday time.Time
 	return nil
 }
 
-func (u *User) SetPasswordRememberToken()(UserPasswordRememberToken,error){
+func (u *User) SetPasswordRememberToken() (UserPasswordRememberToken, error) {
 	u.PasswordRememberToken = UserPasswordRememberToken(uuid.New().String())
 	u.PasswordRememberTokenAt = UserPasswordRememberTokenAt(time.Now().Unix())
-	return u.PasswordRememberToken,nil
+	return u.PasswordRememberToken, nil
+}
+
+func (u *User) ResetPassword(password UserPassword) error {
+	now := time.Now().Unix()
+	if (now-int64(u.PasswordRememberTokenAt)) > 1800 || u.PasswordRememberToken == UserPasswordRememberToken("") {
+		return errors.New("Remember Token Expired.")
+	}
+	u.Password = password
+	u.PasswordRememberToken = UserPasswordRememberToken("")
+	return nil
 }

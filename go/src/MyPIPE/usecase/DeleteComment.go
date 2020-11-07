@@ -7,44 +7,44 @@ import (
 )
 
 type IDeleteComment interface {
-	DeleteComment(deleteCommentDTO *DeleteCommentDTO)error
+	DeleteComment(deleteCommentDTO *DeleteCommentDTO) error
 }
 
-type DeleteComment struct{
-	CommentRepository	repository.CommentRepository
+type DeleteComment struct {
+	CommentRepository repository.CommentRepository
 }
 
-func NewDeleteComment(commentRepository repository.CommentRepository)*DeleteComment{
+func NewDeleteComment(commentRepository repository.CommentRepository) *DeleteComment {
 	return &DeleteComment{
 		CommentRepository: commentRepository,
 	}
 }
 
-func (d DeleteComment)DeleteComment(deleteCommentDTO *DeleteCommentDTO)error{
-	comment,findCommentErr := d.CommentRepository.FindByIdAndUserID(deleteCommentDTO.CommentID,deleteCommentDTO.UserID)
-	if findCommentErr != nil{
+func (d DeleteComment) DeleteComment(deleteCommentDTO *DeleteCommentDTO) error {
+	comment, findCommentErr := d.CommentRepository.FindByIdAndUserID(deleteCommentDTO.CommentID, deleteCommentDTO.UserID)
+	if findCommentErr != nil {
 		return findCommentErr
 	}
-	if comment == nil{
+	if comment == nil {
 		return errors.New("No Such Comment.")
 	}
 
 	removeCommentErr := d.CommentRepository.Remove(comment)
-	if removeCommentErr != nil{
+	if removeCommentErr != nil {
 		return removeCommentErr
 	}
 
 	return nil
 }
 
-type DeleteCommentDTO struct{
+type DeleteCommentDTO struct {
 	CommentID model.CommentID
-	UserID model.UserID
+	UserID    model.UserID
 }
 
-func NewDeleteCommentDTO(commentId model.CommentID, userId model.UserID)*DeleteCommentDTO{
+func NewDeleteCommentDTO(commentId model.CommentID, userId model.UserID) *DeleteCommentDTO {
 	return &DeleteCommentDTO{
 		CommentID: commentId,
-		UserID: userId,
+		UserID:    userId,
 	}
 }

@@ -3,51 +3,64 @@ package handler
 import (
 	"MyPIPE/domain/model"
 	"MyPIPE/usecase"
+	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-type SetPasswordRememberToken struct{
-	SetPasswordRememberTokenUsecase usecase.ISetPasswordRememberToken
+type ResetPassword struct {
+	ResetPasswordUsecase usecase.IResetPassword
 }
 
-
-func NewSetPasswordRememberToken(setPasswordRememberTokenUsecase usecase.ISetPasswordRememberToken)*SetPasswordRememberToken{
-	return &SetPasswordRememberToken{
-		SetPasswordRememberTokenUsecase: setPasswordRememberTokenUsecase,
+func NewResetPassword(resetPasswordUsecase usecase.IResetPassword) *ResetPassword {
+	return &ResetPassword{
+		ResetPasswordUsecase: resetPasswordUsecase,
 	}
 }
 
-func (r SetPasswordRememberToken)SetPasswordRememberToken(c *gin.Context){
+func (r ResetPassword) ResetPassword(c *gin.Context) {
 	var resetPasswordJson ResetPasswordJson
 	c.Bind(&resetPasswordJson)
+	validationErrors := make(map[string]string)
 
-	userEmail,userEmailErr := model.NewUserEmail(resetPasswordJson.Email)
-	if userEmailErr != nil{
+	passwordRememberToken, tokenErr := model.NewUserPasswordRememberToken(resetPasswordJson.PasswordRememberToken)
+	if tokenErr != nil {
+		validationErrors["password_remember_token"] = tokenErr.Error()
+	}
+
+	password, passwordErr := model.NewUserPassword(resetPasswordJson.Password)
+	if passwordErr != nil {
+		validationErrors["password"] = passwordErr.Error()
+	}
+
+	if len(validationErrors) != 0 {
+		validationErrors, _ := json.Marshal(validationErrors)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"result":   "Validation Error.",
-			"messages": userEmailErr.Error(),
+			"messages": string(validationErrors),
 		})
 		c.Abort()
 		return
 	}
 
-	setPasswordRememberTokenDTO := usecase.NewSetPasswordRememberTokenDTO(userEmail)
-	setPasswordRememberTokenErr := r.SetPasswordRememberTokenUsecase.SetPasswordRememberToken(setPasswordRememberTokenDTO)
-	if setPasswordRememberTokenErr != nil{
+	resetPasswordDTO := usecase.NewResetPasswordDTO(passwordRememberToken, password)
+	resetPasswordErr := r.ResetPasswordUsecase.ResetPassword(resetPasswordDTO)
+	if resetPasswordErr != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"result":   "Reset Password Error.",
-			"messages": setPasswordRememberTokenErr.Error(),
+			"messages": resetPasswordErr.Error(),
 		})
 		c.Abort()
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Success!",
+		"result":   "Success.",
+		"messages": "OK",
 	})
 }
 
-type ResetPasswordJson struct{
-	Email string	`json:"email"`
+type ResetPasswordJson struct {
+	PasswordRememberToken string `json:"password_remember_token"`
+	Password              string `json:"password"`
 }
