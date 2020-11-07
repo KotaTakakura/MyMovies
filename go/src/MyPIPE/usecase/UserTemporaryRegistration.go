@@ -40,6 +40,11 @@ func (u *UserTemporaryRegistration) TemporaryRegister(user *model.User) error {
 		if updateError != nil {
 			return errors.New("Update Error.")
 		}
+		temporaryRegisterMail := model.NewTemporaryRegisterMail(registeredUser.Email, registeredUser.Token)
+		emailErr := u.TemporaryRegisterMailRepository.Send(temporaryRegisterMail)
+		if emailErr != nil {
+			return emailErr
+		}
 		return nil
 	}
 	newUser := model.NewUser(user.Email, time.Date(1000, 1, 1, 0, 0, 0, 0, time.Local))
