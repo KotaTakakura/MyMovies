@@ -122,6 +122,10 @@ func main() {
 	updateMovieThumbnailStatusHandler := handler.NewUpdateMovieThumbnailStatus(updateMovieUsecase)
 	api.POST("/movie-thumbnail-status", updateMovieThumbnailStatusHandler.UpdateMovieThumbnailStatus)
 
+	changeEmailUsecase := usecase.NewChangeEmail(userRepository)
+	changeEmailHandler := handler.NewChangeEmail(changeEmailUsecase)
+	api.PUT("/email", changeEmailHandler.ChangeEmail)
+
 	auth := router.Group("/auth/api/v1")
 	auth.Use(authMiddleware.MiddlewareFunc())
 	{
