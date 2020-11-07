@@ -2,8 +2,8 @@ package infra
 
 import (
 	"MyPIPE/domain/model"
-	"github.com/jinzhu/gorm"
 	"errors"
+	"github.com/jinzhu/gorm"
 )
 
 type UserPersistence struct{}
@@ -77,13 +77,13 @@ func (u UserPersistence) FindByName(name model.UserName) (*model.User, error) {
 	return &user, nil
 }
 
-func (u UserPersistence) FindByPasswordRememberToken(token model.UserPasswordRememberToken) (*model.User, error){
+func (u UserPersistence) FindByPasswordRememberToken(token model.UserPasswordRememberToken) (*model.User, error) {
 	db := ConnectGorm()
 	defer db.Close()
 	var user model.User
 	e := db.Where("password_remember_token = ?", token).Take(&user)
-	if e.RowsAffected == 0{
-		return nil,errors.New("No Such User.")
+	if e.RowsAffected == 0 {
+		return nil, errors.New("No Such User.")
 	}
 	if e.Error != nil {
 		return nil, e.Error

@@ -7,49 +7,49 @@ import (
 )
 
 type IResetPassword interface {
-	ResetPassword(resetPasswordDTO *ResetPasswordDTO)error
+	ResetPassword(resetPasswordDTO *ResetPasswordDTO) error
 }
 
-type ResetPassword struct{
+type ResetPassword struct {
 	UserRepository repository.UserRepository
 }
 
-func NewResetPassword(userRepository repository.UserRepository)*ResetPassword{
+func NewResetPassword(userRepository repository.UserRepository) *ResetPassword {
 	return &ResetPassword{
 		UserRepository: userRepository,
 	}
 }
 
-func (r ResetPassword)ResetPassword(resetPasswordDTO *ResetPasswordDTO)error{
-	user,findUserErr := r.UserRepository.FindByPasswordRememberToken(resetPasswordDTO.PasswordRememberToken)
-	if findUserErr != nil{
+func (r ResetPassword) ResetPassword(resetPasswordDTO *ResetPasswordDTO) error {
+	user, findUserErr := r.UserRepository.FindByPasswordRememberToken(resetPasswordDTO.PasswordRememberToken)
+	if findUserErr != nil {
 		return findUserErr
 	}
-	if user == nil{
+	if user == nil {
 		return errors.New("No Such User.")
 	}
 
 	resetPasswordErr := user.ResetPassword(resetPasswordDTO.Password)
-	if resetPasswordErr != nil{
+	if resetPasswordErr != nil {
 		return resetPasswordErr
 	}
 
 	updateUserErr := r.UserRepository.UpdateUser(user)
-	if updateUserErr != nil{
+	if updateUserErr != nil {
 		return updateUserErr
 	}
-	
+
 	return nil
 }
 
-type ResetPasswordDTO struct{
+type ResetPasswordDTO struct {
 	PasswordRememberToken model.UserPasswordRememberToken
-	Password	model.UserPassword
+	Password              model.UserPassword
 }
 
-func NewResetPasswordDTO(passwordRememberToken model.UserPasswordRememberToken,password model.UserPassword)*ResetPasswordDTO{
+func NewResetPasswordDTO(passwordRememberToken model.UserPasswordRememberToken, password model.UserPassword) *ResetPasswordDTO {
 	return &ResetPasswordDTO{
 		PasswordRememberToken: passwordRememberToken,
-		Password:	password,
+		Password:              password,
 	}
 }

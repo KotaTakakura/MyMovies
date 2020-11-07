@@ -32,14 +32,14 @@ func (u UpdateMovieStatus) UpdateMovieStatus(c *gin.Context) {
 		return
 	}
 
-	if updateMovieStatusJson.Type == "SubscriptionConfirmation"{
+	if updateMovieStatusJson.Type == "SubscriptionConfirmation" {
 		sess := session.Must(session.NewSession())
 		svc := sns.New(sess)
-		_,err := svc.ConfirmSubscription(&sns.ConfirmSubscriptionInput{
-			Token:                     &updateMovieStatusJson.Token,
-			TopicArn:                  &updateMovieStatusJson.TopicArn,
+		_, err := svc.ConfirmSubscription(&sns.ConfirmSubscriptionInput{
+			Token:    &updateMovieStatusJson.Token,
+			TopicArn: &updateMovieStatusJson.TopicArn,
 		})
-		if err != nil{
+		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"result":   "Failed.",
 				"messages": err.Error(),
@@ -50,7 +50,7 @@ func (u UpdateMovieStatus) UpdateMovieStatus(c *gin.Context) {
 	}
 
 	movieIdChangeToUint64err := updateMovieStatusJson.ChangeMovieIdStringToUint64()
-	if movieIdChangeToUint64err != nil{
+	if movieIdChangeToUint64err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"result":   "Change Status Failed.",
 			"messages": movieIdChangeToUint64err.Error(),
@@ -86,17 +86,17 @@ func (u UpdateMovieStatus) UpdateMovieStatus(c *gin.Context) {
 }
 
 type UpdateMovieStatusJson struct {
-	MovieID uint64 `json:"movie_id"`
+	MovieID       uint64 `json:"movie_id"`
 	MovieIDString string `json:"Message"`
-	Type string `json:"Type"`
-	TopicArn string `json:"TopicArn"`
-	Token string `json:"Token"`
+	Type          string `json:"Type"`
+	TopicArn      string `json:"TopicArn"`
+	Token         string `json:"Token"`
 }
 
-func (u *UpdateMovieStatusJson)ChangeMovieIdStringToUint64()error{
+func (u *UpdateMovieStatusJson) ChangeMovieIdStringToUint64() error {
 	var err error
-	u.MovieID,err = strconv.ParseUint(u.MovieIDString, 10, 64)
-	if err != nil{
+	u.MovieID, err = strconv.ParseUint(u.MovieIDString, 10, 64)
+	if err != nil {
 		return err
 	}
 	return nil

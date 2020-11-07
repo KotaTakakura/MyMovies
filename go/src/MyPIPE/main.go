@@ -98,7 +98,7 @@ func main() {
 	api := router.Group("/api/v1")
 
 	resetPasswordEmailRepository := infra.NewResetPasswordEmail()
-	setPasswordRememberTokenUsecase := usecase.NewSetPasswordRememberToken(userRepository,resetPasswordEmailRepository)
+	setPasswordRememberTokenUsecase := usecase.NewSetPasswordRememberToken(userRepository, resetPasswordEmailRepository)
 	setPasswordRememberTokenHandler := handler.NewSetPasswordRememberToken(setPasswordRememberTokenUsecase)
 	api.POST("/remember", setPasswordRememberTokenHandler.SetPasswordRememberToken)
 

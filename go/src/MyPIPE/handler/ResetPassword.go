@@ -8,32 +8,32 @@ import (
 	"net/http"
 )
 
-type ResetPassword struct{
+type ResetPassword struct {
 	ResetPasswordUsecase usecase.IResetPassword
 }
 
-func NewResetPassword(resetPasswordUsecase usecase.IResetPassword)*ResetPassword{
+func NewResetPassword(resetPasswordUsecase usecase.IResetPassword) *ResetPassword {
 	return &ResetPassword{
 		ResetPasswordUsecase: resetPasswordUsecase,
 	}
 }
 
-func (r ResetPassword)ResetPassword(c *gin.Context){
+func (r ResetPassword) ResetPassword(c *gin.Context) {
 	var resetPasswordJson ResetPasswordJson
 	c.Bind(&resetPasswordJson)
 	validationErrors := make(map[string]string)
 
-	passwordRememberToken,tokenErr := model.NewUserPasswordRememberToken(resetPasswordJson.PasswordRememberToken)
-	if tokenErr != nil{
+	passwordRememberToken, tokenErr := model.NewUserPasswordRememberToken(resetPasswordJson.PasswordRememberToken)
+	if tokenErr != nil {
 		validationErrors["password_remember_token"] = tokenErr.Error()
 	}
 
-	password,passwordErr := model.NewUserPassword(resetPasswordJson.Password)
-	if passwordErr != nil{
+	password, passwordErr := model.NewUserPassword(resetPasswordJson.Password)
+	if passwordErr != nil {
 		validationErrors["password"] = passwordErr.Error()
 	}
 
-	if len(validationErrors) != 0{
+	if len(validationErrors) != 0 {
 		validationErrors, _ := json.Marshal(validationErrors)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"result":   "Validation Error.",
@@ -43,9 +43,9 @@ func (r ResetPassword)ResetPassword(c *gin.Context){
 		return
 	}
 
-	resetPasswordDTO := usecase.NewResetPasswordDTO(passwordRememberToken,password)
+	resetPasswordDTO := usecase.NewResetPasswordDTO(passwordRememberToken, password)
 	resetPasswordErr := r.ResetPasswordUsecase.ResetPassword(resetPasswordDTO)
-	if resetPasswordErr != nil{
+	if resetPasswordErr != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"result":   "Reset Password Error.",
 			"messages": resetPasswordErr.Error(),
@@ -60,7 +60,7 @@ func (r ResetPassword)ResetPassword(c *gin.Context){
 	})
 }
 
-type ResetPasswordJson struct{
-	PasswordRememberToken	string	`json:"password_remember_token"`
-	Password	string	`json:"password"`
+type ResetPasswordJson struct {
+	PasswordRememberToken string `json:"password_remember_token"`
+	Password              string `json:"password"`
 }

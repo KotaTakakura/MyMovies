@@ -9,11 +9,11 @@ import (
 
 type ResetPasswordEmail struct{}
 
-func NewResetPasswordEmail()*ResetPasswordEmail{
+func NewResetPasswordEmail() *ResetPasswordEmail {
 	return &ResetPasswordEmail{}
 }
 
-func (r ResetPasswordEmail)Send(email model.UserEmail,token model.UserPasswordRememberToken)error{
+func (r ResetPasswordEmail) Send(email model.UserEmail, token model.UserPasswordRememberToken) error {
 	sess := session.Must(session.NewSession())
 	svc := ses.New(sess)
 	input := &ses.SendEmailInput{
@@ -28,8 +28,8 @@ func (r ResetPasswordEmail)Send(email model.UserEmail,token model.UserPasswordRe
 					Charset: aws.String("UTF-8"),
 					Data: aws.String(
 						"パスワードを再発行します。以下のURLにアクセスして新しいパスワードを設定してください。\n" +
-						"URLの有効期限は30分間です。\n" +
-						"https://www.frommymovies.com/reset?token=" + string(token)),
+							"URLの有効期限は30分間です。\n" +
+							"https://www.frommymovies.com/reset?token=" + string(token)),
 				},
 			},
 			Subject: &ses.Content{

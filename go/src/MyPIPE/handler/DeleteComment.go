@@ -10,17 +10,17 @@ import (
 	"strconv"
 )
 
-type DeleteComment struct{
+type DeleteComment struct {
 	DeleteCommentUsecase usecase.IDeleteComment
 }
 
-func NewDeleteComment(deleteCommentUsecase usecase.IDeleteComment)*DeleteComment{
+func NewDeleteComment(deleteCommentUsecase usecase.IDeleteComment) *DeleteComment {
 	return &DeleteComment{
 		DeleteCommentUsecase: deleteCommentUsecase,
 	}
 }
 
-func (d DeleteComment)DeleteComment(c *gin.Context){
+func (d DeleteComment) DeleteComment(c *gin.Context) {
 	validationErrors := make(map[string]string)
 	userIdUint := uint64((jwt.ExtractClaims(c)["id"]).(float64))
 	userId, userIdErr := model.NewUserID(userIdUint)
@@ -31,15 +31,15 @@ func (d DeleteComment)DeleteComment(c *gin.Context){
 	var commentId model.CommentID
 	commentIdString := c.Query("comment_id")
 	commentIdUint, commentIdUintErr := strconv.ParseUint(commentIdString, 10, 64)
-	if commentIdUintErr != nil{
+	if commentIdUintErr != nil {
 		validationErrors["comment_id"] = commentIdUintErr.Error()
 	}
-	commentId,commentIdErr := model.NewCommentID(commentIdUint)
-	if commentIdErr != nil{
+	commentId, commentIdErr := model.NewCommentID(commentIdUint)
+	if commentIdErr != nil {
 		validationErrors["comment_id"] = commentIdErr.Error()
 	}
 
-	if len(validationErrors) != 0{
+	if len(validationErrors) != 0 {
 		validationErrors, _ := json.Marshal(validationErrors)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"result":   "Validation Error.",
@@ -49,9 +49,9 @@ func (d DeleteComment)DeleteComment(c *gin.Context){
 		return
 	}
 
-	deleteCommentDTO := usecase.NewDeleteCommentDTO(commentId,userId)
+	deleteCommentDTO := usecase.NewDeleteCommentDTO(commentId, userId)
 	deleteCommentErr := d.DeleteCommentUsecase.DeleteComment(deleteCommentDTO)
-	if deleteCommentErr != nil{
+	if deleteCommentErr != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"result":   "Delete Comment Failed.",
 			"messages": deleteCommentErr.Error(),
