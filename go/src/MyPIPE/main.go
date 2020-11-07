@@ -125,6 +125,11 @@ func main() {
 	auth := router.Group("/auth/api/v1")
 	auth.Use(authMiddleware.MiddlewareFunc())
 	{
+		changeEmailMailRepository := infra.NewChangeEmailMail()
+		setChangeEmailTokenUsecase := usecase.NewSetEmailChangeToken(userRepository, changeEmailMailRepository)
+		setChangeEmailTokenHandler := handler.NewSetEmailChangeToken(setChangeEmailTokenUsecase)
+		auth.POST("/email", setChangeEmailTokenHandler.SetEmailChangeToken)
+
 		getLoggedInUserDataQueryService := queryService_infra.NewGetLoggedInUserData()
 		getLoggedInUserDataUsecase := usecase.NewGetLoggedInUserData(getLoggedInUserDataQueryService)
 		getLoggedInUserDataHandler := handler.NewGetLoggedInUserData(getLoggedInUserDataQueryService, getLoggedInUserDataUsecase)
