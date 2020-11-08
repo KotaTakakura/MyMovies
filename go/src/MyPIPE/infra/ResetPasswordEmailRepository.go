@@ -28,7 +28,7 @@ func (r ResetPasswordEmail) Send(email model.UserEmail, token model.UserPassword
 					Charset: aws.String("UTF-8"),
 					Data: aws.String(
 						"パスワードを再発行します。以下のURLにアクセスして新しいパスワードを設定してください。\n" +
-							"URLの有効期限は30分間です。\n" +
+							"URLの有効期限は30分間です。\nこのメールに心当たりのない場合は、URLにアクセスせず破棄してください。\n" +
 							"https://www.frommymovies.com/reset?token=" + string(token)),
 				},
 			},
