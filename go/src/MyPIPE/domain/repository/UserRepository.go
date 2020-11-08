@@ -14,4 +14,5 @@ type UserRepository interface {
 	FindByEmailChangeToken(token model.UserEmailChangeToken) (*model.User, error)
 	SetUser(*model.User) error
 	UpdateUser(*model.User) error
+	Remove(model.UserID) error
 }

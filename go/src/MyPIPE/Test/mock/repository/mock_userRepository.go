@@ -165,3 +165,17 @@ func (mr *MockUserRepositoryMockRecorder) UpdateUser(arg0 interface{}) *gomock.C
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUser", reflect.TypeOf((*MockUserRepository)(nil).UpdateUser), arg0)
 }
+
+// Remove mocks base method
+func (m *MockUserRepository) Remove(arg0 model.UserID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Remove", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Remove indicates an expected call of Remove
+func (mr *MockUserRepositoryMockRecorder) Remove(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Remove", reflect.TypeOf((*MockUserRepository)(nil).Remove), arg0)
+}
