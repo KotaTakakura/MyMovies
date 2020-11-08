@@ -27,7 +27,8 @@ func (t TemporaryRegisterMailRepository) Send(mail *model.TemporaryRegisterMail)
 				Text: &ses.Content{
 					Charset: aws.String("UTF-8"),
 					Data: aws.String(
-						"現在、仮登録の状態です。以下のURLにアクセスして情報を入力し、本登録を完了してください\nhttps:" +
+						"現在、仮登録の状態です。以下のURLにアクセスして情報を入力し、本登録を完了してください\n" +
+							"このメールに心当たりのない場合は、URLにアクセスせず破棄してください。\nhttps:" +
 							"//www.frommymovies.com/register?token=" + string(mail.Token)),
 				},
 			},
