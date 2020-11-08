@@ -25,7 +25,7 @@ func (c CommentQueryService) FindByMovieId(movieId model.MovieID) queryService.F
 
 	var movie queryService.MovieForFindByMovieIdDTO
 	db.Table("movies").
-		Where("id = ?", movieId).
+		Where("id = ? and public = 1", movieId).
 		Take(&movie)
 
 	var likeCount int
