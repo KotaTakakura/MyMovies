@@ -9,4 +9,5 @@ type MovieRepository interface {
 	FindByUserIdAndMovieId(userId model.UserID, movieId model.MovieID) (*model.Movie, error)
 	Save(model.Movie) (*model.Movie, error)
 	Update(movie model.Movie) (*model.Movie, error)
+	Remove(userId model.UserID, movieId model.MovieID) error
 }

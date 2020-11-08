@@ -227,6 +227,10 @@ func main() {
 		deleteUserUsecase := usecase.NewDeleteUser(userRepository)
 		deleteUserHandler := handler.NewDeleteUser(deleteUserUsecase)
 		auth.DELETE("/user", deleteUserHandler.DeleteUser)
+
+		deleteMovieUsecase := usecase.NewDeleteMovie(movieRepository)
+		deleteMovieHandler := handler.NewDeleteMovie(deleteMovieUsecase)
+		auth.DELETE("/movie",deleteMovieHandler.DeleteMovie)
 	}
 
 	router.GET("/health", func(c *gin.Context) {
