@@ -223,6 +223,10 @@ func main() {
 		indexPlayListInMovieListPageUsecase := usecase.NewIndexPlayListInMovieListPage(indexPlayListInMovieListPageQueryService)
 		indexPlayListInMovieListPageHandler := handler.NewIndexPlayListInMovieListPage(indexPlayListInMovieListPageQueryService, indexPlayListInMovieListPageUsecase)
 		auth.GET("play-lists/:movie_id", indexPlayListInMovieListPageHandler.IndexPlayListInMovieListPage)
+
+		deleteUserUsecase := usecase.NewDeleteUser(userRepository)
+		deleteUserHandler := handler.NewDeleteUser(deleteUserUsecase)
+		auth.DELETE("/user", deleteUserHandler.DeleteUser)
 	}
 
 	router.GET("/health", func(c *gin.Context) {

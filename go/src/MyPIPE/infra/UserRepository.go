@@ -135,3 +135,46 @@ func (u UserPersistence) UpdateUser(updateUser *model.User) error {
 
 	return nil
 }
+
+func (u UserPersistence) Remove(userId model.UserID) error {
+	db := ConnectGorm()
+	defer db.Close()
+
+	transactionErr := db.Transaction(func(tx *gorm.DB) error {
+		deleteUserResult := tx.Where("id = ?", userId).Delete(model.User{})
+		if deleteUserResult.Error != nil {
+			return deleteUserResult.Error
+		}
+
+		deleteMovieResult := tx.Where("user_id = ?", userId).Delete(model.Movie{})
+		if deleteMovieResult.Error != nil {
+			return deleteMovieResult.Error
+		}
+
+		deleteMovieEvaluationResult := tx.Where("user_id = ?", userId).Delete(model.MovieEvaluation{})
+		if deleteMovieEvaluationResult.Error != nil {
+			return deleteMovieEvaluationResult.Error
+		}
+
+		deleteCommentResult := tx.Where("user_id = ?", userId).Delete(model.Comment{})
+		if deleteCommentResult.Error != nil {
+			return deleteCommentResult.Error
+		}
+
+		deletePlayListMoviesResult := tx.Raw("Delete plm From play_list_movies As plm Left Join play_lists As pl on plm.play_list_id = pl.id Where pl.user_id = ?", userId)
+		if deletePlayListMoviesResult.Error != nil {
+			return deletePlayListMoviesResult.Error
+		}
+
+		deletePlayListsResult := tx.Where("user_id = ?", userId).Delete(model.PlayList{})
+		if deletePlayListsResult.Error != nil {
+			return deletePlayListsResult.Error
+		}
+		return nil
+	})
+
+	if transactionErr != nil {
+		return transactionErr
+	}
+	return nil
+}
