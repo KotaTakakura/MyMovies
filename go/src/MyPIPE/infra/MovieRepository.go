@@ -3,6 +3,7 @@ package infra
 import (
 	"MyPIPE/domain/model"
 	"fmt"
+	"github.com/jinzhu/gorm"
 )
 
 type MoviePersistence struct{}
@@ -80,4 +81,40 @@ func (m *MoviePersistence) Update(movie model.Movie) (*model.Movie, error) {
 		return nil, result.Error
 	}
 	return &movie, nil
+}
+
+func (m *MoviePersistence) Remove(userId model.UserID, movieId model.MovieID) error {
+	db := ConnectGorm()
+	defer db.Close()
+
+	transactionErr := db.Transaction(func(tx *gorm.DB) error {
+
+		deleteMovieEvaluationResult := tx.Where("movie_id = ?", movieId).Delete(model.MovieEvaluation{})
+		if deleteMovieEvaluationResult.Error != nil {
+			return deleteMovieEvaluationResult.Error
+		}
+
+		deleteCommentResult := tx.Where("movie_id = ?", movieId).Delete(model.Comment{})
+		if deleteCommentResult.Error != nil {
+			return deleteCommentResult.Error
+		}
+
+		deletePlayListMoviesResult := tx.Where("movie_id = ?", movieId).Delete(model.PlayListMovie{})
+		if deletePlayListMoviesResult.Error != nil {
+			return deletePlayListMoviesResult.Error
+		}
+
+		deleteMovieResult := tx.Where("id = ? and user_id = ?", movieId, userId).Delete(model.Movie{})
+		if deleteMovieResult.Error != nil {
+			return deleteMovieResult.Error
+		}
+
+		return nil
+	})
+
+	if transactionErr != nil {
+		return transactionErr
+	}
+
+	return nil
 }
