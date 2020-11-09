@@ -31,8 +31,7 @@ type MovieDisplayName string
 
 func NewMovieDisplayName(displayName string) (MovieDisplayName, error) {
 	err := validation.Validate(displayName,
-		validation.Required,
-		validation.RuneLength(1, 200),
+		validation.RuneLength(0, 200),
 	)
 	if err != nil{
 		return MovieDisplayName(""),err
