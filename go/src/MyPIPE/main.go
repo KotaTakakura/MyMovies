@@ -245,8 +245,8 @@ func authMiddlewareByJWT() (*jwt.GinJWTMiddleware, error) {
 	return jwt.New(&jwt.GinJWTMiddleware{
 		Realm:       os.Getenv("Realm"),
 		Key:         []byte(os.Getenv("JWT_SECRET_KEY")),
-		Timeout:     time.Hour,
-		MaxRefresh:  time.Hour,
+		Timeout:     time.Hour * 24 * 30,
+		MaxRefresh:  time.Hour * 24 * 30,
 		IdentityKey: identityKey,
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
 			if v, ok := data.(model.UserID); ok {
