@@ -12,10 +12,5 @@ func NewMovieModelFactory() *MovieModelFactory {
 
 func (m MovieModelFactory) CreateMovieModel(uploaderID model.UserID, movieFile *model.MovieFile, thumbnail *model.MovieThumbnail) (*model.Movie, error) {
 
-	displayName, displayNameErr := model.NewMovieDisplayName("")
-	if displayNameErr != nil {
-		return nil, displayNameErr
-	}
-
-	return model.NewMovie(uploaderID, movieFile, displayName, thumbnail), nil
+	return model.NewMovie(uploaderID, movieFile, thumbnail), nil
 }
