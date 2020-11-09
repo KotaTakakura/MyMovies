@@ -22,7 +22,7 @@ type CommentBody string
 func NewCommentBody(commentBody string) (CommentBody, error) {
 	err := validation.Validate(commentBody,
 		validation.Required,
-		validation.RuneLength(1, 1000),
+		validation.RuneLength(1, 500),
 	)
 	if err != nil {
 		return CommentBody(""), err

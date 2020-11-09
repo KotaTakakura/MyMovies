@@ -30,6 +30,13 @@ func NewMovieStoreName(storeName string) (MovieStoreName, error) {
 type MovieDisplayName string
 
 func NewMovieDisplayName(displayName string) (MovieDisplayName, error) {
+	err := validation.Validate(displayName,
+		validation.Required,
+		validation.RuneLength(1, 200),
+	)
+	if err != nil{
+		return MovieDisplayName(""),err
+	}
 	return MovieDisplayName(displayName), nil
 }
 
@@ -49,7 +56,7 @@ type MovieThumbnail struct {
 
 func NewMovieThumbnail(file multipart.File, fileHeader multipart.FileHeader) (*MovieThumbnail, error) {
 	extension := filepath.Ext(fileHeader.Filename)
-	if !(extension == ".jpg" || extension == ".JPG" || extension == ".png" || extension == ".PNG" || extension == ".bmp" || extension == ".BMP" || extension == ".gif" || extension == ".GIF") {
+	if !(extension == ".jpg" || extension == ".JPG" || extension == ".jpeg" || extension == ".JPEG" || extension == ".png" || extension == ".PNG" || extension == ".bmp" || extension == ".BMP" || extension == ".gif" || extension == ".GIF") {
 		return nil, errors.New("Image File Only.")
 	}
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
@@ -128,10 +135,10 @@ type Movie struct {
 	UpdatedAt       time.Time
 }
 
-func NewMovie(uploaderID UserID, movieFile *MovieFile, displayName MovieDisplayName, thumbnail *MovieThumbnail) *Movie {
+func NewMovie(uploaderID UserID, movieFile *MovieFile, thumbnail *MovieThumbnail) *Movie {
 	return &Movie{
 		StoreName:       movieFile.StoreName,
-		DisplayName:     displayName,
+		DisplayName:     MovieDisplayName(""),
 		UserID:          uploaderID,
 		Description:     MovieDescription(""),
 		ThumbnailName:   thumbnail.Name,
