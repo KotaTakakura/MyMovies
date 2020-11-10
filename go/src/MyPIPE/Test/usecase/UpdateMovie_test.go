@@ -56,9 +56,6 @@ func TestUpdateMovie(t *testing.T) {
 			if data.(model.Movie).Public != trueCase.Public {
 				t.Fatal("Public Not Match.")
 			}
-			if data.(model.Movie).Status != trueCase.Status {
-				t.Fatal("Status Not Match.")
-			}
 			updatedMovie := data.(model.Movie)
 			return &updatedMovie, nil
 		})
@@ -78,9 +75,6 @@ func TestUpdateMovie(t *testing.T) {
 		}
 		if result.Public != trueCase.Public {
 			t.Fatal("Public Not Match.")
-		}
-		if result.Status != trueCase.Status {
-			t.Fatal("Status Not Match.")
 		}
 	}
 }
@@ -157,7 +151,7 @@ func TestUpdateMovie_ChangePublic_error(t *testing.T) {
 			ThumbnailName: "TestThumbnailname",
 			UserID:        Case.UserID,
 			Public:        model.MoviePublic(0),
-			Status:        model.MovieStatus(1),
+			Status:        model.MovieStatus(0),
 		}, nil)
 
 		result, err := updateMovieUsecase.Update(&Case)
