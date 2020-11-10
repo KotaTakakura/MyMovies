@@ -1,0 +1,1 @@
+ALTER TABLE movies ADD COLUMN movie_status INTEGER NULL DEFAULT 0 AFTER status;
