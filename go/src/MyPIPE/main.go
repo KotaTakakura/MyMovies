@@ -51,13 +51,14 @@ func main() {
 	movieEvaluationRepository := infra.NewMovieEvaluatePersistence()
 	commentRepository := infra.NewCommentPersistence()
 	movieRepository := infra.NewMoviePersistence()
+	movieStatusRepository := infra.NewMovieStatusPersistence()
 	playListRepository := infra.NewPlayListPersistence()
 	playListMovieRepository := infra.NewPlayListMoviePersistence()
 	thumbnailUploadRepository := uploadThumbnailRepository_infra.NewUploadThumbnailToAmazonS3()
 	movieUploadRepository := uploadMovieRepository_infra.NewUploadToAmazonS3()
 	temporaryRegisterMailRepository := infra.NewTemporaryRegisterMailRepository()
 
-	updateMovieUsecase := usecase.NewUpdateMovie(movieRepository)
+	updateMovieUsecase := usecase.NewUpdateMovie(movieRepository,movieStatusRepository)
 
 	// the jwt middleware
 	authMiddleware, err := authMiddlewareByJWT()

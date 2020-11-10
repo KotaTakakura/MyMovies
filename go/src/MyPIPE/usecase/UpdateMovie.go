@@ -13,11 +13,13 @@ type IUpdateMovie interface {
 
 type UpdateMovie struct {
 	MovieRepository repository.MovieRepository
+	MovieStatusRepository repository.MovieStatusRepository
 }
 
-func NewUpdateMovie(m repository.MovieRepository) *UpdateMovie {
+func NewUpdateMovie(m repository.MovieRepository,msr repository.MovieStatusRepository) *UpdateMovie {
 	return &UpdateMovie{
 		MovieRepository: m,
+		MovieStatusRepository: msr,
 	}
 }
 
@@ -59,17 +61,17 @@ type UpdateDTO struct {
 }
 
 func (u UpdateMovie) UpdateStatus(updateStatusDTO *UpdateStatusDTO) error {
-	movie, findMovieErr := u.MovieRepository.FindById(updateStatusDTO.MovieID)
+	movieStatus, findMovieErr := u.MovieStatusRepository.Find(updateStatusDTO.MovieID)
 	if findMovieErr != nil {
 		return findMovieErr
 	}
 
-	changeStatusErr := movie.Complete()
+	changeStatusErr := movieStatus.Complete()
 	if changeStatusErr != nil {
 		return changeStatusErr
 	}
 
-	_, updateMovieErr := u.MovieRepository.Update(*movie)
+	updateMovieErr := u.MovieStatusRepository.Save(movieStatus)
 	if updateMovieErr != nil {
 		return updateMovieErr
 	}

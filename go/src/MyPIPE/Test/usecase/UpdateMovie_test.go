@@ -15,7 +15,8 @@ func TestUpdateMovie(t *testing.T) {
 	defer ctrl.Finish()
 
 	movieRepository := mock_repository.NewMockMovieRepository(ctrl)
-	updateMovieUsecase := usecase.NewUpdateMovie(movieRepository)
+	movieStatusRepository := mock_repository.NewMockMovieStatusRepository(ctrl)
+	updateMovieUsecase := usecase.NewUpdateMovie(movieRepository,movieStatusRepository)
 
 	trueCases := []usecase.UpdateDTO{
 		usecase.UpdateDTO{
@@ -96,7 +97,8 @@ func TestUpdateMovie_MovieRepository_FindByUserIdAndMovieId_Error(t *testing.T) 
 
 	for _, Case := range cases {
 		movieRepository := mock_repository.NewMockMovieRepository(ctrl)
-		updateMovieUsecase := usecase.NewUpdateMovie(movieRepository)
+		movieStatusRepository := mock_repository.NewMockMovieStatusRepository(ctrl)
+		updateMovieUsecase := usecase.NewUpdateMovie(movieRepository,movieStatusRepository)
 
 		movieRepository.EXPECT().FindByUserIdAndMovieId(Case.UserID, Case.MovieID).Return(&model.Movie{
 			ID:            Case.MovieID,
@@ -121,7 +123,8 @@ func TestUpdateMovie_ChangePublic_error(t *testing.T) {
 	defer ctrl.Finish()
 
 	movieRepository := mock_repository.NewMockMovieRepository(ctrl)
-	updateMovieUsecase := usecase.NewUpdateMovie(movieRepository)
+	movieStatusRepository := mock_repository.NewMockMovieStatusRepository(ctrl)
+	updateMovieUsecase := usecase.NewUpdateMovie(movieRepository,movieStatusRepository)
 
 	cases := []usecase.UpdateDTO{
 		usecase.UpdateDTO{
@@ -166,7 +169,8 @@ func TestUpdateMovie_MovieRepository_Update_Error(t *testing.T) {
 	defer ctrl.Finish()
 
 	movieRepository := mock_repository.NewMockMovieRepository(ctrl)
-	updateMovieUsecase := usecase.NewUpdateMovie(movieRepository)
+	movieStatusRepository := mock_repository.NewMockMovieStatusRepository(ctrl)
+	updateMovieUsecase := usecase.NewUpdateMovie(movieRepository,movieStatusRepository)
 
 	trueCases := []usecase.UpdateDTO{
 		usecase.UpdateDTO{
