@@ -47,6 +47,15 @@ func (changePassword ChangePassword) ChangePassword(c *gin.Context) {
 		return
 	}
 
+	if userIdUint == 9 || userIdUint == 10 || userIdUint == 11 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"result":   "Validation Error.",
+			"messages": "Cant Change Test User.",
+		})
+		c.Abort()
+		return
+	}
+
 	changePasswordDTO := usecase.NewChangePasswordDTO(userId, userPassword)
 	err := changePassword.ChangePasswordUsecase.ChangePassword(changePasswordDTO)
 	if err != nil {
