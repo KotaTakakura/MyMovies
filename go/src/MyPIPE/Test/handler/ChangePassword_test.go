@@ -24,8 +24,8 @@ func TestChangePassword(t *testing.T) {
 		id       uint64
 		password string
 	}{
-		{id: 10, password: "myFirstPassword"},
-		{id: 20, password: "mySecondPasword"},
+		{id: 20, password: "myFirstPassword"},
+		{id: 30, password: "mySecondPasword"},
 	}
 
 	ctrl := gomock.NewController(t)
@@ -108,8 +108,8 @@ func TestChangePassword_UsecaseError(t *testing.T) {
 		id       uint64
 		password string
 	}{
-		{id: 10, password: "myFirstPassword"},
-		{id: 20, password: "mySecondPasword"},
+		{id: 20, password: "myFirstPassword"},
+		{id: 30, password: "mySecondPasword"},
 	}
 
 	ctrl := gomock.NewController(t)

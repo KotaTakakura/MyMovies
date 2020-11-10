@@ -23,7 +23,7 @@ func TestChangeUseName(t *testing.T) {
 		id   uint64
 		name string
 	}{
-		{id: 10, name: "myname"},
+		{id: 20, name: "myname"},
 	}
 
 	ctrl := gomock.NewController(t)
@@ -99,7 +99,7 @@ func TestChangeUseName_UsecaseError(t *testing.T) {
 		id   uint64
 		name string
 	}{
-		{id: 10, name: "myname"},
+		{id: 20, name: "myname"},
 	}
 
 	ctrl := gomock.NewController(t)

@@ -31,6 +31,15 @@ func (r SetPasswordRememberToken) SetPasswordRememberToken(c *gin.Context) {
 		return
 	}
 
+	if userEmail == "guest1@test.com" || userEmail == "guest2@test.com" || userEmail == "guest3@test.com" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"result":   "Validation Error.",
+			"messages": "Cant Change Test User.",
+		})
+		c.Abort()
+		return
+	}
+
 	setPasswordRememberTokenDTO := usecase.NewSetPasswordRememberTokenDTO(userEmail)
 	setPasswordRememberTokenErr := r.SetPasswordRememberTokenUsecase.SetPasswordRememberToken(setPasswordRememberTokenDTO)
 	if setPasswordRememberTokenErr != nil {

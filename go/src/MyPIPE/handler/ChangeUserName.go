@@ -48,6 +48,15 @@ func (changeUserName ChangeUserName) ChangeUserName(c *gin.Context) {
 		return
 	}
 
+	if userIdUint == 9 || userIdUint == 10 || userIdUint == 11 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"result":   "Validation Error.",
+			"messages": "Cant Change Test User.",
+		})
+		c.Abort()
+		return
+	}
+
 	changeUserNameDTO := usecase.NewChangeUserNameDTO(userId, userName)
 	err := changeUserName.ChangeUserNameUsecase.ChangeUserName(changeUserNameDTO)
 

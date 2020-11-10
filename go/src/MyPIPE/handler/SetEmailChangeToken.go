@@ -45,6 +45,15 @@ func (s SetEmailChangeToken) SetEmailChangeToken(c *gin.Context) {
 		return
 	}
 
+	if userIdUint == 9 || userIdUint == 10 || userIdUint == 11 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"result":   "Validation Error.",
+			"messages": "Cant Change Test User.",
+		})
+		c.Abort()
+		return
+	}
+
 	setEmailChangeTokenDTO := usecase.NewSetEmailChangeTokenDTO(userId, email)
 	usecaseErr := s.SetEmailChangeTokenUsecase.SetEmailChangeToken(setEmailChangeTokenDTO)
 	if usecaseErr != nil {

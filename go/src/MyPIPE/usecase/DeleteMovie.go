@@ -21,11 +21,11 @@ func NewDeleteMovie(movieRepository repository.MovieRepository) *DeleteMovie {
 }
 
 func (d DeleteMovie) DeleteMovie(deleteMovieDTO *DeleteMovieDTO) error {
-	movie,findMovieErr := d.MovieRepository.FindByUserIdAndMovieId(deleteMovieDTO.UserID,deleteMovieDTO.MovieID)
-	if findMovieErr != nil{
+	movie, findMovieErr := d.MovieRepository.FindByUserIdAndMovieId(deleteMovieDTO.UserID, deleteMovieDTO.MovieID)
+	if findMovieErr != nil {
 		return findMovieErr
 	}
-	if movie == nil{
+	if movie == nil {
 		return errors.New("No Such Movie.")
 	}
 
