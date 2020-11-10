@@ -36,11 +36,6 @@ func (u UpdateMovie) Update(updateDTO *UpdateDTO) (*model.Movie, error) {
 		return nil, changeDescriptionErr
 	}
 
-	changeStatusErr := movie.ChangeStatus(updateDTO.Status)
-	if changeStatusErr != nil {
-		return nil, changeStatusErr
-	}
-
 	changePublicErr := movie.ChangePublic(updateDTO.Public)
 	if changePublicErr != nil {
 		return nil, changePublicErr
