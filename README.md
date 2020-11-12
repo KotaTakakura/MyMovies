@@ -1,6 +1,9 @@
 # MyMovies(作成中)
-動画の投稿・閲覧ができるシンプルなサービスです。
-※このReadmeは作成途中です。
+動画の投稿・閲覧ができるシンプルなサービスです。  
+
+## URL
+https://www.frommymovies.com/
+
 ## 使用言語
 Go言語  
 Nuxt(https://github.com/takatsu111/MyPIPE-front)
