@@ -166,9 +166,9 @@ func (m *Movie) ChangePublic(publicStatus MoviePublic) error {
 		return errors.New("Title Not Set.")
 	}
 
-	if publicStatus == 1 && m.Status == 0 {
-		return errors.New("Status Not Complete.")
-	}
+	//if publicStatus == 1 && m.Status == 0 {
+	//	return errors.New("Status Not Complete.")
+	//}
 	m.Public = publicStatus
 	return nil
 }
