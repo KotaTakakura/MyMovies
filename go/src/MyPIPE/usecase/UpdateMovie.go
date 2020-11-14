@@ -8,6 +8,7 @@ import (
 type IUpdateMovie interface {
 	Update(updateDTO *UpdateDTO) (*model.Movie, error)
 	UpdateStatus(updateStatusDTO *UpdateStatusDTO) error
+	UpdateStatusError(updateStatusErrorDTO *UpdateStatusErrorDTO) error
 	UpdateThumbnailStatus(updateThumbnailStatusDTO *UpdateThumbnailStatusDTO) error
 }
 
@@ -85,6 +86,35 @@ type UpdateStatusDTO struct {
 
 func NewUpdateStatusDTO(movieId model.MovieID) *UpdateStatusDTO {
 	return &UpdateStatusDTO{
+		MovieID: movieId,
+	}
+}
+
+func (u UpdateMovie) UpdateStatusError(updateStatusErrorDTO *UpdateStatusErrorDTO) error {
+	movieStatus, findMovieErr := u.MovieStatusRepository.Find(updateStatusErrorDTO.MovieID)
+	if findMovieErr != nil {
+		return findMovieErr
+	}
+
+	changeStatusErr := movieStatus.Error()
+	if changeStatusErr != nil {
+		return changeStatusErr
+	}
+
+	updateMovieErr := u.MovieStatusRepository.Save(movieStatus)
+	if updateMovieErr != nil {
+		return updateMovieErr
+	}
+
+	return nil
+}
+
+type UpdateStatusErrorDTO struct {
+	MovieID model.MovieID
+}
+
+func NewUpdateStatusErrorDTO(movieId model.MovieID) *UpdateStatusErrorDTO {
+	return &UpdateStatusErrorDTO{
 		MovieID: movieId,
 	}
 }

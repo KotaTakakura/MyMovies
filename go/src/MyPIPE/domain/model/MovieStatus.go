@@ -32,3 +32,8 @@ func (m *MovieStatusModel)Complete()error{
 	m.MovieStatus = 1
 	return nil
 }
+
+func (m *MovieStatusModel)Error()error{
+	m.MovieStatus = 2
+	return nil
+}
