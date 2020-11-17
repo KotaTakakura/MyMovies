@@ -20,6 +20,27 @@ CircleCI・・・テスト・デプロイの自動化
 ## AWS構成図
 ![AWS構成図](AWS.png) 
 
+## 設計方針(ディレクトリ構造)
+goのソースコードは、 /go/src/MyPIPEに作成していく  
+main.goにルーティングを作成していく。
+### /go/src/MyPIPE/domain
+ビジネスルール・仕様の関心事を取り扱う。  
+User structやComment structといったドメインオブジェクトを実装
+ユーザーID(UserID)やコメントID(CommentID)として定義し、uintなどプリミティブな型に意味を持たせた実装をした。
+
+### /go/src/MyPIPE/handler
+リクエストデータを受け取り、加工したものをusecase層にデータを渡す。  
+UserIDなどの値を作成するのもこの層で行ない、値に不備があればエラーとして返す。  
+
+### /go/src/MyPIPE/infra
+データベースへのデータの永続化などの具体的な技術を実装する。  
+メール送信機能やS3への保存機能もここで実装している。
+
+### /go/src/MyPIPE/usecase
+ソフトウェアの行なう仕事の流れを表現する。
+基本的に、データの更新の場合はerrorをもしくはnilを
+返す。
+
 ## 進捗(スクリーンショット)
 ### 動画一覧  
 ![動画一覧](ReadmeImages/Movies.png)  
@@ -29,20 +50,3 @@ CircleCI・・・テスト・デプロイの自動化
 ![投稿動画一覧](ReadmeImages/UploadMoviesList.png)  
 ### 再生画面
 ![動画再生画面](ReadmeImages/MoviePlay.png)  
-
-
-## 設計方針(ディレクトリ構造)
-goのソースコードは、 /go/src/MyPIPEに作成していく  
-main.goにルーティングを作成していく。
-### /go/src/MyPIPE/domain
-ビジネスルール・仕様の関心事を取り扱う。  
-User structやComment structをドメインオブジェクトとして実装。
-
-### /go/src/MyPIPE/handler
-リクエストデータを受け取り、加工したものをusecase層にデータを渡す。
-
-### /go/src/MyPIPE/infra
-永続化のための具体的な技術を実装する。
-
-### /go/src/MyPIPE/usecase
-ソフトウェアの行なう仕事の流れを表現する。
